@@ -1,0 +1,198 @@
+name: "On-Prem UA Servers"
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        required: true
+        type: choice
+        description: Select the environment
+        options: 
+        - alalupnc121
+        - alalupnc119 and alalupnc120
+
+env:
+  COMPONENT_NAME: "ecrash-keying"
+  BUILD_NAME: ecrash-keying
+  PROFILE: PROFILE
+  PROFILE_UA: ${{ secrets.PROFILE_UA }}
+
+
+jobs:
+  
+  build:
+
+    runs-on: [self-hosted, X64, Linux, on-prem, boca, shared]
+    environment: ${{github.event.inputs.env}}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+   
+        
+    - name: create version.txt file
+      run: |
+          echo "Branch is ${GITHUB_REF#refs/heads/}" >> ./version.txt
+          echo "GITHUB_RUN_ID is ${GITHUB_RUN_ID}" >> ./version.txt
+          echo "Commit_Id is ${GITHUB_SHA::7}"  >> ./version.txt
+
+    - name: Profile ua
+      run: |
+          echo "PROFILE=PROFILE_UA"  >> $GITHUB_ENV
+          echo "ENV=ua" >> $GITHUB_ENV
+          
+    - name: exporting environment variables
+      run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gettext
+          CONFIG_PROFILE_ENV_VAR="${!PROFILE}"
+          CONFIG_PROFILE_FILE=$(mktemp)
+          echo "$CONFIG_PROFILE_ENV_VAR" > "$CONFIG_PROFILE_FILE"
+          set -o allexport
+          . $CONFIG_PROFILE_FILE
+          set +o allexport
+          echo $CONFIG_PROFILE_FILE
+          rm -rf $CONFIG_PROFILE_FILE
+          cat ./conf/${ENV}/secure/secure.tmpl | envsubst > ./secure.php
+          cat ./conf/${ENV}/environment.php | envsubst > ./environment.php
+          cat ./conf/${ENV}/.htaccess | envsubst > ./.htaccess
+    
+    - name: Delete and re-create the app, temp and conf folders on alalupnc121
+      if: github.event.inputs.env == 'alalupnc121'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalupnc121.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to ua server alalupnc121
+      if: github.event.inputs.env == 'alalupnc121'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalupnc121.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to ua server alalupnc121
+      if: github.event.inputs.env == 'alalupnc121'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalupnc121.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to ua server alalupnc121
+      if: github.event.inputs.env == 'alalupnc121'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalupnc121.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links ua alalupnc121
+      if: github.event.inputs.env == 'alalupnc121'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alalupnc121.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alalupnc121
+      if: github.event.inputs.env == 'alalupnc121'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalupnc121.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports      
+          
+    - name: Delete and re-create the app, temp and conf folders on alalupnc119 and alalupnc120
+      if: github.event.inputs.env == 'alalupnc119 and alalupnc120'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalupnc119.noam.lnrm.net,alalupnc120.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alalupnc119 and alalupnc120
+      if: github.event.inputs.env == 'alalupnc119 and alalupnc120'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalupnc119.noam.lnrm.net,alalupnc120.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alalupnc119 and alalupnc120
+      if: github.event.inputs.env == 'alalupnc119 and alalupnc120'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalupnc119.noam.lnrm.net,alalupnc120.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to alalupnc119 and alalupnc120
+      if: github.event.inputs.env == 'alalupnc119 and alalupnc120'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalupnc119.noam.lnrm.net,alalupnc120.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links on alalupnc119 and alalupnc120
+      if: github.event.inputs.env == 'alalupnc119 and alalupnc120'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alalupnc119.noam.lnrm.net,alalupnc120.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alalupnc119 and alalupnc120
+      if: github.event.inputs.env == 'alalupnc119 and alalupnc120'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalupnc119.noam.lnrm.net,alalupnc120.noam.lnrm.net"
+        username: "apuecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports
+    
+   

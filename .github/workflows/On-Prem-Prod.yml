@@ -1,0 +1,400 @@
+name: "On-Prem PROD ervers"
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        required: true
+        type: choice
+        description: Select the environment
+        options: 
+        - alalppnc117
+        - alalppnc119
+        - alalppnc211
+        - alalppnc214
+        - alalppnc215
+
+env:
+  COMPONENT_NAME: "ecrash-keying"
+  BUILD_NAME: ecrash-keying
+  PROFILE: PROFILE
+  PROFILE_PROD: ${{ secrets.PROFILE_PROD }}
+
+
+jobs:
+  
+  build:
+
+    runs-on: [self-hosted, X64, Linux, on-prem, boca, shared]
+    environment: ${{github.event.inputs.env}}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+   
+        
+    - name: create version.txt file
+      run: |
+          echo "Branch is ${GITHUB_REF#refs/heads/}" >> ./version.txt
+          echo "GITHUB_RUN_ID is ${GITHUB_RUN_ID}" >> ./version.txt
+          echo "Commit_Id is ${GITHUB_SHA::7}"  >> ./version.txt
+
+    - name: Profile Prod
+      run: |
+          echo "PROFILE=PROFILE_PROD"  >> $GITHUB_ENV
+          echo "ENV=prod" >> $GITHUB_ENV
+          
+    - name: exporting environment variables
+      run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gettext
+          CONFIG_PROFILE_ENV_VAR="${!PROFILE}"
+          CONFIG_PROFILE_FILE=$(mktemp)
+          echo "$CONFIG_PROFILE_ENV_VAR" > "$CONFIG_PROFILE_FILE"
+          set -o allexport
+          . $CONFIG_PROFILE_FILE
+          set +o allexport
+          echo $CONFIG_PROFILE_FILE
+          rm -rf $CONFIG_PROFILE_FILE
+          cat ./conf/${ENV}/secure/secure.tmpl | envsubst > ./secure.php
+          cat ./conf/${ENV}/environment.php | envsubst > ./environment.php
+          cat ./conf/${ENV}/.htaccess | envsubst > ./.htaccess
+          
+    - name: Delete and re-create the app, temp and conf folders on alalppnc117
+      if: github.event.inputs.env == 'alalppnc117'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc117.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alalppnc117
+      if: github.event.inputs.env == 'alalppnc117'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc117.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alalppnc117
+      if: github.event.inputs.env == 'alalppnc117'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc117.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to alalppnc117
+      if: github.event.inputs.env == 'alalppnc117'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc117.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+
+    - name: Create Symbolic Links on alalppnc117
+      if: github.event.inputs.env == 'alalppnc117'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alalppnc117.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alalppnc117
+      if: github.event.inputs.env == 'alalppnc117'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc117.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports
+    
+    - name: Delete and re-create the app, temp and conf folders on alalppnc119
+      if: github.event.inputs.env == 'alalppnc119'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc119.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alalppnc119
+      if: github.event.inputs.env == 'alalppnc119'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc119.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alalppnc119
+      if: github.event.inputs.env == 'alalppnc119'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc119.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to alalppnc119
+      if: github.event.inputs.env == 'alalppnc119'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc119.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links on alalppnc119
+      if: github.event.inputs.env == 'alalppnc119'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alalppnc119.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alalppnc119
+      if: github.event.inputs.env == 'alalppnc119'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc119.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports
+
+    - name: Delete and re-create the app, temp and conf folders on alalppnc211
+      if: github.event.inputs.env == 'alalppnc211'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc211.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alalppnc211
+      if: github.event.inputs.env == 'alalppnc211'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc211.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alalppnc211
+      if: github.event.inputs.env == 'alalppnc211'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc211.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to alalppnc211
+      if: github.event.inputs.env == 'alalppnc211'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc211.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links on alalppnc211
+      if: github.event.inputs.env == 'alalppnc211'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alalppnc211.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alalppnc211
+      if: github.event.inputs.env == 'alalppnc211'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc211.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports
+
+    - name: Delete and re-create the app, temp and conf folders on alalppnc214
+      if: github.event.inputs.env == 'alalppnc214'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc214.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alalppnc214
+      if: github.event.inputs.env == 'alalppnc214'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc214.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alalppnc214
+      if: github.event.inputs.env == 'alalppnc214'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc214.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to alalppnc214
+      if: github.event.inputs.env == 'alalppnc214'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc214.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links on alalppnc214
+      if: github.event.inputs.env == 'alalppnc214'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alalppnc214.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alalppnc214
+      if: github.event.inputs.env == 'alalppnc214'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc214.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports
+
+    - name: Delete and re-create the app, temp and conf folders on alalppnc215
+      if: github.event.inputs.env == 'alalppnc215'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc215.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alalppnc215
+      if: github.event.inputs.env == 'alalppnc215'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc215.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alalppnc215
+      if: github.event.inputs.env == 'alalppnc215'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc215.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to alalppnc215
+      if: github.event.inputs.env == 'alalppnc215'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alalppnc215.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links on alalppnc215
+      if: github.event.inputs.env == 'alalppnc215'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alalppnc215.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alalppnc215
+      if: github.event.inputs.env == 'alalppnc215'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alalppnc215.risk.regn.net"
+        username: "appecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports

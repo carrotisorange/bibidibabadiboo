@@ -1,0 +1,50 @@
+name: "Deploying Control-M Job Workflow"
+
+# Manual trigger
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        required: true
+        type: choice
+        description: Select the environment
+        options:
+          - dev
+          - nonprod
+          - stag
+          - prod
+          - dr
+      option:
+        description: 'Choose the Control-M Job'
+        required: true
+        type: choice
+        options:
+          - isitmessagequeuepolling
+          - populateentryqueue
+          - pullmbsagencies
+          - reportentrycleanup
+          - reportimagecleanup
+          - reportqueuecleanup
+          - usersexporttoaudit
+
+env:
+  #Only changes needed, Change these env vars to your component
+  COMPONENT_NAME: ecrash-keying
+  HELM_PARENT_CHART_REPO: LexisNexis-RBA/usgov-ecrash-helm
+  HELM_PARENT_CHART_REPO_FOLDER: ${{github.event.inputs.option}}
+  JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY }}
+  JFROG_CLI_BUILD_PROJECT: ecrash
+  BUILD_NAME: ecrash-keying
+  ENV: ${{github.event.inputs.env}}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: ${{github.event.inputs.env}}
+
+    env:
+      working-directory: /
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2

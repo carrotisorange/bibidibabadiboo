@@ -1,0 +1,32 @@
+table {
+	width: 100%;
+}
+
+th {
+	background-color: silver;
+	font-weight: bold;
+}
+td {
+	padding: 3px;
+}
+
+#passOverview .dataModified {
+	background-color: yellow;
+}
+
+#passOverview .reportEntry:hover {
+	background-color: skyblue;
+}
+
+#passOverview .reportEntry span {
+	text-decoration: underline;
+	color: blue;
+}
+
+#reportHeader {
+	font-size: 10pt;
+}
+
+#passOverview {
+	margin: 3px 3px 3px 3px;
+}

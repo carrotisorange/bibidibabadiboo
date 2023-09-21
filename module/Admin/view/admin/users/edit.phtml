@@ -1,0 +1,362 @@
+<?php
+ $this->headScript()
+            ->appendFile($this->basePath('js/admin/users.js'))
+            ->appendFile($this->basePath('library/date-format-js/js/jquery-ui-timepicker-addon.js'));
+$this->headLink()
+    ->prependStylesheet($this->basePath('library/date-format-js/css/jquery-ui-timepicker-addon.css'));
+            ?>
+<table style="width: 90%;" class="m-auto text-center">
+    <tr>
+        <td class="box-top-left">&nbsp;</td>
+        <td class="box-top-bg" align="left">
+            <h3>Edit User</h3>
+            <strong>* Required Fields</strong>
+        </td>
+        <td class="box-top-right">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde;">
+            <form name="saveUser" id="saveUser" method="post" action="
+                <?php
+                echo $this->url('users',
+                    ['action' => 'edit'],
+                    ['query' => $requestParams]
+                );?>">
+                <input type="hidden" id="rekeyId" name="rekeyId" value="<?= $this->rekeyId;?>">
+                <input type="hidden" id="eRekeyId" name="eRekeyId" value="<?= $this->eRekeyId;?>">
+                <?= $this->formElement($form->get('csrf'));?>
+                <?= $this->formElement($form->get('userId'));?>
+                <?= $this->formElement($form->get('note'));?>
+                <table border="0" width="100%">
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="contentgridarea" style="border:1px solid #e2ddde;">
+                            <table class="table borderless cellspacing-5 text-start">
+                                <tr>
+                                    <td align="right" width="5%"><?= $this->formLabel($form->get('nameLast')); ?></td>
+                                    <td width="10%" align="left">
+                                        <?= $this->formElement($form->get('nameLast')); ?>
+                                    </td>
+                                    <td width="10%"></td>
+                                    <td align="right" width="2%"><?= $this->formLabel($form->get('nameFirst')); ?></td>
+                                    <td align="left" width="18%">
+                                       <?= $this->formElement($form->get('nameFirst')); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><?= $this->formLabel($form->get('username')); ?></td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('username')); ?>
+                                    </td>
+                                    <td></td>
+                                    <td align="right" width="10%"><?= $this->formLabel($form->get('userRoleId')); ?></td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('userRoleId')); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><?= $this->formLabel($form->get('isActive')); ?></td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('isActive')); ?>
+                                    </td>
+                                    <td></td>
+                                    <td align="right"><?= $this->formLabel($form->get('entryStage')); ?></td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('entryStage')); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><?= $this->formLabel($form->get('email')); ?></td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('email')); ?>
+                                    </td>
+                                    <td></td>
+                                    <td align="right"></td>
+                                    <td align="left"></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <div id="addDivPeopleSoftId" class="peopleSoftId"><?= $this->formLabel($form->get('peoplesoftEmployeeId')); ?></div>
+                                    </td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('peoplesoftEmployeeId')); ?>
+                                    </td>
+                                    <td></td>
+                                    <td align="right"></td>
+                                    <td align="left"></td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <?php if ($this->isLNUser): ?>
+                                        <div id="addDivKeyingVendorId" class="keyingVendorId"><?= $this->formLabel($form->get('keyingVendorId')); ?></div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('keyingVendorId')); ?>
+                                    </td>
+                                    <td></td>
+                                    <td align="right"></td>
+                                    <td align="left"></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+                            <table class="table borderless">
+                                <tr>
+                                    <td width="10%" colspan="5" align="left">
+                                        <label style="font-size: 12px;font-weight: bolder">Assign Report For User</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right" width="15%"><?= $this->formLabel($form->get('reportID')); ?></td>
+                                    <td width="20%" align="left">
+                                        <?= $this->formElement($form->get('reportID')); ?>
+                                    </td>
+                                    <td width="10%"></td>
+                                    <td align="left" width="10%">
+                                        <?= $this->formElement($form->get('setreport')); ?>
+                                    </td >
+                                   <td><div id="reportmessage"></div></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>                    
+                    <tr id="reportList" style="<?= $this->showHideReportList; ?>">
+                        <td>&nbsp;</td>
+                        <td class="contentgridarea" style="border: 1px solid #e2ddde; ">
+                            <div>
+                                <table class="assignmentListingTable cellspacing-2" id="reportListTable">
+                                    <thead>
+                                    <tr>
+                                        <th rowspan='3' style="width: 10%;">Report ID</th>
+                                        <th rowspan='3' style="width: 10%;">State</th>
+                                        <th rowspan='3' style="width: 20%;">Form</th>
+                                        <th rowspan='3' style="width: 20%;">Agency</th>
+                                        <th rowspan='3' style="width: 20%;">Work Type</th>
+                                        <th rowspan='3' style="width: 10%">Assigned Date</th>
+                                        <th rowspan='3' style="width: 10%">
+                                            <label for="id_cbox_report_assigned">
+                                                Select All
+                                                <input type="checkbox" id="id_cbox_report_assigned" 
+                                                class="cbox-select-all" data-toggle="checked"
+                                                data-target=".cbox_assigned_reports">
+                                            </label>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="reportList">
+                                    <?= $this->reportList; ?> 
+                                </tbody>
+                                </table>
+                            </div>                            
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+                            <table class="table borderless cellspacing-5 text-start">
+                                <tr>
+                                    <td align="right">
+                                        <?= $this->formLabel($form->get('processingStartTime')); ?>
+                                    </td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('processingStartTime')); ?>
+                                    </td>
+                                    <td align="right">
+                                        <?= $this->formLabel($form->get('processingEndTime')); ?>
+                                    </td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('processingEndTime')); ?>
+                                    </td>
+                                    <td align="right"><a href="javscript:void(0);" onclick="userManagement.clearDate();" id="clearbtn">clear</a></td>
+                                    </tr>
+                                <tr>
+                                    <td width="10%" colspan="5" align="left">
+                                        <label style="font-size: 12px;font-weight: bolder">Select Forms for User</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right" width="10%">
+                                        <?= $this->formLabel($form->get('stateId')); ?>
+                                    </td>
+                                    <td>
+                                        <?= $this->formElement($form->get('stateId')); ?>
+                                    </td>
+                                    <td colspan="3"></td>
+                                </tr>
+                                <tr>
+                                    <td align="right" rowspan="2"><?= $this->formLabel($form->get('selectBy')); ?></td>
+                                    <td align="left" rowspan="2">
+                                        <div id="selectBy">
+                                            <?= $this->formElement($form->get('selectBy')); ?>
+                                        </div>
+                                    </td>
+                                    <td id="agencyIdDec">
+                                        <?= $this->formElement($form->get('agencyId')); ?>
+                                    </td>
+                                    <td align="right"><?= $this->formLabel($form->get('agencyFormId')); ?></td>
+                                    <td align="left">
+                                        <?= $this->formElement($form->get('agencyFormId')); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <?= $this->formElement($form->get('formId')); ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">Report Type</td>
+                                    <td>
+                                        <?= $this->formElement($form->get('reportTypeId')); ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+                           <table border="0" align="left">
+                                <tr>
+                                    <td align="left" width="10%"><?= $this->formElement($form->get('assign'));?></td >
+                                    <td width="25%"></td>
+                                    <td width="25%"></td>
+                                    <td width="25%"></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>                    
+                    <tr id="daterangereportList" style="<?= $this->showHideDateRangeReportList; ?>">
+                        <td>&nbsp;</td>
+                        <td class="contentgridarea" style="border: 1px solid #e2ddde; ">
+                            <div id="verticalscroller" class="<?= $this->dateRangeReportsTableClass; ?>">
+                                <table class="assignmentListingTable daterangereportTable" id="daterangereportTable">
+                                    <thead>
+                                    <tr>
+                                        <th rowspan='3' style="width: 10%;">Report ID</th>
+                                        <th rowspan='3' style="width: 10%;">State</th>
+                                        <th rowspan='3' style="width: 20%;">Form</th>
+                                        <th rowspan='3' style="width: 20%;">Agency</th>
+                                        <th rowspan='3' style="width: 20%;">Work Type</th>
+                                         <th rowspan='3' style="width: 8%;">
+                                            <label for="id_cbox_user_report_assigned">
+                                                Select All
+                                                <input type="checkbox" id="id_cbox_user_report_assigned" 
+                                                class="cbox-select-all" data-toggle="checked"
+                                                data-target=".cbox_to_assign_report"
+                                                <?php echo !empty($this->dateRangereportList) ? 'checked' : '' ?>>
+                                            </label>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="daterangereportList ">
+                                    <?= $this->dateRangereportList; ?> 
+                                </tbody>
+                                </table>
+                            </div>                            
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td >&nbsp;</td>
+                        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+                            <div style="width: 100%;">
+                                <table class ="assignmentListingTable cellspacing-2">
+                                    <tr>
+                                        <th rowspan='3' style="width: 10%;">State</th>
+                                        <th rowspan='3' style="width: 20%">eCrash Agency</th>
+                                        <th rowspan='3' style="width: 20%">Form</th>
+                                        <th colspan='2' style="width: 20%">Additional Keying</th>
+                                        <th colspan='3' style="width: 30%">Work Type</th>
+                                    </tr>
+                                    <tr>
+                                        <th class='column' style="width: 10%">Paper</th>
+                                        <th class='column' style="width: 10%">Electronic</th>
+                                        <th class='column' style="width: 10%">eCrash</th>
+                                        <th class='column' style="width: 10%">CRU Archive</th>
+                                        <th class='column' style="width: 10%">CRU Go Forward</th>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="formAssigned"><?= $this->formAssigned; ?></div>
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td >&nbsp;</td>
+                        <td class="contentgridarea text-start" style="border:1px solid #e2ddde; ">
+                            <table class="d-inline">
+                                <tr>
+                                    <td><?= $this->formElement($form->get('save'));?></td>
+                                    <td><?= $this->formElement($form->get('noteHistory'));?></td>
+                                    <?php if (!$this->isInternal): ?>
+                                    <td><?= $this->formElement($form->get('resetPassword'));?></td>
+                                    <?php endif; ?>
+                                    <td><?= $this->formElement($form->get('cancel'));?></td>
+                                </tr>
+                            </table>
+                            <?php if (!$this->isInternal): ?>
+                            <div style="float:right"><?= $this->formElement($form->get('delete')); ?></div>
+                            <?php endif; ?>
+                        </td>
+                        <td class="box-rightbg">&nbsp;</td>
+                    </tr>
+                </table>
+            </form>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-bot-left">&nbsp;</td>
+        <td class="box-bot-bg">&nbsp;</td>
+        <td class="box-bot-right">&nbsp;</td>
+    </tr>
+</table>
+<?php if (!empty($this->isUpdateSuccess)) {?>
+    <script type="text/javascript">
+        window.opener.location.reload(true);
+        window.close();
+    </script>
+<?php } ?>
+<!-- DateTimeRange Picker-->
+<script type="text/javascript">    
+    var startDateTextBox = $('#processingStartTime');
+    var endDateTextBox = $('#processingEndTime');
+
+    $.timepicker.datetimeRange(
+        startDateTextBox,
+        endDateTextBox,
+        {          
+            timeFormat: 'HH:mm:ss',                           
+        }
+    );
+    
+    $(document).ready( function() 
+    {
+        $(".cbox-select-all").click( function(e)
+        {
+            let target = $(this).data('target');
+            let toggle = $(this).data('toggle');
+
+            $(target).removeAttr('checked');
+
+            if( $(this).is(':checked') )
+            {
+                $( target ).prop( "checked", true );
+            }else{
+                $( target ).prop( "checked", false );
+            }
+        });
+    });
+</script>

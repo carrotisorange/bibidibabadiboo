@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./module/Base/test/Bootstrap.php"
+    colors="true">
+    <testsuites>
+        <testsuite name="ecrash">
+            <directory>./module/Base/test/Service</directory>
+            <directory>./module/Base/test/Adapter</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

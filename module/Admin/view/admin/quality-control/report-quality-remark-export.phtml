@@ -1,0 +1,87 @@
+<table classt="table" style="text-align:left">
+    <tr>
+        <td>Date Scope</td>
+        <td colspan="5"><?= $inputParams['fromDate']?> TO <?= $inputParams['toDate']?></td>
+    </tr>
+    <tr>
+        <th>Reports</th>
+        <td><?= $reportCountTotal?>/(<?= $reportWithDiscrepanciesTotal?>) RWD</td>
+    </tr>
+    <?php if (!is_null($workTypeName)) :?>
+        <tr>
+            <th style="width: 50%;">Work Type</th>
+            <td><?= $workTypeName?></td>
+        </tr>
+    <?php endif?>
+    <?php if (!is_null($stateAbbr)):?>
+        <tr>
+            <th>State</th>
+            <td><?= $stateAbbr?></td>
+        </tr>
+    <?php endif?>
+    <tr>
+        <td>Critical</td>
+        <td colspan="5"><?= $criticalitySummary['critical'] ?></td>
+    </tr>
+    <tr>
+        <td>Major</td>
+        <td colspan="5"><?= $criticalitySummary['major']?></td>
+    </tr>
+    <tr>
+        <td>Minor</td>
+        <td colspan="5"><?= $criticalitySummary['minor']?></td>
+    </tr>
+</table>
+<hr>
+<table>
+    <tr>
+        <td colspan="2"> <strong>Other Fields</strong> </td>
+    </tr>
+    <?php $counter = 0?>
+    <?php foreach ($fieldSummaries as $key => $row) :?>
+        <tr>
+            <td style="width:75%"><?= ++$counter?>) <?= $row['field_name']?></td>
+            <td>(<?= $row['total_count']?>) (<?= $row['percentage']?>)%</td>
+        </tr>
+    <?php endforeach?>
+</table>
+<?php if ($fieldSummaries) :?>
+<table style="text-align:left">
+    <td colspan="2"> <strong>Other Fields</strong> </td>
+    </tr>
+    <?php foreach ($fieldSummaries as $key => $row) :?>
+        <tr>
+            <td style="width: 50%;"><?= $row['field_name']?></td>
+            <td><?= $row['total_count'] ?></td>
+        </tr>
+    <?php endforeach?>
+</table>
+<?php endif?>
+
+<table style="text-align:left">
+    <tr>
+        <td> <strong>QC Fields</strong> </td>
+    </tr>
+    <tr>
+        <th>Field</th>
+        <th>Keyed Data</th>
+        <th>Correct Data</th>
+        <th>User</th>
+        <th width="3%">Critical</th>
+        <th width="3%">Major</th>
+        <th width="3%">Minor</th>
+    </tr>
+    <?php foreach ($reports as $key => $fields) : ?>
+        <?php foreach ($fields as $fieldKey => $field) :?>
+            <tr>
+                <td><?= $field['field_name']?></td>
+                <td><?= $field['pass_value']?></td>
+                <td><?= $field['remark_value']?></td>
+                <td><?= $field['name_first'] . ' ' . $field['name_last']?></td>
+                <td><?= $field['is_critical'] ? 'Yes' : 'No'?></td>
+                <td><?= $field['is_major'] ? 'Yes' : 'No'?></td>
+                <td><?= $field['is_minor'] ? 'Yes' : 'No'?></td>
+            </tr>
+        <?php endforeach?>
+    <?php endforeach?>
+</table>

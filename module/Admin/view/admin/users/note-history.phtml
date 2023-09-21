@@ -1,0 +1,98 @@
+<?php $this->headScript()->appendFile($this->basePath('/js/admin/user-note-history.js')); ?>
+<!-- Code to bring the focus to the first HTML input box by default -->
+<script type="text/javascript">
+    window.onload = setCursorFocus;
+</script>
+<form name="showhistoricnotes" id="showhistoricnotes" method="post" action="<?php
+    echo $this->url('users',
+        ['action' => 'noteHistory'],
+        ['query' => $requestParams]
+    );?>">
+<?= $this->formElement($form->get('csrf'));?>
+<?= $this->formElement($form->get('userId'));?>
+<table style="width: 100%;" class="m-auto text-center">
+    <tr>
+        <td class="box-top-left">&nbsp;</td>
+        <td class="box-top-bg" align="left">
+            <h3>Historic Notes</h3>
+        </td>
+        <td class="box-top-right">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+            <!-- The historic notes content -->
+            <div class="divScroll" align="left" style="height: 150px; border: 1px solid; overflow: auto;">
+                <table cellpadding="2px" cellspacing="2px" width="100%" style="background-color: white;">
+                    <thead>
+                        <tr>
+                            <th width="418px">Notes</th>
+                            <th width="118px">Date</th>
+                        </tr>
+                    </thead>
+                    <tfoot class="hide">
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <?php
+                        $counter = 0;
+                        foreach($this->notes as $note) {
+                            $counter ++;
+                        ?>
+                        <tr <?= ($counter % 2 == 0) ? 'class="odd"' : 'class="even"';?>>
+                            <td width="418px" style="word-wrap: break-all;">
+                                <?= wordwrap($note['note'], '47', "\n", true); ?>
+                            </td>
+                            <td width="118px"><?= date('m-d-Y h:i:s', strtotime($note['date_created'])); ?></td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+            <!-- The content would be populated here -->
+            <table width="100%">
+                <tr>
+                    <td style="text-align:left; font-weight:bold;">Enter a New Note</td>
+                </tr>
+                <tr>
+                    <td>
+                        <?= $this->formElement($form->get('note'));?>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+         <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde;">
+            <!-- The content would be populated here -->
+            <table>
+                <tr>
+                    <td>
+                        <?= $this->formElement($form->get('save'));?>
+                    </td>
+                    <td>
+                        <?= $this->formElement($form->get('cancel'));?>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-bot-left">&nbsp;</td>
+        <td class="box-bot-bg">&nbsp;</td>
+        <td class="box-bot-right">&nbsp;</td>
+    </tr>
+</table>
+</form>

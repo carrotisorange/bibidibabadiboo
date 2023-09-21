@@ -1,0 +1,134 @@
+<?php 
+    $this->headLink()->appendStylesheet($this->basePath('css/metrics.css'));
+    $this->headScript()->appendFile($this->basePath('/js/user-accuracy.js'));
+?>
+
+<script type="text/javascript">
+    $(function(){
+        stripeTable($('table.default'));
+        $( ".hasCalendar" ).datepicker(); 
+    });
+</script>
+
+<h1>Auto Extraction Accuracy</h1>
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('auto-extraction-metrics', ['action' => 'auto-extraction-accuracy']));
+    $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+    $form->setAttribute('class', 'default');
+    $form->prepare();
+?>
+
+<?= $this->form()->openTag($form); ?>
+<?= $this->formElement($form->get('csrf'));?>
+
+<fieldset>
+    <legend>Keying Date</legend>
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="field-label-group"><?= $this->formLabel($form->get('fromDate')); ?><?= $this->formElement($form->get('fromDate')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group"><?= $this->formLabel($form->get('toDate')); ?><?= $this->formElement($form->get('toDate')); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="field-label-group w-98"><?= $this->formLabel($form->get('state')); ?><?= $this->formElement($form->get('state')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group"><?= $this->formLabel($form->get('reportID')); ?><?= $this->formElement($form->get('reportID')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group w-98"><?= $this->formLabel($form->get('workType')); ?><?= $this->formElement($form->get('workType')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group"><?= $this->formLabel($form->get('agencyId')); ?><?= $this->formElement($form->get('agencyId')); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="field-label-group"><?= $this->formLabel($form->get('userID')); ?><?= $this->formElement($form->get('userID')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group"><?= $this->formLabel($form->get('lastName')); ?><?= $this->formElement($form->get('lastName')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group"><?= $this->formLabel($form->get('firstName')); ?><?= $this->formElement($form->get('firstName')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group"><?php if ($this->isLNUser): ?><?= $this->formLabel($form->get('keyingVendorId')); ?><?php endif; ?>
+                    <?= $this->formElement($form->get('keyingVendorId')); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <?= $this->formElement($form->get('submit')); ?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+</fieldset>
+
+<?php if (!isset($this->paginator)): ?>
+
+<?php elseif ($this->paginator->getCurrentItemCount() == 0): ?>
+        <b>No Matches Found</b>
+<?php
+    else:
+    ?>
+<br/>
+<div class="result">
+        <table class="default" id="autoExtractionAccuracyResults">
+            <thead>
+                <tr>
+                    <th>Date Keyed</th>
+                    <th>Report ID</th>
+                    <th>View Fields</th>
+                    <th>Download</th>
+                    <th>View Image</th>
+                </tr>
+            </thead>
+           
+            <tbody>
+            <?php
+            $count = 0;
+            foreach ($this->paginator as $entry):
+                $diffData = $entry['accuracy_details'];
+            ?>
+                <tr>
+                    <td><?= $entry['dateKeyed']; ?></td>
+                    <td><?= $entry['reportId']; ?></td>
+                    <td style="text-align:center">                        
+                        <a href="javascript:void(0)" class="report_reportId" data-report-id="<?= $entry['reportId']; ?>">View</a>                        
+                    </td>
+                    <td>
+                        <?php 
+                            $exportUrl = $this->url('auto-extraction-metrics', ['action' => 'auto-extraction-accuracy-overview'], [
+                                'query' => array_merge(['downloadType' => $this->format], ['reportId' => $entry['reportId']])
+                            ]);
+                        ?>
+                        <a href="<?= $exportUrl;?>"> Export To Excel </a>
+                    </td>
+                    <td style="text-align:center">
+                        <button onclick="keyingAccuracy.openReportImage(<?= $entry['reportId']; ?>);">View</button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td class="pagination" colspan="5">
+                        <?= $this->paginationControl($paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $this->paginatorParams]); ?>
+                    </td>
+                </tr>
+            </tfoot>
+
+        </table>
+    <?php endif; ?>
+</div>

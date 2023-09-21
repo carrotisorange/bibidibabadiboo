@@ -1,0 +1,140 @@
+
+/*
+*COLORS
+*/
+:root{
+	--color-danger: #D92027;
+	--color-warning: #FF9234;
+	--color-primary: #1F3C88;
+	--color-success: #019267;
+	--color-default: #A0937D;
+}
+
+/**
+ * @copyright (c) 2011 LexisNexis. All rights reserved.
+ */
+body {
+	color: black;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 8pt;
+	background-color: #ffffff;
+	padding: 0px;
+	margin: 0px;
+}
+
+div.divTempPwd {
+    display:none; /* ECH-4917 */
+}
+
+/*fieldset {
+	border: 1px solid #ddd !important;
+}
+
+legend {
+	width: auto !important;
+	font-size: 1.1em;
+	margin-left: 2%;
+}
+
+.dataTable thead th {
+	border: 1px solid #d3d3d3 !important;
+    background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 60% 50% repeat-x !important;
+    font-weight: normal !important;
+    color: #555555 !important;
+}*/
+
+.ui-widget-header h1 { font-size: 1.65em; }
+.ui-widget-header h2 { font-size: 1.55em; }
+.ui-widget-header h3 { font-size: 1.45em; }
+.ui-widget-header h4 { font-size: 1.35em; }
+
+dl.zend_form {
+	 float: left;
+	 margin: 0;
+	 padding: 0 0 2em;
+	 clear: both;
+}
+dl.zend_form dt {
+	clear: left;
+	float: left;
+	margin: 0 15px 0 0;
+	padding: 3px 0 0;
+	text-align: right;
+	width: 180px;
+}
+dl.zend_form dd {
+	margin: 0 0 0 195px;
+	padding: 3px 0 0;
+}
+
+dl.zend_form dd fieldset {
+	margin-left: -195px;
+	border: 1px solid #aaaaaa;
+	background: #ffffff;
+	color: #222222;
+}
+dl.zend_form dd fieldset legend {
+	border: 1px solid #aaaaaa;
+	background: #ffffff;
+	color: #222222;
+}
+
+table tr.odd {
+	background-color: #E4E4E4;
+}
+table tr.even {
+	background-color: #D7D7D7;
+}
+table tbody.clickable tr {
+	cursor: pointer;
+}
+ul.messages .warn,
+ul.messages .error,
+.field-label-group div.error input,
+div.error input
+{
+	background-color: #FEE;
+	color: #500;
+	border: 1px solid #500;
+}
+
+/*
+*indicator/notifier
+*standard-size 20px
+*/
+.indicator{
+	width: 15px;
+	height: 15px;
+	background-color: var(--color-success);
+	display: inline-block;
+}
+
+.indicator-circle{
+	border-radius:50%;	
+}
+
+.indicator-warning{
+	background-color: var(--color-warning);
+}
+
+.indicator-default{
+	background-color: var(--color-default);
+}
+.indicator-primary{
+	background-color: var(--color-primary);
+}
+.indicator-success{
+	background-color: var(--color-success);
+}
+.indicator-danger{
+	background-color: var(--color-danger);
+}
+
+.indicator-sm{
+	width: 9px;
+	height: 9px;
+}
+.indicator-lg{
+	width: 20px;
+	height: 20px;
+}

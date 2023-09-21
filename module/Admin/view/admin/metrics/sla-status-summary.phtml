@@ -1,0 +1,230 @@
+<?php 
+    $this->headLink()->appendStylesheet($this->basePath('css/metrics.css'));
+    $this->headScript()->appendFile($this->basePath('/js/user-accuracy.js'));
+?>
+
+<script type="text/javascript">
+    $(function(){
+        stripeTable($('table.default'));
+        $( ".hasCalendar" ).datepicker(); 
+    });
+</script>
+
+<h1>SLA Status Summary</h1>
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('metrics', ['action' => 'sla-status-summary']));
+    $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+    $form->setAttribute('class', 'default');
+    $form->prepare();
+    
+    $classPagination = ($this->isLNUser) ? 14 : 13;
+?>
+
+
+<?= $this->form()->openTag($form); ?>
+<?= $this->formElement($form->get('csrf'));?>
+
+<fieldset>
+        <legend>State</legend>
+        <table>
+        <tbody>
+        	<tr>
+        		<td>
+                    <div class="field-label-group w-98"><?= $this->formLabel($form->get('state')); ?><?= $this->formElement($form->get('state')); ?></div>
+                </td>
+                <td>
+                    <div class="field-label-group w-98"><?= $this->formLabel($form->get('workType')); ?><?= $this->formElement($form->get('workType')); ?></div>
+                </td>
+                <td>
+                	<div class="field-label-group">
+        	<?= $this->formLabel($form->get('priority')); ?>
+            <?= $this->formElement($form->get('priority')); ?>            
+        </div>
+    </td>
+    <td><div class="field-label-group"><?php if ($this->isLNUser): ?><?= $this->formLabel($form->get('keyingVendorId')); ?><?php endif; ?>
+    <?= $this->formElement($form->get('keyingVendorId')); ?></div></td>
+            </tr>
+        </tbody>
+    </table>      
+
+</fieldset>
+
+
+    <?= $this->formElement($form->get('submit')); ?>
+<?= $this->form()->closeTag(); ?>
+<?php if (!isset($this->paginator)): ?>
+
+<?php elseif ($this->paginator->getCurrentItemCount() == 0): ?>
+        <b>No Matches Found</b>
+<?php
+    else:
+    ?>
+	<div id="exportToExcel" style="width: 100%; text-align: right;">
+                <a href="<?php echo $this->url('sla-status-summary', ['action' => 'index'], [
+                'query' => array_merge(['downloadType' => $this->format], $paginatorParams)
+                ]); ?>" >
+                Export To Excel
+                </a>
+            </div>
+<br/>
+<div class="result">
+
+<div style="display: table;margin-left: 20%" >
+        <div style="display: table-row;"  >
+		
+            <div style="display: table-cell" > 
+				<table class="default">
+					<thead>
+						<tr>
+							<th colspan="4">eCrash</th>
+						</tr>					
+						<tr>
+							<td colspan="2">Pass1 </td>
+							<td colspan="2"> Pass 2 </td>
+						</tr>	
+						<tr>
+							<td>Within SLA </td>
+							<td> Past SLA </td>
+							<td>Within SLA </td>
+							<td> Past SLA </td>
+						</tr>		
+					</thead>						
+					<tr>
+					<td ><?= $ec_total['ec1']; ?> </td>
+					<td style="color: #F00"  ><?= $ec_total['ec2']; ?> </td>
+					<td ><?= $ec_total['ec3']; ?> </td>
+					<td style="color: #F00" ><?= $ec_total['ec4']; ?> </td>
+					</tr>
+				</table>
+			</div>
+			<div style="display: table-cell;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+			<div style="display: table-cell;"> 
+				<table class="default" align="center">
+					<thead>
+						<tr>
+							<th colspan="4">Cru GoForward</th>
+						</tr>
+						<tr>
+							<td colspan="2">Pass1 </td>
+							<td colspan="2"> Pass 2 </td>
+						</tr>	
+						<tr>
+							<td>Within SLA </td>
+							<td> Past SLA </td>
+							<td>Within SLA </td>
+							<td> Past SLA </td>
+						</tr>
+					</thead>
+									
+					<tr>
+					<td ><?= $cg_total['ec1']; ?> </td>
+					<td style="color: #F00"  ><?= $cg_total['ec2']; ?> </td>
+					<td ><?= $cg_total['ec3']; ?> </td>
+					<td style="color: #F00" ><?= $cg_total['ec4']; ?> </td>
+					</tr>
+				</table>
+			</div>
+			<div style="display: table-cell;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+			<div style="display: table-cell;"> 
+				<table class="default">
+					<thead>
+						<tr>
+							<th colspan="4">Total WIP</th>
+						</tr>
+						<tr>
+							<td colspan="2">Pass1 </td>
+							<td colspan="2"> Pass 2 </td>
+						</tr>	
+						<tr>
+							<td>Within SLA </td>
+							<td> Past SLA </td>
+							<td>Within SLA </td>
+							<td> Past SLA </td>
+						</tr>
+					</thead>
+						
+					<tr>
+					<td ><?= $ec_total['ec1']+$cg_total['ec1']; ?> </td>
+					<td style="color: #F00" ><?= $ec_total['ec2']+$cg_total['ec2']; ?> </td>
+					<td ><?= $ec_total['ec3']+$cg_total['ec3']; ?> </td>
+					<td style="color: #F00" ><?= $ec_total['ec4']+$cg_total['ec4']; ?> </td>
+					</tr>
+				</table>
+			</div>
+            
+        </div>
+        
+    </div>
+	
+
+
+        <table class="default">
+            <thead>
+                <tr>
+                    <th rowspan="2">Priority</th>
+                    <th rowspan="2">Entry Stage</th>
+                    <th rowspan="2">Work Type</th>
+                    <th rowspan="2">State</th>
+					<th rowspan="2">Agency Name</th>
+					<th rowspan="2">Report ID</th>
+					<th rowspan="2">Report Type</th>
+					<th rowspan="2">Creation Date</th>
+					<th colspan="2">Due Date</th>
+					<th rowspan="2">TAT Hours</th>
+					<th rowspan="2">Remaining Time to Process</th>
+					<th rowspan="2">Assigned Keyer</th>
+					<?php if ($this->isLNUser): ?><th rowspan="2">Company</th><?php endif; ?>
+                    <th rowspan="2">Status</th>
+                    <th rowspan="2">Is Prioritized</th>
+                </tr>
+                <tr>
+                    <th rowspan="2">EST</th>
+                    <th rowspan="2">PHT</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td class="pagination" colspan="<?= $classPagination; ?>"> 
+					
+                        <?= $this->paginationControl($paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $this->paginatorParams]); ?>
+                    </td>
+                </tr>
+            </tfoot>
+            
+            <tbody>
+            <?php
+            $count = 1;
+            foreach ($this->paginator as $entry):	
+            ?>
+                <tr>                   
+					<td><?= $entry['priority']; ?></td>
+					<td><?= $entry['stage']; ?></td>
+					<td><?= $entry['workType']; ?></td>    
+					<td><?= $entry['stateAbbr']; ?></td>
+					<td><?= $entry['agencyName']; ?></td>
+					<td><?= $entry['reportId']; ?></td>
+					<td><?= $entry['formTypeDescription']; ?></td>
+					<td><?= $entry['dateCreated']; ?></td>
+					<td><?= $entry['estDue']; ?></td>
+					<td><?= $entry['phtDue']; ?></td>
+                    <td><?= $entry['wtTatHours']; ?></td>
+					<td><?= $entry['tatHours']; ?></td>
+					<td><?= $entry['userId']; ?></td>
+                    <?php if ($this->isLNUser): ?><td><?= $entry['vendorName']; ?></td><?php endif; ?>
+					<td><?php 
+					if(!empty( $entry['entryStatus'])){
+						echo $entry['entryStatus'];
+					} else {
+						echo $entry['reportStatus'];
+					}
+					?></td>
+					<td><?= $entry['flag']; ?></td>
+                </tr>
+            <?php 			
+			endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</div>

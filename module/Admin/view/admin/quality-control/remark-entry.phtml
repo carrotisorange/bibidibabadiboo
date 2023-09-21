@@ -1,0 +1,227 @@
+<?php
+    use Base\Service\EntryStageService;
+    $this->headLink()->prependStylesheet($this->basePath('/css/metrics.css')); 
+?>
+
+<?php $this->headLink()
+    ->prependStylesheet($this->basePath('library/datatables/dataTables.bootstrap.css'))
+    ->prependStylesheet($this->basePath('css/quality-control-remark-entry.css'));
+    
+    $this->headScript()
+    ->appendFile($this->basePath('library/datatables/jquery.dataTables.1.10.15.min.js'))
+    ->appendFile($this->basePath('library/datatables/dataTables.bootstrap.1.10.15.js'))
+    ->appendFile($this->basePath('js/global.js'))
+    ->appendFile($this->basePath('js/admin/quality-control-remark-entry.js'))
+?>
+<form method="post" action="#" id="fieldForm" name="fieldForm">
+    <input type="hidden" name="isEdit" value="<?= $isEdit ?>">
+    <div class="gutter">
+        <h3>Audit Form</h3>
+        <p id="loadingMessage"></p>
+        <section class="x_container">
+            <!-- LIMIT THIS CONTENT WIDTH TO BALANCE LOOK -->
+            <div style="width: 100%;" id="reportHeader">
+                <div class="flex">
+                    <div style="flex:1">
+                        <h4>REPORT ID : <?= $reportInfo['report_id']?> </h4>
+                        <h4>WORK TYPE : <?= $reportInfo['name_external']?> </h4>
+                    </div>
+
+                    <div style="flex:1">
+                        <h4>REPORT TYPE : <?= $reportInfo['description']?> </h4>
+                        <h4>STATE : <?= $reportInfo['state']?> </h4>
+                    </div>
+
+                    <div style="flex:1">
+                        <h4>TOTAL FIELDS : <?= $totalFieldCount;?> </h4>
+                        <h4>PASS 2 DATE : <?= $reportInfo['date_created'];?> </h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="x_container <?= empty($remarks) ? 'display-none' : '' ?>" id="editedFieldSection">
+            <h4>EDITED FIELDS</h4>
+            <div id="editedFields">
+                <?php if (!empty($remarks)) :?>
+                    <?php foreach($remarks as $key => $row) :?>
+                        <span><?= $key?></span>
+                    <?php endforeach?>
+                <?php endif?>
+            </div>
+        </section>
+
+        <?php if (!$this->isEdit) :?>
+            <div style="margin-bottom: 20px;" class="fetch-random-param">
+                <label for="kWorkType">
+                <input type="checkbox" id="kWorkType" name="kWorkType"
+                    data-fieldname="work_type">
+                    Keep Work Type
+                </label>
+
+                <label for="kState">
+                    <input type="checkbox" id="kState" name="kState"
+                    data-fieldname="state">
+                    Keep State
+                </label>
+
+                <label for="kReportType">
+                    <input type="checkbox" id="kReportType" name="kReportType"
+                    data-fieldname="report_type">
+                    Keep Report Type
+                </label>
+            </div>
+        <?php endif?>
+        <div>
+            <input type="submit" form="fieldForm" 
+                class="btnstyle" 
+                data-message="Action is Irrevisiable , Click Okay to Apply Report QC" 
+                id="btnSubmit"
+                value="Save Changes">
+
+            <?php if( !$isEdit ) :?>
+            <button type="button" role="button" class="btnstyle" id="btnNoIssue">Skip</button>
+            <?php endif?>
+
+            <button type="button" role="button" class="btnstyle" id="btnCancel"
+                data-message="Are you sure you want to cancel Report QC?"
+                form="no_form">Cancel</button>
+        </div>
+        <div class="ui-widget ui-widget-content ui-corner-all">
+                <div class="ui-helper-clearfix">
+                    <label for="#">Filter Fields</label>
+                    <select name="#" id="criticalityType" data-target=".et">
+                        <option value="all">All</option>
+                        <option value="critical">Critical</option>
+                        <option value="major">Major</option>
+                        <option value="minor">Minor</option>
+                    </select>
+                    <div style="text-align: left;padding:10px" class="small-font">
+                        <input type="hidden" name="reportId" 
+                            value="<?= $reportInfo['report_id']?>" id="reportId"
+                            data-fieldname="report_id">
+                        <input type="hidden" name="formId" 
+                            value="<?= $reportInfo['form_id']?>"
+                            data-fieldname="form_id">
+                        <input type="hidden" name="stateId" 
+                            value="<?= $reportInfo['state_id']?>"
+                            data-fieldname="state_id">
+
+                        <br>
+                        <?php
+                            $discrepancyClassName = [
+                                'dataModifiedPass1' => 'background-color: yellow', 
+                                'dataModifiedPass2' => 'background-color: pink',
+                                'dataIgnored' => 'background-color: silver',
+                                'dataMissing' => 'background-color: red; color: white;'
+                            ];
+                        ?>
+                        <table id="passOverview">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40%;">Field</th>
+                                    <?php foreach ($this->entryInfo as $pass): ?>
+                                        <?php if ($pass['title'] != 'Pass 2 - Dynamic Verification'):?>
+                                        <th style="width: 25%;">
+                                            <label for="#">Keyed Data</label>
+                                        </th>
+                                        <?php else:?>
+                                        <th>Keyed Data</th>
+                                        <?php endif;?>
+                                    <?php endforeach; ?>
+                                    <th style="width: 25%;">Correct Data</th>
+                                    <th style="width: 3%;">Criticality</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($this->entryData as $elementName => $data): ?>
+                                    <?php
+                                        //skip original fields
+                                        if (strpos($data['labelName'], 'Original') !== false) {
+                                            continue;
+                                        }
+                                        if (!empty($data['is_critical']) ? TRUE : FALSE ){
+                                            $entryType = 'Critical';
+                                        } elseif ( !empty($data['is_major']) ? TRUE : FALSE  ) {
+                                            $entryType = 'Major';
+                                        } else {
+                                            $entryType = 'Minor';
+                                        }
+                                        
+                                    ?>
+                                    <tr class='td-criticality-indicator' data-type="<?= $entryType?>" >
+                                        <td>
+                                            <label for="" title="<?= $this->escapeHtml($elementName); ?>">
+                                                <?= $this->escapeHtml($data['labelName']); ?>
+                                            </label>
+                                        </td>
+                                        <td class="reportEntry" style="<?php if (!empty($data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['class'])) 
+                                        { echo $discrepancyClassName[$data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['class']]; } ?>">
+                                            <pre class="showStringSpace"><?= $data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['value']; ?></pre>
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="remarks[fields][<?= $elementName?>][pass_value]" 
+                                            value="<?=  $data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['value']?>">
+                                            <input type="hidden" name="remarks[fields][<?=  $elementName?>][is_critical]" 
+                                            value="<?= (!empty($data['is_critical'])) ? TRUE : FALSE; ?>">
+                                            <input type="hidden" name="remarks[fields][<?=  $elementName?>][is_major]" 
+                                            value="<?= (!empty($data['is_major'])) ? TRUE : FALSE; ?>">
+                                            <input type="hidden" name="remarks[fields][<?=  $elementName?>][is_minor]" 
+                                            value="<?= (!empty($data['is_minor'])) ? TRUE : FALSE; ?>">
+
+                                            <?= wInputBuilder($elementName , $remarks , $data)?>
+                                        </td>
+                                        <td>
+                                            <div class="et <?= strtolower($entryType)?>"
+                                                title="<?= $entryType?>"></div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </div>
+</form>
+
+<?php
+    /**
+     * Dot not remove or change any dat attributes
+     * if you need to alter any thing please review
+     * line 341
+     */
+    function wInputBuilder($elementName , &$remarks , $data)
+    {
+        $criticality = null;
+
+        if (!empty($data['is_minor'])) 
+            $criticality = 'minor';
+        if (!empty($data['is_major'])) 
+            $criticality = 'major';
+        if (!empty($data['is_critical'])) 
+            $criticality = 'critical';
+        
+        $passValue = $data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['value'];
+        if (!empty($remarks)){
+            //get element Value
+            $elementValue = in_array($elementName , array_keys($remarks)) ? $remarks[$elementName] : '';
+            return <<<EOF
+                <input type="text" name="remarks[fields][{$elementName}][remark_value]" 
+                    value="{$elementValue}" class="remarkValue"
+                    data-fieldname="{$elementName}"
+                    data-passvalue="{$passValue}"
+                    data-criticality="{$criticality}" style="width:90%">
+            EOF;
+        }else
+        {
+            return <<<EOF
+                <input type="text" name="remarks[fields][{$elementName}][remark_value]"
+                    class="remarkValue" 
+                    data-fieldname="{$elementName}"
+                    data-passvalue="{$passValue}"
+                    data-criticality="{$criticality}" style="width:90%">
+            EOF;
+        }
+    }
+?>

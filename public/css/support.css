@@ -1,0 +1,93 @@
+
+#support-navigation, #header
+{
+	background-color:#DDD;
+}
+#header h1, #support-navigation ul.navigation li span
+{
+	background-color: #EEE;
+	border:1px solid #CCC;
+}
+
+body {
+	height: 100%;
+	max-height: 100%;
+	overflow: hidden;
+}
+
+#support-navigation {
+	position: fixed;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 150px;
+	border-left: 1px solid #BBB;
+}
+#support-content {
+	position: fixed;
+	overflow: auto;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 150px;
+	padding:5px;
+}
+
+#header {
+	margin:-7px -7px 3px -5px;
+	padding:2px 2px 2px 2px;
+}
+
+#header h1{
+	padding: 2px 6px 2px 6px;
+	margin:2px;
+}
+
+#support-navigation ul.navigation
+{
+	list-style-type:none;
+	padding:0px;
+	margin-top:2px;
+}
+#support-navigation ul.navigation li span
+{
+	display:block;
+	text-align:center;
+	font-weight:bolder;
+	width:100%;
+
+}
+
+hr
+{
+	border-top:1px solid #EEE;
+	border-bottom:1px solid #DDD;
+}
+
+
+.navigation li ul li{
+	display:block;
+	border-left: 7px solid #CCC;
+	padding-left:4px;
+}
+.navigation li ul li.active
+{
+	border-left: 7px solid #000;
+	font-weight:bolder;
+}
+.navigation li ul
+{
+	padding-left:7px;
+}
+
+.navigation a[title="needs update"] {
+	padding-right:20px;
+	background-image:url('/images/iconSmall_Error.png');
+	background-repeat: no-repeat;
+	background-position: right center;
+}
+
+a
+{
+	color:#444;
+}

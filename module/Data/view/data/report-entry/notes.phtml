@@ -1,0 +1,82 @@
+<table class="dataTable display">
+	<thead>
+		<tr>
+			<th>Note</th>
+			<th>Area</th>
+			<th>Date</th>
+			<th>User</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php foreach ($this->notes as $note): ?>
+				<tr>
+					<td><?= $this->escapeHtml($note['note']); ?></td>
+					<td><?= $this->escapeHtml($note['area']); ?></td>
+					<td><?= $this->escapeHtml($note['dateCreated']); ?></td>
+					<td><?= $this->escapeHtml($note['username']); ?></td>
+				</tr>
+		<?php endforeach; ?>
+	</tbody>
+</table>
+<?= $this->formElement($this->csrf); ?>
+<div style="text-align: center; left: 0px; bottom: 0px; position: absolute; width: 100%;">
+	<textarea id="note" name="note" cols="1" rows="1" style="width: 98%; height: 60px;"></textarea><br />
+	<input id="saveNote" type="button" value="Save Note" /> <input id="closeWindow" type="button" value="Close" />
+</div>
+
+<script type="text/javascript"><?php $this->headScript()->captureStart(); ?>
+$(function () {
+    // @TODO: Move the below javascript functionality into js file in future if possible.
+	try {
+		setTimeout('$(window).focus();$("#note").focus()', 1000);
+	} catch (e) {}
+
+	function closeWindow() {
+		var valueCheck = true;
+		if ($.trim($('textarea[name="note"]').val()) != '') {
+			valueCheck = confirm('Closing the window will lose any written comments. Close anyway?');
+		}
+
+		if (valueCheck) {
+			if (window.opener && !window.opener.closed) {
+				window.opener.focus();
+			}
+
+			window.close();
+		}
+	}
+
+	function saveNote() {
+		var note = $.trim($('#note').val());
+		if (note == '') {
+			alert('Please enter a note to save.');
+			return;
+		}
+		progressDialogManager.create().show();
+
+		$.ajax({
+			type: 'post',
+			url: window.baseUrl + '/data/report-entry/notes',
+			data: {
+				note: note,
+				csrf: $('#csrf').val()
+			},
+			complete: function() {
+				window.opener.focus();
+				window.close();
+			}
+		});
+	}
+
+	$('#closeWindow').click(closeWindow);
+	$('#saveNote').click(saveNote);
+	$(document).shortkeys({
+		'Esc': closeWindow
+	});
+	closeOnOpenerChange();
+	<?php if ($this->viewOnly == "yes"): ?>
+		$('#saveNote').attr('disabled', 'disabled');
+		$('#note').attr('disabled', 'disabled');
+	<?php endif; ?>
+});
+<?php $this->headScript()->captureEnd(); ?></script>

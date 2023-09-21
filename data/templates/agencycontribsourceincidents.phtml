@@ -1,0 +1,122 @@
+<html>
+	<head>
+		<style>
+			table td {
+				border: 1px solid black;
+				text-align: center;
+				padding: 5px;
+				font-size: 14px;
+			}
+			table {
+				border-collapse: collapse;
+			}
+			.contribHeader {
+				font-weight:bold;
+			}
+			.contribList {
+				width: 100%;
+			}
+			.contribUpdate {
+				width: 50%;
+			}
+		</style>
+	</head>
+	<body>
+		<table align="center">
+			<tr class="contribHeader">
+				<td colspan="5">The following agency contributory source updates were done and incidents have been affected:</td>
+			</tr>
+			<tr class="contribHeader">
+				<td>MBS Agency Id</td>
+				<td>Agency Name</td>
+				<td>Action</td>
+				<td>Number of Incidents Affected</td>
+				<td>Data</td>
+			</tr>
+				<?php
+					foreach ($this->affected as $index => $contribData): ?>
+					<tr>
+						<td><?= $contribData['mbsAgencyId']; ?></td>
+						<td><?= $contribData['agencyName']; ?></td>
+						<td>
+							<?php if (!empty($contribData['isDeleteSource'])): 
+								$colspan = 1;?>
+								DELETE
+							<?php else : 
+								$colspan = 2;?>
+								UPDATE
+							<?php endif; ?>
+						</td>
+						<td><?= $contribData['numIncidents']; ?></td>
+						<td>
+							<table class="contribList">
+								<tr>
+									<td colspan="<?= $colspan; ?>">
+										MBS Agency Contributory Source Id: 
+										<?= $contribData['currentData']['mbs_agency_contributory_source_id']; ?>
+									</td>
+								</tr>
+							<?php if (!empty($contribData['isDeleteSource'])): ?>
+								<tr><td>Source: <?= $contribData['currentData']['source']; ?></td></tr>
+								<tr><td>Effective Date: <?= $contribData['currentData']['effective_date']; ?></td></tr>
+								<tr>
+									<td>
+										Expiration Date: 
+										<?php if (!empty($contribData['currentData']['expiration_date'])): 
+										echo $contribData['currentData']['expiration_date']; else: ?>NULL<?php endif; ?>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										Grace Period: 
+										<?php if (!empty($contribData['currentData']['grace_period'])): 
+										echo $contribData['currentData']['grace_period']; else: ?>NULL<?php endif; ?>
+									</td>
+								</tr>
+							<?php else : ?>
+							<?php if (strtolower($contribData['currentData']['source']) != strtolower($contribData['newData']['mbsSource'])): ?>
+								<tr>
+									<td class="contribUpdate">Previous Source: <?= $contribData['currentData']['source']; ?></td>
+									<td class="contribUpdate">New Source: <?= $contribData['newData']['mbsSource']; ?></td>
+								</tr>
+							<?php endif; ?>
+							<?php if ($contribData['currentData']['effective_date'] != $contribData['newData']['mbsEffectiveDate']): ?>
+								<tr>
+									<td class="contribUpdate">Previous Effective Date: <?= $contribData['currentData']['effective_date']; ?></td>
+									<td class="contribUpdate">New Effective Date: <?= $contribData['newData']['mbsEffectiveDate']; ?></td>
+								</tr>
+							<?php endif; ?>
+							<?php if ($contribData['currentData']['expiration_date'] != $contribData['newData']['mbsExpirationDate']): ?>	
+								<tr>
+									<td class="contribUpdate">
+										Previous Expiration Date: 
+										<?php if (!empty($contribData['currentData']['expiration_date'])): 
+										echo $contribData['currentData']['expiration_date']; else: ?>NULL<?php endif; ?>
+									</td>
+									<td class="contribUpdate">
+										New Expiration Date: 
+										<?php if (!empty($contribData['newData']['mbsExpirationDate'])): 
+										echo $contribData['newData']['mbsExpirationDate']; else: ?>NULL<?php endif; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class="contribUpdate">
+										Previous Grace Period: 
+										<?php if (!empty($contribData['currentData']['grace_period'])): 
+										echo $contribData['currentData']['grace_period']; else: ?>NULL<?php endif; ?>
+									</td>
+									<td class="contribUpdate">
+										New Grace Period: 
+										<?php if (!empty($contribData['newData']['mbsGracePeriod'])): 
+										echo $contribData['newData']['mbsGracePeriod']; else: ?>NULL<?php endif; ?>
+									</td>
+								</tr>
+							<?php endif; ?>
+							<?php endif; ?>
+							</table>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+		</table>
+	</body>
+</html>

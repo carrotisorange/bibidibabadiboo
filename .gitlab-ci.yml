@@ -1,0 +1,283 @@
+services:
+- docker:dind
+
+include:
+  - project: iog/gitlab/gitlab-ci-plugins/ansible
+    file: plugin.yml
+    ref: 0.0.1
+    
+stages:
+  - build_spi_dev
+  - build_ln_dev
+  - deploy_to_dev
+  - deploy_to_qc
+  - deploy_to_ua
+  - deploy_to_prod
+  - deploy_to_dr
+
+build_spi_dev:
+  stage: build_spi_dev
+  image: registry.gitlab.com/ln-ecrash/keying/alp:1.0
+  services:
+    - docker:stable-dind
+  variables:
+    ARCHIVE_NAME: keying-$CI_COMMIT_REF_NAME-$CI_COMMIT_SHA.tar.bz2
+  script:
+    - composer install --no-interaction --ansi --verbose
+    - mkdir artifacts
+    - tar --exclude='./conf' -cjf artifacts/$ARCHIVE_NAME .      
+  artifacts:
+    paths:
+      - artifacts/$ARCHIVE_NAME
+    expire_in: 2 days
+  only:
+    - external_pull_requests
+
+   
+build_ln_dev:
+  stage: build_ln_dev
+  image: gitlab.ins.risk.regn.net:4567/coplogic/ecrash/keying-spi:1.0
+  services:
+    - docker:stable-dind
+  tags:
+    - boca
+    - linux
+  variables:
+    ARCHIVE_NAME: keying-spi.tar.bz2
+    ROOT_DIR: $CI_PROJECT_DIR
+  script: 
+    - composer install --no-interaction --ansi --verbose
+    - mkdir artifacts
+    - tar --exclude='./*.md' --exclude='./.git*' --exclude='./.ansible' --exclude='./conf' --exclude='./artifacts' -cjf $ROOT_DIR/$ARCHIVE_NAME .
+  artifacts:
+    paths:
+      - $ROOT_DIR/$ARCHIVE_NAME
+    expire_in: 2 months
+  except:
+    - external_pull_requests
+
+code_quality:
+  stage: build_ln_dev
+  image: gitlab.ins.risk.regn.net:4567/docker-images/docker:stable-git-bash-curl-bzip2
+  tags:
+    - linux
+    - london
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+      --env SOURCE_CODE="$PWD"
+      --volume "$PWD":/code
+      --volume /var/run/docker.sock:/var/run/docker.sock
+      "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+    paths: [gl-code-quality-report.json]
+  only:
+    - master
+
+# ---------------------------------------------------------------------------
+# Ref: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
+# ---------------------------------------------------------------------------
+.auto_devops: &auto_devops |
+
+  function load_config_profile() {
+    echo "Loading environment for $1"
+    PROFILE=PROFILE_$(echo "${CONFIG_PROFILE}" | tr a-z A-Z)
+    CONFIG_PROFILE_ENV_VAR="${!PROFILE}"
+    CONFIG_PROFILE_FILE=$(mktemp)
+    echo "$CONFIG_PROFILE_ENV_VAR" > "$CONFIG_PROFILE_FILE"
+    set -o allexport
+    . $CONFIG_PROFILE_FILE
+    set +o allexport
+    echo $CONFIG_PROFILE_FILE
+    rm -rf $CONFIG_PROFILE_FILE
+      
+    } 
+
+.deploy: &deploy
+  extends: .plugin-ansible
+  tags:
+    - docker
+    - us-east
+  dependencies:
+    - build_ln_dev
+  only:
+    - tags
+  when: manual
+  variables:
+    PLAYBOOK_HOSTS: servers
+  before_script:
+    - *auto_devops
+    - export ANSIBLE_INVENTORY=.ansible/inventory-${CI_JOB_STAGE#deploy_to_}.ini
+    - export ANSIBLE_LIMIT=${CI_JOB_NAME#${CI_JOB_STAGE}}
+    - export CONFIG_PROFILE=${CI_JOB_STAGE#deploy_to_}
+    - load_config_profile $CONFIG_PROFILE
+    - apk add --no-cache gettext
+    - envsubst < /builds/coplogic/ecrash/keying-spi/conf/$CONFIG_PROFILE/secure/secure.tmpl > $CI_PROJECT_DIR/secure.php
+    - envsubst < /builds/coplogic/ecrash/keying-spi/conf/$CONFIG_PROFILE/environment.php > $CI_PROJECT_DIR/environment.php
+    - envsubst < /builds/coplogic/ecrash/keying-spi/conf/$CONFIG_PROFILE/.htaccess > $CI_PROJECT_DIR/.htaccess 
+    
+.deploy_loadbalanced: &deploy_loadBalanced
+  variables:
+    PLAYBOOK_HOSTS: serversLoadBalanced
+
+.deploy_to_dev_individual:
+  extends: .deploy
+  stage: deploy_to_dev
+  environment:
+    name: Development
+    url: https://dev-keying-ecrash.risk.regn.net/ecrash/
+
+deploy_to_dev:
+  extends: .deploy_to_dev_individual
+  <<: *deploy_loadBalanced
+  environment:
+    name: Development
+    url: https://dev-keying-ecrash.risk.regn.net/ecrash/
+
+alaldpnc165.noam.lnrm.net:
+  extends: deploy_to_dev
+
+alaldpnc166.noam.lnrm.net:
+  extends: deploy_to_dev
+
+alaldpnc167.noam.lnrm.net:
+  extends: deploy_to_dev
+
+alaldpnc168.noam.lnrm.net:
+  extends: .deploy_to_dev_individual
+  
+alaldpnc174.noam.lnrm.net:
+  extends: .deploy_to_dev_individual
+
+alaldpnc177.noam.lnrm.net:
+  extends: .deploy_to_dev_individual
+
+alaldpnc275.noam.lnrm.net:
+  extends: .deploy_to_dev_individual
+  
+.deploy_to_qc_individual:
+  extends: .deploy
+  stage: deploy_to_qc
+  environment:
+    name: Quality Control
+    url: https://qc-keying-ecrash.risk.regn.net/ecrash/
+
+deploy_to_qc:
+  extends: .deploy_to_qc_individual
+  <<: *deploy_loadBalanced
+
+alalqpnc169.noam.lnrm.net:
+  extends: deploy_to_qc
+
+alalqpnc170.noam.lnrm.net:
+  extends: deploy_to_qc
+
+alalqpnc171.noam.lnrm.net:
+  extends: deploy_to_qc
+
+alalqpnc172.noam.lnrm.net:
+  extends: .deploy_to_qc_individual
+
+.deploy_to_ua_individual:
+  extends: .deploy
+  stage: deploy_to_ua
+  environment:
+    name: User Acceptance
+    url: https://ua.keying.ecrash.lexisnexis.com/ecrash
+
+deploy_to_ua:
+  extends: .deploy_to_ua_individual
+  <<: *deploy_loadBalanced
+
+alalupnc121.risk.regn.net:
+  extends: .deploy_to_ua_individual
+
+alalupnc119.noam.lnrm.net:
+  extends: .deploy_to_ua_individual
+
+alalupnc120.noam.lnrm.net:
+  extends: .deploy_to_ua_individual
+
+alalupnc121.noam.lnrm.net:
+  extends: .deploy_to_ua_individual
+
+.deploy_to_prod_individual:
+  extends: .deploy
+  stage: deploy_to_prod
+  environment:
+    name: Production
+    url: https://keying.new.ecrash.lexisnexis.com/ecrash/
+
+deploy_to_prod:
+  extends: .deploy_to_prod_individual
+  <<: *deploy_loadBalanced
+
+alalppnc117.risk.regn.net:
+  extends: .deploy_to_prod_individual
+  environment:
+    name: Production
+    url: http://alalppnc117.risk.regn.net/ecrash/
+
+alalppnc119.risk.regn.net:
+  extends: .deploy_to_prod_individual
+  environment:
+    name: Production
+    url: http://alalppnc119.risk.regn.net/ecrash/
+
+alalppnc211.risk.regn.net:
+  extends: .deploy_to_prod_individual
+  environment:
+    name: Production
+    url: http://alalppnc211.risk.regn.net/ecrash/
+
+alalppnc214.risk.regn.net:
+  extends: .deploy_to_prod_individual
+  environment:
+    name: Production
+    url: http://alalppnc214.risk.regn.net/ecrash/
+  
+alalppnc215.risk.regn.net:
+  extends: .deploy_to_prod_individual
+  environment:
+    name: Production
+    url: http://alalppnc215.risk.regn.net/ecrash/
+
+.deploy_to_dr_individual:
+  extends: .deploy
+  stage: deploy_to_dr
+  environment:
+    name: Disaster Recovery
+    url: https://keying.new.ecrash.lexisnexis.com/ecrash/
+
+deploy_to_dr:
+  extends: .deploy_to_dr_individual
+  <<: *deploy_loadBalanced
+
+bctlppnc061.risk.regn.net:
+  extends: .deploy_to_dr_individual
+  environment:
+    name: Disaster Recovery
+    url: http://bctlppnc061.risk.regn.net/ecrash/
+
+bctlppnc062.risk.regn.net:
+  extends: .deploy_to_dr_individual
+  environment:
+    name: Disaster Recovery
+    url: http://bctlppnc062.risk.regn.net/ecrash/
+
+bctlppnc066.risk.regn.net:
+  extends: .deploy_to_dr_individual
+  environment:
+    name: Disaster Recovery
+    url: http://bctlppnc066.risk.regn.net/ecrash/
+
+bctlppnc068.risk.regn.net:
+  extends: .deploy_to_dr_individual
+  environment:
+    name: Disaster Recovery
+    url: http://bctlppnc068.risk.regn.net/ecrash/

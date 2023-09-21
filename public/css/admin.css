@@ -1,0 +1,52 @@
+div.dataTables_paginate ul.pagination > li {
+    display: inline;
+    margin: 1px 2px
+}
+
+.pagination li a{
+    display: inline-block;
+    color: #333;
+    background: #FFF;
+    border: 1px solid #BBB;
+    text-decoration: none;
+    text-align: center;
+    padding: 4px 8px;
+    line-height: 18px;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+    background: #323232;
+    border-color: #323232;
+    color: #fff;
+}
+
+.commonListingTable {
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+
+.commonListingTable tr.even {
+    background-color: #D7D7D7;
+}
+
+table.assignmentListingTable {
+    border: none;
+    border-spacing: 2px;
+}
+
+select#agencyFormId {
+    width: 210px;
+}
+
+div.peopleSoftId {
+    width: 75px;
+}
+
+.table-user-search {
+    width: 90%;
+}

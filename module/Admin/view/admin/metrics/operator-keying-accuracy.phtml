@@ -1,0 +1,161 @@
+<?php 
+    $this->headLink()->appendStylesheet($this->basePath('css/metrics.css'));
+    $this->headScript()->appendFile($this->basePath('/js/user-accuracy.js'));
+?>
+
+<script type="text/javascript">
+    $(function(){
+        stripeTable($('table.default'));
+        $( ".hasCalendar" ).datepicker(); 
+    });
+</script>
+
+<h1>Operator Keying Accuracy</h1>
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('metrics', ['action' => 'operator-keying-accuracy']));
+    $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+    $form->setAttribute('class', 'default');
+    $form->prepare();
+?>
+
+<?= $this->form()->openTag($form); ?>
+<?= $this->formElement($form->get('csrf'));?>
+<fieldset>
+    <legend>Operator</legend>
+    <div class="field-label-group"><?= $this->formLabel($form->get('userName')); ?><?= $this->formElement($form->get('userName')); ?></div>
+    <div class="hr"/>
+    <div class="field-label-group"><?= $this->formLabel($form->get('lastName')); ?><?= $this->formElement($form->get('lastName')); ?></div>
+    <div class="field-label-group"><?= $this->formLabel($form->get('firstName')); ?><?= $this->formElement($form->get('firstName')); ?></div>
+    <div class="field-label-group"><?php if ($this->isLNUser): ?><?= $this->formLabel($form->get('keyingVendorId')); ?><?php endif; ?>
+    <?= $this->formElement($form->get('keyingVendorId')); ?></div>
+</fieldset>
+
+<fieldset>
+    <legend>Keying Date</legend>
+    <div class="field-label-group"><?= $this->formLabel($form->get('fromDate')); ?><?= $this->formElement($form->get('fromDate')); ?></div>
+    <div class="field-label-group"><?= $this->formLabel($form->get('toDate')); ?><?= $this->formElement($form->get('toDate')); ?></div>
+</fieldset>
+
+<fieldset>
+    <legend>Form</legend>
+    <div class="field-label-group"><?= $this->formLabel($form->get('formState')); ?><?= $this->formElement($form->get('formState')); ?></div>
+    <div class="field-label-group"><?= $this->formLabel($form->get('formId')); ?><?= $this->formElement($form->get('formId')); ?></div>
+    <div class="field-label-group"><?= $this->formLabel($form->get('formAgencyId')); ?><?= $this->formElement($form->get('formAgencyId')); ?></div>
+</fieldset>
+
+<?= $this->formElement($form->get('submit')); ?>
+<br/>
+
+<?php if (!isset($this->paginator)): ?>
+
+<?php elseif ($this->paginator->getCurrentItemCount() == 0): ?>
+        <strong>No Matches Found</strong>
+<?php
+    else:
+        $exportUrl = $this->url('metrics', ['action' => 'operator-keying-accuracy'], ['query' => array_merge(['downloadType' => $this->format], $this->paginatorParams)]);
+    ?>
+<br/>
+<div class="result">
+        <table class="default">
+            <thead>
+                <tr>
+                    <th>Date Keyed</th>
+                    <th>State</th>
+                    <th>Agency Name</th>
+                    <th>Form Name</th>
+                    <th>Report #</th>
+                    <th># Keyed Fields in Report</th>
+                    <th>Incorrect # Fields</th>
+                    <th>View Fields</th>
+                    <th>View Image</th>
+                    <?php if ($this->isLNUser): ?><th>Company Name</th><?php endif; ?>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <td colspan="9">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    Total Fields Keyed: <?= $this->countKeyed; ?>
+                                </td>
+                                <td>
+                                    Total Incorrect Fields: <?= $this->countInvalid; ?>
+                                </td>
+                                <td>
+                                    Accuracy Score: <?= $this->userAccuracyScore * 100, '%'; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pagination" colspan="3">
+                                    <?= $this->paginationControl($paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $this->paginatorParams]); ?>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tfoot>
+            <tbody>
+            <?php
+            $count = 0;
+            foreach ($this->paginator as $entry):
+            ?>
+                <tr>
+                    <td><?= $entry['dateKeyed']; ?></td>
+                    <td><?= $entry['formState']; ?></td>
+                    <td><?= $entry['agencyName']; ?></td>
+                    <td><?= $entry['formName']; ?></td>
+                    <td class="numericContent"><?= $entry['reportId']; ?></td>
+                    <td class="numericContent"><?= $entry['countKeyed']; ?></td>
+                    <td class="numericContent"><?= $entry['countInvalid']; ?></td>
+                    <td style="text-align:center">
+                        <?php if ($entry['countInvalid'] > 0): ?>
+                            <button class="showInvalidAttributes">View</button>
+                        <?php endif; ?>
+                    </td>
+                    <td style="text-align:center">
+                        <button onclick="keyingAccuracy.openReportImage(<?= $entry['reportId']; ?>);">View</button>
+                    </td>
+                    <?php if ($this->isLNUser): ?><td><?= $entry['vendorName']; ?></td><?php endif; ?>
+                </tr>
+                <tr class="invalidAttributes">
+                    <td class="subtable" colspan="9">
+                        <?php
+                            $invalidEntries = $this->userAccuracyInvalidTable->getInvalid($entry['userAccuracyId']);
+/**
+ * The invalidAttributes cell WILL show up if
+ * they do not have javascript enabled. So its
+ * good not to output useless stuff.
+ */
+                            if (!empty($invalidEntries)):
+                        ?>
+                                <table class="default incorrect-fields">
+                                    <thead>
+                                        <th>Field Name</th>
+                                        <th>Incorrect</th>
+                                        <th>Correct</th>
+                                    </thead>
+                                    <tbody>
+                        <?php    foreach ($invalidEntries as $invalidEntry): ?>
+                                        <tr>
+                                            <td><?= $invalidEntry['formAttributeName']; ?></td>
+                                            <td><?= $invalidEntry['valueKeyed']; ?></td>
+                                            <td><?= $invalidEntry['valueValid']; ?></td>
+                                        </tr>
+                        <?php     endforeach; ?>
+
+                                    </tbody>
+                                </table>
+                      <?php endif; ?>
+                    </td>
+                </tr>
+        <?php endforeach; ?>
+            </tbody>
+        </table>
+        <div class="export">
+            <a href="<?= $exportUrl;?>"> Export To Excel </a>
+        </div>
+    <?php endif; ?>
+</div>

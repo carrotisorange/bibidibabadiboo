@@ -1,0 +1,80 @@
+<?php $this->headLink()
+    ->appendStylesheet($this->basePath('css/metrics.css'));
+    $this->headScript()
+    ->appendFile($this->basePath('/js/user-accuracy.js'));
+?>
+
+<script type="text/javascript">
+    $(function(){
+        $( ".hasCalendar" ).datepicker(); 
+    });
+</script>
+
+<div id="vin-status-summary">
+    <h1>Vin Status Summary</h1>
+        <?php
+            $form = $this->form;
+            $form->setAttribute('action', $this->url('metrics', ['action' => 'vin-status-summary']));
+            $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+            $form->setAttribute('class', 'default');
+            $form->prepare();
+        ?>
+
+        <?= $this->form()->openTag($form); ?>
+        <?= $this->formElement($form->get('csrf'));?>
+        
+        <fieldset>
+            <div class="field-label-group"><?= $this->formLabel($form->get('fromDate')); ?><?= $this->formElement($form->get('fromDate')); ?></div>
+            <div class="field-label-group"><?= $this->formLabel($form->get('toDate')); ?><?= $this->formElement($form->get('toDate')); ?></div>
+            <div class="field-label-group"><?php if ($this->isLNUser): ?><?= $this->formLabel($form->get('keyingVendorId')); ?><?php endif; ?>
+    <?= $this->formElement($form->get('keyingVendorId')); ?></div>
+        </fieldset>
+
+    <?= $this->formElement($form->get('submit')); ?>
+    <br/>
+
+    <div class="result">
+        <?php
+        if (isset($this->summary)):
+            $headerString = getHeaderString(
+                $form->get('fromDate')->getValue(),
+                $form->get('toDate')->getValue()
+            ); ?>
+        <span class="headerString"><?= $headerString; ?></span>
+        <?php if (empty($this->summary)): ?>
+                No Results
+        <?php
+            else:
+                $exportUrl = $this->url('metrics', ['action' => 'vin-status-summary'], [
+                    'query' => array_merge(['downloadType' => $this->format], $this->paginatorParams)
+                ]);
+         ?>
+        <table class="default commonListingTable ">
+            <thead class="light-on-dark">
+                <?php
+                    foreach ($this->summary as $status => $count) {
+                        echo (array_key_exists($status, $this->colName)) ? '<td>' . $this->colName[$status] . '</td>' : '<td>' . $status . '</td>';
+                    }
+                ?>
+            </thead>
+            <tbody>
+                <?php foreach ($this->summary as $status => $count):?>
+                    <td><?php echo $count;?></td>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <a href="<?php echo $exportUrl; ?>">Export To Excel</a>
+    <?php
+            endif;
+        endif;
+    ?>
+    </div>
+</div>
+<?php
+    function getHeaderString($dateStart, $dateEnd)
+    {
+        $dateStringStart = empty($dateStart) ? 'all' : $dateStart;
+        $dateStringEnd = empty($dateEnd) ? 'now' : $dateEnd;
+        return 'Results for <b>' . $dateStringStart . '</b> until <b>' . $dateStringEnd . '</b>';
+    }
+?>

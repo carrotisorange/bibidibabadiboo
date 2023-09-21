@@ -1,0 +1,19 @@
+.vagrant/
+data/cache/*
+!data/cache/.gitkeep
+phpunit.xml
+data/session/*
+!data/session/.gitkeep
+data/temp/*
+!data/temp/.gitkeep
+composer.lock
+
+# @TODO:
+# The log folder will be moved to outside of application before moving to production
+log/*
+!log/.gitkeep
+
+# @TODO: Will be removed
+cd_eCrash_Dev.yml
+sonar-project.properties
+/nbproject/private/

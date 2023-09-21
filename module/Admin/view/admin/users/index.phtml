@@ -1,0 +1,98 @@
+<?php $this->headLink()
+    ->prependStylesheet($this->basePath('css/admin.css'))
+    ->prependStylesheet($this->basePath('library/datatables/dataTables.bootstrap.css'));
+    
+    $this->headScript()
+    ->appendFile($this->basePath('library/datatables/jquery.dataTables.1.10.15.min.js'))
+    ->appendFile($this->basePath('library/datatables/dataTables.bootstrap.1.10.15.js'))
+    ->appendFile($this->basePath('js/admin/user-list.js'));
+?>
+
+<?= $this->form()->openTag($form); ?>
+<?= $this->formElement($form->get('csrf'));?>
+<table class="table-user-search m-auto" border="0">
+    <tr>
+        <td class="box-top-left">&nbsp;</td>
+        <td class="box-top-bg text-start">
+            <h3>Search for Users</h3>
+            <strong>To view all users, click Search without selecting any criteria.</strong>
+        </td>
+        <td class="box-top-right">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde;">
+            <table border="0" class="borderless text-start cellspacing-5">
+                <tr>
+                    <td class="text-end"><?= $this->formLabel($form->get('nameLast')); ?></td>
+                    <td>
+                        <?= $this->formElement($form->get('nameLast'));?>
+                    </td>
+                    <td class="text-end"><?= $this->formLabel($form->get('nameFirst')); ?></td>
+                    <td>
+                        <?= $this->formElement($form->get('nameFirst'));?>
+                    </td>
+                    <?php if ($this->isLNUser): ?>
+                    <td class="text-right" style="padding-left: 50px;"><?= $this->formLabel($form->get('keyingVendorId')); ?></td>
+                    <?php endif; ?>
+                    <td>
+                        <?= $this->formElement($form->get('keyingVendorId'));?>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-end"><?= $this->formLabel($form->get('userRoleId')); ?></td>
+                    <td>
+                        <?= $this->formElement($form->get('userRoleId'));?>
+                    <td class="text-end"><?= $this->formLabel($form->get('entryStage')); ?></td>
+                    <td style="width: 200px;">
+                        <?= $this->formElement($form->get('entryStage'));?>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+            <table>
+                <tr>
+                    <td>
+                        <?= $this->formElement($form->get('Search'));?>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea">
+            <div id="user-dataTable-container" class="dataTable-container hide" style="border:1px solid #e2ddde;">
+                <h3 class="text-start">Results</h3>
+                <table class="table dataTable commonListingTable" id="user-dataTable">
+                    <thead>
+                        <tr>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>User ID</th>
+                            <th>Role</th>
+                            <th>Entry Stage(s)</th>
+                            <th>Status</th>
+                            <?php if ($this->isLNUser): ?>
+                            <th>Company</th>
+                            <?php endif; ?>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-bot-left">&nbsp;</td>
+        <td class="box-bot-bg">&nbsp;</td>
+        <td class="box-bot-right">&nbsp;</td>
+    </tr>
+</table>
+<?= $this->form()->closeTag(); ?>

@@ -1,0 +1,60 @@
+<?php
+    $this->headLink()->prependStylesheet($this->basePath('/css/assign-data-elements.css'));
+    $this->headScript()->appendFile($this->basePath('/js/admin/assign-data-elements.js'));
+?>
+
+<div style="width: 90%;">
+    <div style="text-align: left; margin-top: 20px;">
+        <table>
+            <tr>
+                <td align="right"><label><?= $this->formLabel($form->get('stateSelect')); ?></label></td>
+                <td align="left">
+                    <?= $this->formElement($form->get('stateSelect')); ?>
+                </td>
+                <td align="right"><label><?= $this->formLabel($form->get('agencySelect')); ?></label></td>
+                <td align="left"><?= $this->formElement($form->get('agencySelect')); ?></td>
+            </tr>
+            <tr>
+                <td align="right"><label><?= $this->formLabel($form->get('formSelect')); ?></label></td>
+                <td align="left"><?= $this->formElement($form->get('formSelect')); ?></td>
+                <td align="right"></td>
+                <td align="left"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="formAttrDiv" class="ui-helper-hidden">
+        <!-- TODO -->
+        <a href="<?php echo $this->url('assign-data-elements', ['action' => 'export'], [
+                            'query' => ['downloadType' => $this->format]
+                            ]); ?>"
+           class="link" style="text-align: right;">
+            Export To Excel
+        </a>
+
+        <form action="<?php echo $this->url('assign-data-elements', ['action' => 'save-changes'], ['admin']); ?>" 
+            method="post" name="frmDataElements" id="frmDataElements" >
+            <?= $this->formElement($form->get('csrf'));?>
+            <input type="hidden" name="formId" id="formId"/>
+            <input type="hidden" name="note" id="note"/>
+            <table id="formAttrTable">
+                <thead>
+                    <tr>
+                        <th>Data Element</th>
+                        <th>Available</th>
+                        <th>Required</th>
+                        <th>Skipped</th>
+                        <th><!-- Hidden column 'available' --></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 20px">
+                <input id="btnNotes" type="button" class="btnstyle" value="Notes"/>
+                <input id="btnSave" type="button" class="btnstyle" value="Save"/>
+                <input id="btnCancel" type="button" class="btnstyle" value="Cancel"/>
+            </div>
+        </form>
+    </div>
+</div>

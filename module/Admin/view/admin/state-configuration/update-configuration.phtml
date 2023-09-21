@@ -1,0 +1,46 @@
+<?php
+    $this->headLink()->prependStylesheet( $this->basePath( '/css/style.css' ) );
+    $this->headTitle($this->title);
+?>
+<div class="ui-widget ui-widget-content ui-corner-all ui-widget-reportlist">
+    <div class="ui-widget-header ui-corner-all ui-widget-reportlist-header">
+        <h3>Update Configuration for <?= $this->stateName; ?></h3>
+    </div>
+
+    <div class="ui-helper-clearfix state-cofiguration-form-outer">
+        <?php
+            $form = $this->form;
+            $form->setAttribute('method', 'POST');
+            $form->setAttribute('action', $this->route);
+            $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+            $form->prepare();
+        ?>
+        <?= $this->form()->openTag($form); ?>
+        <?= $this->formElement($form->get('csrf'));?>
+        <dl class="zend_form">
+            <dt id="page-label">&nbsp;</dt>
+
+            <dt id="autoExtraction-label" style="margin-top: 5px;">
+                <label for="autoExtraction" class="optional"><?= $this->formLabel($form->get('autoExtraction')); ?></label>
+            </dt>
+
+            <dd id="autoExtraction-element" style="margin-top: 20px;">
+                <?= $this->formElement($form->get('autoExtraction')); ?>
+            </dd>
+
+            <dt id="workType-label" style="margin-top: 20px;">
+                <label for="workType" class="optional"><?= $this->formLabel($form->get('workType')); ?></label>
+            </dt>
+
+            <dd id="workType-element" style="margin-top: 20px;">
+                <?= $this->formElement($form->get('workType')); ?>
+            </dd>
+
+            <dt id="x-label">&nbsp;</dt>
+            <dd id="x-element" style="margin-top: 20px;">
+                <?= $this->formElement($form->get('submit')); ?>
+            </dd>
+        </dl>
+    </div>
+
+</div>

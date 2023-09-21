@@ -1,0 +1,113 @@
+.subtable table
+{;
+	border-top:none;
+	border-spacing:1px;
+	margin-top:0px;
+	margin-bottom:3px;
+}
+.subtable table thead th
+{
+	margin-top:2px;
+	margin-bottom:2px;
+
+	height:auto;
+	line-height:normal;
+	padding: 2px 4px 2px 4px;
+}
+
+.evenMetrics .subtable
+{
+	background-color:#AAA;
+}
+.evenMetrics .subtable table
+{
+	background-color:#333;
+}
+.evenMetrics .subtable table thead th
+{
+	background-color:#666;
+}
+.evenMetrics .subtable table tr td
+{
+	background-color:#DDD;
+}
+
+.oddMetrics .subtable
+{
+	background-color:#BBB;
+}
+.oddMetrics .subtable table
+{
+	background-color:#444;
+}
+.oddMetrics .subtable table thead th
+{
+	background-color:#777;
+}
+.oddMetrics .subtable table tr td
+{
+	background-color:#EEE;
+}
+
+ #metricsmanagement table
+ {
+	 width:100%;
+	 min-width: 750px;
+ }
+#metricsmanagement fieldset dd, #metricsmanagement fieldset dt, #metricsmanagement fieldset dt label
+{
+	margin:0px;
+	text-align:right;
+	vertical-align:middle;
+	display:inline;
+}
+#metricsmanagement fieldset dd
+{
+
+}
+#metricsmanagement fieldset
+{
+	border:1px #CCC solid;
+}
+#metricsmanagement legend
+{
+	font-weight:bolder;
+}
+
+table.metrics
+{
+	width:700px;
+	border-spacing:0px;
+}
+#metricsmanagement table div.hr
+{
+	height: 1px;
+	clear:both;
+	margin-top:10px;
+	margin-bottom:10px;
+	background-color:#DDD;
+	width:100%;
+}
+
+div.field
+{
+	position:relative;
+	margin:9px;
+	display:block;
+	float:left;
+	text-align:left;
+}
+
+div.field ul.errors, div.field ul.errors li
+{
+	display:inline;
+	margin:0px;
+	padding:0px;
+	clear:left;
+}
+
+table.adminMetricsTable thead tr th { height: 2em; border-right: 1px solid gray; }
+table.adminMetricsTable tbody tr td { height: 2em; }
+table.adminMetricsTable thead th { text-align: center; padding: 0px; }
+table.adminMetricsTable tbody tr td { text-align: left; padding: 3px; }
+table.adminMetricsTable tbody tr td.numericContent { text-align: right; padding: 3px; }

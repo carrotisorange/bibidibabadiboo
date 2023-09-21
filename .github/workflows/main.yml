@@ -1,0 +1,186 @@
+name: "CICD Pipeline"
+
+# Manual trigger
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        required: true
+        type: choice
+        description: Select the environment
+        options: 
+        - dev
+        - stag
+        - qc
+        - prod
+        - dr
+
+env:
+  #Only changes needed, Change these env vars to your component
+  COMPONENT_NAME: ecrash-keying
+  HELM_PARENT_CHART_REPO: LexisNexis-RBA/usgov-ecrash-helm
+  HELM_PARENT_CHART_REPO_BRANCH: dev
+  HELM_PARENT_CHART_REPO_FOLDER: keying
+  JF_ARTIFACTORY_1: ${{ secrets.ARTIFACTORY }}
+  JFROG_CLI_BUILD_PROJECT: ecrash
+  BUILD_NAME: ecrash-keying
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: ${{github.event.inputs.env}}
+    
+    env: 
+      working-directory: /
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: "7.4"
+          version: 1
+          php_extensions: intl soap mbstring
+          ssh_key: ${{ secrets.COMPOSER_AUTH }}
+          ssh_key_pub: ${{ secrets.COMPOSER_AUTH }}
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+        
+      #- name: Get Image Tag
+      #  run: echo "ITAG=$(date +'%Y%m%d.%H.%M.%S-${{steps.extract_branch.outputs.branch}}')" >> $GITHUB_ENV
+      
+      - name: Get Image Tag DEV
+        if: env.HELM_PARENT_CHART_REPO_BRANCH == 'dev'
+        run: echo "ITAG=dev_$(date +'%Y%m%d.%H.%M.%S-${{steps.extract_branch.outputs.branch}}')" >> $GITHUB_ENV
+
+      - name: Get Image Tag NONPROD
+        if: env.HELM_PARENT_CHART_REPO_BRANCH == 'nonprod'
+        run: echo "ITAG=nonprod_$(date +'%Y%m%d.%H.%M.%S-${{steps.extract_branch.outputs.branch}}')" >> $GITHUB_ENV
+
+      - name: Get Image Tag PROD
+        if: env.HELM_PARENT_CHART_REPO_BRANCH == 'prod'
+        run: echo "ITAG=prod_$(date +'%Y%m%d.%H.%M.%S-${{steps.extract_branch.outputs.branch}}')" >> $GITHUB_ENV
+
+      - name: Get Image Tag DR
+        if: env.HELM_PARENT_CHART_REPO_BRANCH == 'dr'
+        run: echo "ITAG=dr_$(date +'%Y%m%d.%H.%M.%S-${{steps.extract_branch.outputs.branch}}')" >> $GITHUB_ENV
+
+      - name: Create artifacts
+        run:
+          mkdir artifacts
+
+      - name: Tar files
+        run:
+          tar --exclude='./*.md' --exclude='./.git*' --exclude='./.ansible' --exclude='./conf' --exclude='./artifacts' -cjf artifacts/keying-spi.tar.bz2 .
+
+      - name: Create www
+        run:
+          mkdir www
+
+      - name: Extract tgz
+        uses: ihiroky/extract-action@v1
+        with:
+          file_path: artifacts/keying-spi.tar.bz2
+          extract_dir: www
+
+      #- name: upload artifact
+      #  uses: actions/upload-artifact@v2 
+      #  with: 
+      #    name: ${{ env.name }}-name 
+      #    path: ${{ github.workspace }}/* 
+
+      # - name: Run test suite
+      #   run: composer run-script test
+      #- name: Get branch name
+      #  run: echo "BRANCH=$(echo ${GITHUB_REF##*/})" >> $GITHUB_ENV    
+      #- name: Get image tag for dev and sandbox
+      #  run: echo "ITAG=$(date +'%Y%m%d.%H.%M.%S-${{env.BRANCH}}')" >> $GITHUB_ENV 
+      #- name: 'Build and push image'
+      #  uses: azure/docker-login@v1
+      #  with:
+      #        login-server: ${{ secrets.DOCKER_LOGIN_SERVER }}
+      #        username: ${{ secrets.DOCKER_USERNAME }}
+      #        password: ${{ secrets.DOCKER_PASSWORD }}
+      #- run: |
+      #      docker build . --file Dockerfile -t ${{secrets.DOCKER_LOGIN_SERVER}}/${{env.COMPONENT_NAME}}:${{env.ITAG}} --build-arg envt=${{env.ENV}}
+      #      docker push ${{secrets.DOCKER_LOGIN_SERVER}}/${{env.COMPONENT_NAME}}:${{env.ITAG}}
+      
+      - uses: jfrog/setup-jfrog-cli@v2
+        name: jfrog setup
+      - run: |
+          jfrog rt ping
+          
+      - name: Login to JFrog
+        id: docker-login
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ secrets.JFROG_REPOSITORY }}
+          username: ${{ secrets.ARTIFACTORY_USERNAME }}
+          password: ${{ secrets.ARTIFACTORY_PASSWORD }}
+
+      - name: Set Tag Variable
+        id: set-vars
+        if: steps.build.docker-login.exit_code == 0
+        run: echo ::set-output name=docker_tag::${{secrets.JFROG_REPOSITORY}}/ecrash-docker-local/keying:${{env.ITAG}}
+
+      - name: Build Docker Image
+        id: build-docker
+        if: steps.build.set-vars.exit_code == 0
+        run: |
+          docker build . --file Dockerfile --tag ${{ steps.set-vars.outputs.docker_tag }}   
+      - name: Push Docker image
+        id: push-image
+        if: steps.build.build-docker.exit_code == 0
+        run: |
+          jfrog rt dp ${{ steps.set-vars.outputs.docker_tag }} ecrash-docker-local --module=image  --build-number=${GITHUB_RUN_NUMBER} --build-name="$BUILD_NAME"
+      - name: jrfrog bp
+        id: promote-build
+        if: steps.build.push-image.exit_code == 0
+        run: |
+          jfrog rt bp "$BUILD_NAME" ${GITHUB_RUN_NUMBER}
+      
+      - name: jrfrog bs
+        id: publish-builds
+        if: steps.build.promote-build.exit_code == 0
+        run: |
+          jfrog rt bs "$BUILD_NAME" ${GITHUB_RUN_NUMBER} --fail=false
+          
+      - name: Checkout Helm Repo
+        id: checkout-helm-chart
+        if: steps.build.publish-builds.exit_code == 0      
+        uses: actions/checkout@v2 
+        with:
+          repository: ${{env.HELM_PARENT_CHART_REPO}}
+          token: ${{ secrets.HELM_TOKEN }}
+          # Reference which branch you are calling from
+          ref: ${{env.HELM_PARENT_CHART_REPO_BRANCH}}
+          path: ./chart/charts/
+    
+      - name: Prepare Helm Charts
+        id: prepare-helm-chart
+        if: steps.build.checkout-helm-chart.exit_code == 0      
+        run: |
+          mkdir charts
+          cp -r ./chart/charts/${{env.HELM_PARENT_CHART_REPO_FOLDER}}/* charts/
+          ls -lrt charts/
+          perl -pi -e 's!10.0.(\d+)!"10.0." . ($1+1)!e' charts/Chart.yaml
+          #perl -pi -e 's!appVersion: (.*)!appVersion: ${{ github.sha }}!' charts/Chart.yaml
+          perl -pi -e 's!appVersion: (.*)!appVersion: ${{ env.ITAG }}!' charts/Chart.yaml
+          cp charts/Chart.yaml ./chart/charts/${{env.HELM_PARENT_CHART_REPO_FOLDER}}/Chart.yaml
+  
+      - name: Save Helm Changes
+        id: save-helm-chart
+        if: steps.build.prepare-helm-chart.exit_code == 0     
+        run: |
+          cd ./chart/charts/${{env.HELM_PARENT_CHART_REPO_FOLDER}}
+          ls
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add Chart.yaml
+          git commit -m "Increase Restserver Chart version" 
+          git push

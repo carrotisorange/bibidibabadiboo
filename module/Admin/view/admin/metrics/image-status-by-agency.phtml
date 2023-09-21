@@ -1,0 +1,104 @@
+<?php 
+    $this->headLink()->appendStylesheet($this->basePath('/css/metrics.css'));
+    $this->headScript()->appendFile($this->basePath('/js/get-agency-by-state.js'));
+?>
+
+<h1>Image Status by Agency</h1>
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('metrics', ['action' => 'image-status-by-agency']));
+    $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+    $form->setAttribute('class', 'default');
+    $form->prepare();
+?>
+
+<?= $this->form()->openTag($form); ?>
+<?= $this->formElement($form->get('csrf'));?>
+
+<div class="fieldset">
+    <div class="field-label-group"><?= $this->formLabel($form->get('state')); ?><?= $this->formElement($form->get('state')); ?></div>
+    <div class="field-label-group"><?= $this->formLabel($form->get('agency')); ?><?= $this->formElement($form->get('agency')); ?></div>
+    <div class="field-label-group"><?php if ($this->isLNUser): ?><?= $this->formLabel($form->get('keyingVendorId')); ?><?php endif; ?>
+    <?= $this->formElement($form->get('keyingVendorId')); ?></div>
+</div>
+
+<?= $this->formElement($form->get('submit')); ?>
+<br/>
+
+<div class="result">
+    <?php if (empty($this->result)): ?>
+        No results found
+    <?php
+    else:
+        $exportUrl = $this->url('metrics', ['action' => 'image-status-by-agency'], [
+            'query' => array_merge(['downloadType' => $this->format], $this->paginatorParams)
+        ]);
+
+        $columns = [
+            'name' => 'Agency Name',
+            'available' => 'AVAILABLE',
+            'bad' => 'BAD IMAGE',
+            'discarded' => 'DISCARDED',
+            'reordered' => 'DISCARDED Re-Ordered=Y',
+            'dead' => 'DISCARDED Re-Ordered=N',
+            'inProgress' => 'PROCESSING',
+            'complete' => 'COMPLETED'
+        ];
+        ?>
+        <table class='default'>
+            <thead>
+                <tr class='even'>
+                    <?php foreach ($columns as $label): ?>
+                        <th>
+                            <?= $this->escapeHtml($label); ?>
+                        </th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $count = 1;
+                foreach ($this->paginator as $row):
+                    ?>
+                    <tr class="<?= $count % 2 ? 'odd' : 'even'; ?>">
+                        <?php foreach ($columns as $key => $label): ?>
+                            <td>
+                                <?= $this->escapeHtml($row[$key]); ?>
+                            </td>
+                        <?php endforeach; ?>
+                    </tr>
+                    <?php
+                    $count ++;
+                endforeach;
+                ?>
+                <tr class="totals-header">
+                    <td colspan="8">
+                        Totals:
+                    </td>
+                </tr>
+                <tr class="totals">
+                    <?php foreach ($columns as $key => $label): ?>
+                        <?php if (isset($this->totals[$key])): ?>
+                        <td class="total">
+                            <?= $this->totals[$key]; ?>
+                        </td>
+                        <?php else: ?>
+                            <td class="blank"></td>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="">
+                    <td colspan="<?= count($columns); ?>">
+                        <?= $this->paginationControl($paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $paginatorParams]); ?>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="export">
+            <a href="<?= $exportUrl;?>"> Export To Excel </a>
+        </div>
+    <?php endif; ?>
+</div>

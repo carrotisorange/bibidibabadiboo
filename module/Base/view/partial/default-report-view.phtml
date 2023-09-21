@@ -1,0 +1,58 @@
+<?php if ($format != 'html'): ?>
+<div>
+    <div class="report-title" style="text-align: center;">
+        <strong><?= $this->escapeHtml($reportHeader['reportName']); ?></strong>
+    </div>
+    <div class="report-header-text" style="text-align: center;">
+        <?= isset($reportHeader['headerText']) ? $this->escapeHtml($reportHeader['headerText']) : ''; ?>
+        Created <?= date("m/d/Y H:i:s a"); ?>
+    </div>
+</div>
+<?php endif; ?>
+
+<table <?php if (isset($this->extraTableClasses) && $this->extraTableClasses == 'pdf' || $this->extraTableClasses == 'border centeralign') {echo 'border="0" cellspacing="0" cellpadding:5';} if (!empty($tableId)) echo 'id = "' . $tableId . '"'; ?> class="commonListingTable <?php $this->extraTableClasses; ?>"<?php if (isset($this->extraTableClasses) && $this->extraTableClasses=='pdf' || $this->extraTableClasses=='border centeralign') { echo 'border="1"'; } if (!empty($tableId)) echo 'id = "' . $tableId . '"'; ?> class="commonListingTable <?php $this->extraTableClasses; ?>" >
+    <thead>
+    <tr>
+        <?php foreach ($this->columns as $column): ?>
+            <th <?php if (isset($this->extraTableClasses) && $this->extraTableClasses == 'pdf') { ?> style="width:20mm; word-wrap:break-word;border:1; text-align:center;"; <?php } ?>><?php echo $column ?></th>
+        <?php endforeach ?>
+    </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->paginator as $key => $row): ?>
+            <tr class="<?= $this->cycle(["odd", "even"])->next(); ?>">
+            <?php if ($this->showReportExtraData): ?>
+                <td class="reportExtraData" <?php if (isset($this->extraTableClasses) && $this->extraTableClasses == 'pdf') { ?> style="width:20mm; word-wrap:break-word; border:1;text-align:center;" <?php } ?>>
+                    <div class="<?= $this->fieldsToBeAccessedPrefix . '_page' ?>">
+                        <?= $this->paginator->getCurrentPageNumber(); ?>
+                    </div>
+                    <?php foreach ($this->fieldsToBeAccessed as $key => $field): ?>
+                        <?php if (!array_key_exists($key, $this->columns) && !empty($row[$key])): ?>
+                            <div class="<?= $field; ?>"><?= (array_key_exists($key, $row)) ? $row[$key] : ''; ?></div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </td>
+            <?php endif; ?>
+                <?php foreach ($this->columns as $internalName => $externalName): ?>
+                    <td <?php if (!empty($this->fieldsToBeAccessed[$internalName])) echo 'class="' . $this->fieldsToBeAccessed[$internalName] . '"'; ?> <?php if (isset($this->extraTableClasses) && $this->extraTableClasses == 'pdf') { ?> style="width:20mm; word-wrap:break-word; border:1; text-align: center;" <?php } ?>>
+                        <?= (array_key_exists($internalName, $row)) ? $row[$internalName] : ''; ?>
+                    </td>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+    <?php if (!empty($this->showPaginator)): ?>
+    <tfoot>
+        <tr>
+            <td colspan="<?= count($this->columns); ?>" id="pagination">
+                <?= $this->paginationControl(
+                    $this->paginator,
+                    'Sliding',
+                    $this->paginatortemplate,
+                    ['route' => $this->route,'extraParams' => $this->paginatorParams]
+                ) ?>
+            </td>
+        </tr>
+    </tfoot>
+    <?php endif; ?>
+</table>

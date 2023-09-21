@@ -1,0 +1,97 @@
+/**
+ *
+ * @copyright (c) 2010 by LexisNexis Asset Company. All rights reserved.
+ *
+ * eCrash v3.0
+ */
+
+#assignFormCodevaluesDiv {
+	width: 90%;
+}
+
+#formSelectDiv {		
+	float: left;
+	font-size: 18px;
+	margin-bottom: 10px;
+}
+
+#formSelect {
+	text-align: left;
+}
+
+#formsRelatedByGroupIdDiv {
+	width: 99%;	
+	float:left;
+	text-align: left;
+	font-size: 14px;
+	margin: 10px 0px 10px 0;
+	padding: 5px;
+	background-color: lightgoldenrodyellow;
+}
+
+#listCodePairsDiv {
+	margin-top: 10px;
+}
+
+#formsRelatedByListIdDiv {
+	width: 99%;
+	float:left;
+	text-align: left;
+	font-size: 14px;
+	margin: 10px 0px 10px 0;
+	padding: 5px;
+	background-color: lightgoldenrodyellow;
+}
+
+.ecToolbar {
+	width: 20%;
+	float: left;
+	text-align: left;		
+}
+
+#formListTable tr.odd td {
+	background-color: #E4E4E4;
+}
+
+#formListTable tr.even td {
+	background-color: #D1D1D1;
+}
+
+#listCodePairsTable tr.odd td {
+	background-color: #E4E4E4;
+}
+
+#listCodePairsTable tr.even td {
+	background-color: #D1D1D1;
+}
+
+.row_selected td {background-color: skyblue !important;}
+.row_hover td {background-color: lightblue !important;}
+.row_struck_out td {text-decoration: line-through;}	
+
+#formNameDiv {
+	float:left;	
+	width: 30%;
+	text-align: center; 
+	font-size: 14px;
+	font-weight: bold;
+	padding-top: 10px;
+}
+
+#formListNameDiv {
+	float:left;	
+	width: 30%;
+	text-align: center; 
+	font-size: 14px;
+	font-weight: bold;
+	padding-top: 10px;		
+}
+
+#formListTable input[type=text] {width:99%}
+#listCodePairsTable input[type=text] {width:99%}
+
+#saveFormActionsDiv {
+	width: 100%;
+	text-align: center;
+	margin: 20px 0px 10px 0;
+}

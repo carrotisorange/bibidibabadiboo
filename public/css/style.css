@@ -1,0 +1,189 @@
+/**
+ * @copyright (c) 2011 LexisNexis. All rights reserved.
+ */
+
+body {
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+ul.messages li {
+    padding: 5px;
+    background-color: #FEE;
+    color: #500;
+    border: 1px solid #500;
+}
+
+.form-control {
+    height: auto;
+    font-size: inherit;
+}
+
+.col-form-label {
+    padding: 0px;
+}
+
+ul.error {
+    padding: 0;
+    list-style: none;
+}
+
+ul.error li {
+    color: #f00;
+}
+
+h1 {
+    margin: 7px 0px;
+    font-weight: bold;
+}
+
+table {
+    border-collapse: inherit;
+    border-spacing: 0px;
+}
+
+.cellspacing-2 {
+    border-spacing: 2px;
+}
+
+.cellspacing-4 {
+    border-spacing: 4px;
+}
+
+.cellspacing-5 {
+    border-spacing: 5px;
+}
+
+.cellpadding-0 td {
+    padding: 0px;
+}
+
+.table {
+    margin-bottom: 0px;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    border-top: 0px;
+    vertical-align: middle;
+    padding:0.4em;
+}
+
+.dropmenudiv {
+    margin: 0;
+    padding: 0;
+}
+
+.p-0 {
+    padding: 0px;
+}
+
+.pl-0 {
+    padding-left: 0px;
+}
+
+.pr-0 {
+    padding-right: 0px;
+}
+
+.pt-0 {
+    padding-top: 0px;
+}
+
+.pb-0 {
+    padding-bottom: 0px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin: 4px;
+    padding: 5px;
+}
+
+.primary-site-title {
+    color: rgb(204, 0, 51);
+    font-size: medium !important;
+}
+
+.contentgridarea td {
+    /*border: 0px;*/
+}
+
+/* Exception message style */
+dd > pre {
+    font-size: 100%;
+}
+
+.report-title {
+    font-size: 5px;
+}
+
+.report-header-text {
+    font-size: 3px;
+}
+
+.fieldset {
+    width: auto;
+    height: 45px;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    padding:10px;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.ui-widget-reportlist {
+    width: 90%;
+    text-align: left; 
+    padding: 0.2em;
+}
+
+.ui-widget-reportlist-header {
+    padding: 0.4em 1em;
+}
+
+.list-outer-box {
+    padding: 0px 20px;
+    margin-top: 10px;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.state-cofiguration-form-outer {
+    padding: 0px 20px;
+}
+
+.entry-stage-options {
+    width: 100%;
+    font-weight: normal;
+}
+
+.keying-vendor-id-options {
+    width: 100%;
+    font-weight: normal;
+}
+
+.note-txt {
+    color: #721c24;
+}
+
+#auto-extraction-dataTable th {
+    font: bold 11px/20px Arial, Helvetica, sans-serif;
+    padding: 5px;
+}
+
+.reportTableScroller {
+    height:300px;
+    overflow:auto;
+}

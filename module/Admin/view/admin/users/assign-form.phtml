@@ -1,0 +1,56 @@
+<table style="width: 100%;" class="table borderless assignmentListingTable">
+    <tr style="height:3%">
+        <td style="width:10%">
+            <input type="hidden" name="stateIds[]" value="<?= $this->state['stateId']; ?>" />
+            <?= $this->state['nameFull']; ?>
+        </td>
+        <td style="width:20%">
+            <?php if (!empty($this->agencyDetails)): ?>
+                <input type="hidden" name="agencyIds[]" value="<?= $this->agencyDetails['agency_id']; ?>" />
+                <?= $this->agencyDetails['name']; ?>
+            <?php else: ?>
+                <input type="hidden" name="agencyIds[]" value="" />
+                (none)
+            <?php endif; ?>
+        </td>
+        <td style="width:20%">
+            <input type="hidden" name="formIds[]" value="<?= $this->form['formId']; ?>" />
+            <?= $this->form['nameExternal'] . " - " . $this->form['stateAbbr'] . " - " .
+                ($this->form['formAgency'] ?  $this->form['formAgency'] . " - " : "") .
+                $this->form['formTypeDescription']; 
+            ?>
+        </td>
+        <td style="width: 10%">
+            <input class="rekey" id="rekey<?= $this->form['formId']; ?>" type="checkbox" autocomplete="off"
+                onchange="assignRekeyForm('<?= $this->form['formId']; ?>', 0)"
+                <?= $this->rekey == 1 ? 'checked="checked"' : ''; ?>
+                value="<?= $this->form['formId']; ?>"
+                name ="Rekey[]" />
+        </td>
+        <td style="width: 10%">
+            <input class="eRekey" id="eRekey<?= $this->form['formId']; ?>" type="checkbox" autocomplete="off"
+                onchange="assignRekeyForm('<?= $this->form['formId']; ?>', 1)"
+                <?= $this->eRekey == 1 ? 'checked="checked"' : ''; ?>
+                value="<?= $this->form['formId']; ?>"
+                name ="ERekey[]" />
+        </td>
+        <?php foreach ($this->workTypeList as $key => $workType): ?>
+            <td style="width: 10%">
+            <?php
+                $disabled = (array_search($workType['work_type_id'], $this->formWorkTypeList) === false) ?
+                    'disabled="disabled"' : '';
+                
+                $checked = (
+                    (!empty($this->workTypeSelected))
+                    && array_search($workType['work_type_id'], $this->workTypeSelected) !== false
+                ) ? 'checked="checked"' : '';
+            ?>
+                <input
+                    type="checkbox"
+                    value="<?= $workType['work_type_id']; ?>"
+                    <?= $disabled . ' ' . $checked; ?>
+                    name="workType[<?= $this->form['formId']; ?>][]" />
+            </td>
+        <?php endforeach; ?>
+    </tr>
+</table>

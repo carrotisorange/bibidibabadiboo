@@ -1,0 +1,156 @@
+
+/** Universal Tweaks **/
+body
+{
+	color:#000 !important;
+}
+.form-page
+{
+	clear:left;
+}
+label, .form-page td
+{
+	color:inherit !important;
+}
+
+/** jQuery UI overrides **/
+.ui-widget{
+	font-size:10px;
+}
+
+.ui-tabs .ui-tabs-panel
+{
+	padding:0px !important;
+}
+
+.ui-tabs-nav
+{
+	width:100%;
+	overflow:hidden !important;
+}
+
+div.formPageSection
+{
+	margin-top:10px;
+}
+div.formPageSection:first-child
+{
+	margin-top:0px;
+}
+
+/* st-nav-wrap = entire tab bar */
+div.st-nav-wrap
+{
+	z-index:100;
+	width:100%;
+	
+}
+/* st-tabs-nav-wrap = the viewable tabs */
+div.st-tabs-nav-wrap
+{
+	z-index:200;
+	overflow:hidden;
+
+	_width:100%;
+}
+/* ui-tabs-nav = all of the tabs */
+ul.ui-tabs-nav
+{
+	width:30000px;
+	font-size:9px;
+}
+
+div.st-nav-prev, div.st-nav-next
+{
+	z-index:300;
+
+	_height:100%;
+	_margin-right:-5px;
+}
+div.st-nav-prev
+{
+	float:left;
+}
+div.st-nav-next
+{
+	float:right;
+}
+.st-nav-add
+{
+	z-index:500;
+	float:right;
+	display:inline;
+	margin-left:2px;
+}
+
+/* 'darkening' the display to be like universal and the 'headers' */
+.ui-widget-content{
+	background-color:inherit !important;
+	background-image:none !important;
+	border:none !important;
+}
+.ui-widget
+{
+	font-size:1.0em !important;
+	font-family:inherit !important;
+}
+
+.ui-widget textarea.discrepancy-remove-highlighter {
+	background-color: #ffa0a0 !important;
+}
+
+.ui-widget input, .ui-widget textarea
+{
+	font-family: inherit !important;
+	font-size:1.0em !important;
+	margin-right: 2px;
+}
+
+.ui-tabs-panel
+{
+	width:100% !important;
+	margin-left:1px;
+}
+
+.ui-widget-header
+{
+	background:#d3d3d3 !important;
+	border:none !important;
+}
+
+.st-nav-wrap
+{
+	background:#d3d3d3 !important;
+	border:0px solid #000;
+	margin-bottom:-1px;
+}
+.ui-tabs-nav .ui-state-default a
+{
+	background:#BBB;
+	color:#000 !important;
+	font-weight:bolder;
+}
+.ui-tabs-nav .ui-state-hover a
+{
+	background:#CCC;
+	font-weight:bolder;
+}
+
+.ui-tabs-nav .ui-tabs-active a
+{
+	background:#FFF !important;
+	color:#000 !important;
+}
+
+.ui-dialog-titlebar
+{
+	color:#FFF!important;
+}
+.ui-dialog-titlebar-close
+{
+	background-color:#CCC;
+}
+
+input[id^="Vehicle_AddTrailerGui"] {
+    margin: 4px;
+}

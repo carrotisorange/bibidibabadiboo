@@ -1,0 +1,48 @@
+<?php
+    // Set attributes for user form
+    $form->setAttribute('action', $this->url('configure-timeout'))
+        ->setAttribute('name', 'addnotes')
+        ->setAttribute('id', 'addnotes');
+    $form->prepare();
+    echo $this->form()->openTag($form);
+?>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr>
+            <td class="box-top-left">&nbsp;</td>
+            <td class="box-top-bg">
+                <h3 align="left">Timeout Warning</h3>
+            </td>
+            <td class="box-top-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="box-leftbg">&nbsp;</td>
+            <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+                <table>
+                    <tr>
+                        <td>
+                            <h6>Your session is about to be timed out. As a security precaution, sessions end after 10 minutes of inactivity. Click OK to continue your current session.</h6>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td class="box-rightbg">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="box-leftbg">&nbsp;</td>
+            <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+                <!-- The content would be populated here -->
+                <table align="center">
+                    <tr>
+                        <td><?php echo $this->formElement($form->get('ok'));?></td>
+                    </tr>
+                </table>
+            </td>
+            <td class="box-rightbg">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="box-bot-left">&nbsp;</td>
+            <td class="box-bot-bg">&nbsp;</td>
+            <td class="box-bot-right">&nbsp;</td>
+        </tr>
+    </table>
+<?php echo $this->form()->closeTag();?>

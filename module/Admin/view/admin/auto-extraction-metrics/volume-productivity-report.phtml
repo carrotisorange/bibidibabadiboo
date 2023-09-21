@@ -1,0 +1,276 @@
+<?php 
+    $this->headLink()
+    ->prependStylesheet($this->basePath('css/metrics.css'));
+if(!$this->export):
+    $this->headLink()
+    ->prependStylesheet($this->basePath('library/datatables/dataTables.bootstrap.css'));
+    
+    $this->headScript()
+    ->appendFile($this->basePath('library/datatables/jquery.dataTables.1.10.15.min.js'))
+    ->appendFile($this->basePath('library/datatables/dataTables.bootstrap.1.10.15.js'));    
+?>
+
+<script type="text/javascript">
+    $(function(){        
+        $( ".hasCalendar" ).datepicker();
+    });
+</script>
+
+<h1>Volume & Productivity Report</h1>
+
+<div class="col-md-6 col-md-offset-3">
+    <?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('auto-extraction-metrics', ['action' => 'volume-productivity-report']));
+    $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+    $form->setAttribute('id', 'getVolumeProductivityReport');
+    $form->prepare();
+    ?>
+
+    <?= $this->form()->openTag($form); ?>
+    <?= $this->formElement($form->get('csrf'));?>
+    <fieldset>
+        <legend>Keying Date</legend>
+        <div class="field-label-group">
+            <?= $this->formLabel($form->get('fromDate')); ?>
+            <?= $this->formElement($form->get('fromDate')); ?>
+        </div>
+        <div class="field-label-group">
+            <?= $this->formLabel($form->get('toDate')); ?>
+            <?= $this->formElement($form->get('toDate')); ?>
+        </div>
+        <div class="note-txt">Note: Please select date range between <?= $reportDuration; ?> days.</div>
+    </fieldset>
+
+    <fieldset>
+        <legend>State</legend>
+        <div class="field-label-group">
+            <?= $this->formLabel($form->get('state')); ?>
+            <?= $this->formElement($form->get('state')); ?>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Company</legend>
+        <div class="field-label-group">
+            <?= $this->formLabel($form->get('keyingVendorId')); ?>
+            <?= $this->formElement($form->get('keyingVendorId')); ?>
+        </div>
+    </fieldset>
+    <?= $this->formElement($form->get('submit')); ?>
+</div>
+
+
+<?= $this->form()->closeTag(); ?>
+
+<?php 
+endif;
+if (!empty($this->reports)): 
+if ($this->export): ?>
+<style type="text/css">
+    td{ border:  1px solid black; text-align: center;}
+</style>
+<table id="reportDetail">            
+    <tbody>
+        <tr>
+            <td><b><?= $this->reportHeader; ?></b></td>            
+        </tr>
+        <tr>
+            <td><b>State:</b></td>
+            <td><?= $this->stateAbbr; ?></td>
+        </tr>
+        <tr>
+            <td><b>Start Date:</b></td>
+            <td><?= $reportInfo['fromDate']; ?></td>
+        </tr>
+        <tr>
+            <td><b>End Date:</b></td>
+            <td><?= $reportInfo['toDate']; ?></td>
+        </tr>        
+    </tbody>
+</table>
+<br>
+<?php endif;?>    
+<div class="result" style="margin: 40px 5px 5px 5px;">
+    <table class="table default" style="width: 1100px;">
+        <thead style="background:cornflowerblue;">
+            <tr>
+                <th rowspan="2">Volume and Productivity</th>
+                <th rowspan="2">Total Processing Time for all Passes (Min.)</th>
+                <th rowspan="2">Total No. of Passes</th>
+                <th rowspan="2">Total Processing Time for Delivered Reports (Min.)</th>
+                <th rowspan="2">Total No. of Reports</th>
+                <th colspan="2">Minutes/Report</th>
+                <th rowspan="2">Efficiency Gain (%)</th>
+                <th rowspan="2">Percentage (Manual Keying vs. Auto-extraction)</th>            
+            </tr>
+            <tr>
+                <th>Actual</th>
+                <th>Target</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background:lightblue;">
+                <td>Manual Keying</td>
+                <td><?=$this->reports['manualkeying']['allPasstime']?></td>
+                <td><?=$this->reports['manualkeying']['allPasstotal']?></td>
+                <td><?=$this->reports['manualkeying']['time']?></td>
+                <td><?=$this->reports['manualkeying']['total']?></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><?=$this->reports['percentage']['manualkeying']?>%</td>            
+            </tr>
+            <tr>
+                <td>Universal</td>
+                <td><?=$this->reports['universal']['allPassmanual']['time']?></td>
+                <td><?=$this->reports['universal']['allPassmanual']['total']?></td>
+                <td><?=$this->reports['universal']['manual']['time']?></td>
+                <td><?=$this->reports['universal']['manual']['total']?></td>
+                <td><?=$this->reports['universal']['manual']['actual']?></td>
+                <td><?=$this->reports['universal']['manual']['target']?></td>
+                <td><?=$this->reports['efficiency']['manual']['universal']?>%</td>
+                <td><?=$this->reports['percentage']['manual']['universal']?>%</td>            
+            </tr>
+            <tr>
+                <td>Universal+16 elements</td>
+                <td><?=$this->reports['universal-sectional']['allPassmanual']['time']?></td>
+                <td><?=$this->reports['universal-sectional']['allPassmanual']['total']?></td>
+                <td><?=$this->reports['universal-sectional']['manual']['time']?></td>
+                <td><?=$this->reports['universal-sectional']['manual']['total']?></td>
+                <td><?=$this->reports['universal-sectional']['manual']['actual']?></td>
+                <td><?=$this->reports['universal-sectional']['manual']['target']?></td>
+                <td><?=$this->reports['efficiency']['manual']['universal-sectional']?>%</td>
+                <td><?=$this->reports['percentage']['manual']['universal-sectional']?>%</td>            
+            </tr>
+            <tr>
+                <td>Long Form</td>
+                <td><?=$this->reports['longform']['allPassmanual']['time']?></td>
+                <td><?=$this->reports['longform']['allPassmanual']['total']?></td>
+                <td><?=$this->reports['longform']['manual']['time']?></td>
+                <td><?=$this->reports['longform']['manual']['total']?></td>
+                <td><?=$this->reports['longform']['manual']['actual']?></td>
+                <td><?=$this->reports['longform']['manual']['target']?></td>
+                <td><?=$this->reports['efficiency']['manual']['longform']?>%</td>
+                <td><?=$this->reports['percentage']['manual']['longform']?>%</td>            
+            </tr>
+            <tr style="background:lightblue;">
+                <td>Auto-Extraction</td>
+                <td><?=$this->reports['autokeying']['allPasstime']?></td>
+                <td><?=$this->reports['autokeying']['allPasstotal']?></td>
+                <td><?=$this->reports['autokeying']['time']?></td>
+                <td><?=$this->reports['autokeying']['total']?></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><?=$this->reports['percentage']['autokeying']?>%</td>            
+            </tr>
+            <tr>
+                <td>Universal</td>
+                <td><?=$this->reports['universal']['allPassauto']['time']?></td>
+                <td><?=$this->reports['universal']['allPassauto']['total']?></td>
+                <td><?=$this->reports['universal']['auto']['time']?></td>
+                <td><?=$this->reports['universal']['auto']['total']?></td>
+                <td><?=$this->reports['universal']['auto']['actual']?></td>
+                <td><?=$this->reports['universal']['auto']['target']?></td>
+                <td><?=$this->reports['efficiency']['auto']['universal']?>%</td>
+                <td><?=$this->reports['percentage']['auto']['universal']?>%</td>            
+            </tr>
+            <tr>
+                <td>Universal+16 elements</td>
+                <td><?=$this->reports['universal-sectional']['allPassauto']['time']?></td>
+                <td><?=$this->reports['universal-sectional']['allPassauto']['total']?></td>
+                <td><?=$this->reports['universal-sectional']['auto']['time']?></td>
+                <td><?=$this->reports['universal-sectional']['auto']['total']?></td>
+                <td><?=$this->reports['universal-sectional']['auto']['actual']?></td>
+                <td><?=$this->reports['universal-sectional']['auto']['target']?></td>
+                <td><?=$this->reports['efficiency']['auto']['universal-sectional']?>%</td>
+                <td><?=$this->reports['percentage']['auto']['universal-sectional']?>%</td>            
+            </tr>
+            <tr>
+                <td>Long Form</td>
+                <td><?=$this->reports['longform']['allPassauto']['time']?></td>
+                <td><?=$this->reports['longform']['allPassauto']['total']?></td>
+                <td><?=$this->reports['longform']['auto']['time']?></td>
+                <td><?=$this->reports['longform']['auto']['total']?></td>
+                <td><?=$this->reports['longform']['auto']['actual']?></td>
+                <td><?=$this->reports['longform']['auto']['target']?></td>
+                <td><?=$this->reports['efficiency']['auto']['longform']?>%</td>
+                <td><?=$this->reports['percentage']['auto']['longform']?>%</td>            
+            </tr>
+            <tr style="background:lightblue;">
+                <td>Manual Keying vs. Auto-extraction Productivity</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>            
+            </tr>
+            <tr>
+                <td>Universal</td>
+                <td><?=$this->reports['universal']['both']['allPasstime']?></td>
+                <td><?=$this->reports['universal']['both']['allPasstotal']?></td>
+                <td><?=$this->reports['universal']['both']['time']?></td>
+                <td><?=$this->reports['universal']['both']['total']?></td>
+                <td><?=$this->reports['manualauto']['universal']['actual']?>%</td>
+                <td><?=$this->reports['manualauto']['universal']['target']?>%</td>
+                <td><?=$this->reports['efficiency']['both']['universal']?>%</td>
+                <td></td>            
+            </tr>
+            <tr>
+                <td>Universal+16 elements</td>
+                <td><?=$this->reports['universal-sectional']['both']['allPasstime']?></td>
+                <td><?=$this->reports['universal-sectional']['both']['allPasstotal']?></td>
+                <td><?=$this->reports['universal-sectional']['both']['time']?></td>
+                <td><?=$this->reports['universal-sectional']['both']['total']?></td>
+                <td><?=$this->reports['manualauto']['universal-sectional']['actual']?>%</td>
+                <td><?=$this->reports['manualauto']['universal-sectional']['target']?>%</td>
+                <td><?=$this->reports['efficiency']['both']['universal-sectional']?>%</td>
+                <td></td>            
+            </tr>        
+            <tr>
+                <td>Long Form</td>
+                <td><?=$this->reports['longform']['both']['allPasstime']?></td>
+                <td><?=$this->reports['longform']['both']['allPasstotal']?></td>
+                <td><?=$this->reports['longform']['both']['time']?></td>
+                <td><?=$this->reports['longform']['both']['total']?></td>
+                <td><?=$this->reports['manualauto']['longform']['actual']?>%</td>
+                <td><?=$this->reports['manualauto']['longform']['target']?>%</td>
+                <td><?=$this->reports['efficiency']['both']['longform']?>%</td>
+                <td></td>            
+            </tr>
+
+            <tr>
+                <td colspan="9" style="background:lightblue">Auto Extraction Summary</td>
+            </tr>
+            <tr>
+                <td>Total Reports</td>
+                <td><?php echo $reports['report_count_total']?></td>
+            </tr>
+            <tr>
+                <td>Total Auto Extracted Reports</td>
+                <td><?php echo $reports['auto_extraction_total']?></td>
+            </tr>
+            <tr>
+                <td>Total Auto Extracted Reports</td>
+                <td><?php echo ceil(($reports['auto_extraction_total'] / $reports['report_count_total']) * 100)?>%</td>
+            </tr>
+            
+        </tbody>
+        </table>
+</div>
+<?php
+if(!$this->export):
+$exportUrl = $this->url('auto-extraction-metrics', ['action' => 'volume-productivity-report'], [
+        'query' => array_merge(['downloadType' => $this->format], ['fromDate' => $reportInfo['fromDate']], ['toDate' => $reportInfo['toDate']], ['state' => $reportInfo['state']])
+    ]);
+?>
+<div class="export" style="margin: 15px 0px;">
+    <a href='<?= "{$exportUrl}"; ?>' class="btnstyle btn-export-excel">Export</a>    
+</div>
+<?php 
+endif;
+endif; ?>

@@ -1,0 +1,170 @@
+<table>
+    <tr>
+        <td class="col-lg-12 col-sm-12 form-head-text" colspan="2">
+            <span>Incident Details</span>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-12 col-lg-12 fieldInputTd" colspan="2">
+            <div> <span><?php $form->addField(["Incident", "IncidentHitAndRun", null], ["defaultValue" => "1"]); ?>Hit & Run</span></div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Report Identifier # 1</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "CaseIdentifier", null], ["defaultValue" => "", "isRequired"=>true]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Report Identifier # 2</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "StateReportNumber", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Incident Date</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "CrashDate", null], ["defaultValue" => "", "isRequired" => true]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Time of Accident</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "CrashTime", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Incident State</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "LossStateAbbr", null], ["defaultValue" => "", "isRequired"=>true]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Incident City</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "CrashCity", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Report Type</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "ReportTypeId", null], ["defaultValue" => "", "isRequired" => true]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Incident Street</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "LossStreet", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Incident Cross Street</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "LossCrossStreet", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Latitude</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "Latitude", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Longitude</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "Longitude", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>GPS Other</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "GpsOther", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>F. Weather Conditions (up to two)</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "WeatherCondition", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>C. Roadway Surface Condition</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Incident", "RoadSurfaceCondition", null], ["defaultValue" => ""]); ?>
+            </div>
+        </td>
+    </tr>
+   <tr class="element16_field uncheck-radio">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Photos Taken ?</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <label>
+                    <?php $form->addField(['Incident', 'PhotographsTaken'], ['defaultValue' => '01']); ?> Yes
+                </label>
+                <label>
+                    <?php $form->addField(['Incident', 'PhotographsTaken'], ['defaultValue' => '02']); ?> No
+                </label>
+                <label>
+                    <?php $form->addField(['Incident', 'PhotographsTaken'], ['defaultValue' => '03']); ?> Unknown 
+                </label>
+            </div>
+        </td>
+    </tr>
+</table>

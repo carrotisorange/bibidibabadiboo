@@ -1,0 +1,13 @@
+<div class="ui-widget ui-widget-content ui-corner-all m-auto" style="width: 90%; padding: 20px 0px;">
+    <h3>Welcome to LexisNexis&#174;</h3>
+</div>
+
+<?php if ($this->showReportEntryPopup): ?>
+    <script type="text/javascript">
+        <?php $this->headScript()->captureStart(); ?>
+            $(function() {
+                window.reportEntry.openInputWindow(<?= json_encode($this->urlHelper()->urlSimple('edit', 'report-entry', 'data')); ?>);
+            });
+        <?php $this->headScript()->captureEnd(); ?>
+    </script>
+<?php endif; ?>

@@ -1,0 +1,38 @@
+<?php echo $this->doctype(); ?>
+<html>
+    <head>
+        <?php
+            echo $this->headMeta();
+            echo $this->headTitle();
+            echo $this->headLink()
+                ->prependStylesheet($this->basePath('css/style.css'))
+                ->prependStylesheet($this->basePath('/css/main.css'))
+                ->prependStylesheet($this->basePath('library/bootstrap/css/bootstrap.css'));
+            
+            echo $this->headStyle();
+            
+            echo $this->headScript()
+                ->prependFile($this->basePath('/scripts/js/setfocus.js'))
+                ->prependFile($this->basePath('/scripts/js/ln_admin.js'))
+                //->prependFile($this->basePath('/library/datatables/js/jquery.dataTables.min.js'))
+                ->prependFile($this->basePath('library/jquery-ui/js/jquery-ui-1.8.7.custom.min.js'))
+                ->prependFile($this->basePath('library/bootstrap/js/bootstrap.js'))
+                ->prependFile($this->basePath('library/jquery/jquery-1.12.4.js'))
+                //->prependFile($this->basePath('library/jquery/jquery-3.6.0.min.js'))
+                ->prependScript('window.baseUrl = ' . json_encode($this->basePath()) . ';');
+        ?>
+    </head>
+    <body bgColor="#FFFFFF" marginheight="0" marginwidth="0" topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0">
+        <?php echo $this->headScript()
+            ->prependFile($this->basePath('/scripts/js/setfocus.js'));?>
+        <div class="clear"></div>
+        <!--CONTENT BEGIN-->
+        <div align="center">
+            <?= $this->layout()->content; ?>
+        </div>
+        <!--CONTENT END-->
+        <?= $this->inlineScript(), "\n"; ?>
+        
+        <div id="basic-modal-content"></div>
+    </body>
+</html>

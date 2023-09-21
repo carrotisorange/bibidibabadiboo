@@ -1,0 +1,154 @@
+<?php
+    $this->headLink()->prependStylesheet( $this->basePath( '/css/bad-image.css' ) );
+    $this->headScript()->appendFile( $this->basePath( '/js/admin/bad-image.js' ) );
+    $title = 'LexisNexis';
+    $this->headTitle($title);
+?>
+<div class="ui-widget ui-widget-content ui-corner-all" style="width: 90%; text-align: left; padding: 0.2em;">
+    <div class="ui-widget-header ui-corner-all" style="padding: 0.4em 1em;">
+        <h3>Bad Image Queue</h3>
+    </div>
+
+    <div class="ui-helper-clearfix" style="padding: 0px 20px;">
+        <?php
+            $form = $this->form;
+            $form->setAttribute('method', 'POST');
+            $form->setAttribute('action', $this->url('bad-image'));
+            $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+            $form->prepare();
+        ?>
+        <?= $this->form()->openTag($form); ?>
+        <?= $this->formElement($form->get('csrf'));?>
+        <dl class="zend_form">
+            <dt id="page-label">&nbsp;</dt>
+            <dd id="page-element">
+                <input type="hidden" name="page" value="1" id="page">
+            </dd>
+
+            <dt id="reportStatus-label">
+                <label for="reportStatus" class="optional"><?= $this->formLabel($form->get('reportStatus')); ?></label>
+            </dt>
+
+            <dd id="reportStatus-element">
+                <?= $this->formElement($form->get('reportStatus')); ?>
+            </dd>
+
+            <dt id="entryStage-label">
+                <label for="entryStage" class="optional"><?= $this->formLabel($form->get('entryStage')); ?></label>
+            </dt>
+
+            <dd id="entryStage-element">
+                <?= $this->formElement($form->get('entryStage')); ?>
+            </dd>
+
+            <div style="float:left;margin-top:20px;">
+                <fieldset id="fieldset-operator">
+                    <legend>Operator</legend>
+
+                    <dt id="operatorLastName-label">
+                        <?= $this->formLabel($form->get('operatorLastName')); ?>    
+                    </dt>
+                    <dd id="operatorLastName-element">
+                        <?= $this->formElement($form->get('operatorLastName')); ?>
+                    </dd>
+                    <dt id="operatorFirstName-label">
+                        <?= $this->formLabel($form->get('operatorFirstName')); ?>
+                    </dt>
+                    <dd id="operatorFirstName-element">
+                        <?= $this->formElement($form->get('operatorFirstName')); ?>  
+                    </dd>
+                    <?php if ($this->isLNUser): ?>
+                    <dt id="keyingVendorId-label">
+                        <?= $this->formLabel($form->get('keyingVendorId')); ?>
+                    </dt>
+                    <?php endif; ?>
+                    <dd id="keyingVendorId-element">
+                        <?= $this->formElement($form->get('keyingVendorId')); ?>
+                    </dd>
+                </fieldset>
+            </div>
+
+            <div style="float:left;margin-left:20px;margin-top:20px;">
+                <fieldset id="fieldset-ReportVendor">
+                    <legend>Report &amp; Vendor</legend>
+                    <dt id="reportId-label">
+                        <?= $this->formLabel($form->get('reportId')); ?>
+                    </dt>
+                    <dd id="reportId-element">
+                        <?= $this->formElement($form->get('reportId')); ?>
+                    </dd>
+                    <dt id="vendorCode-label">
+                        <?= $this->formLabel($form->get('vendorCode')); ?>
+                    </dt>
+                    <dd id="vendorCode-element">
+                        <?= $this->formElement($form->get('vendorCode')); ?>
+                    </dd>
+                </fieldset>
+            </div>
+
+            <dt id="x-label">&nbsp;</dt>
+            <dd id="x-element">
+                <input type="submit" name="x" id="x" value="Search" class="btnstyle" style="float:right; margin-top: 5px">
+            </dd>
+        </dl>
+    </div>
+
+    <div style="padding: 0px 20px;">
+        <?php if (!isset($this->paginator)): ?>
+            <?php elseif ($this->paginator->getCurrentItemCount() == 0): ?>
+            <div>
+                <strong>No Matches Found</strong>
+            </div>
+        <?php else: ?>
+            <div id="exportToExcel" style="width: 100%; text-align: right;">
+                <a href="<?php echo $this->url('bad-image', ['action' => 'index'], [
+                'query' => array_merge(['downloadType' => $this->format], $paginatorParams)
+                ]); ?>" >
+                Export To Excel
+                </a>
+            </div>
+            <table class="dataTable display" id="badImageResults" style="width: 100% !important;">
+                <thead>
+                    <tr>
+                        <th>Report Id</th>
+                        <th>Status</th>
+                        <th>Operator Last Name</th>
+                        <th>Operator First Name</th>
+                        <th>Date</th>
+                        <th>Pass Group</th>
+                        <?php if ($this->reportStatus == $this->serviceReportStatus::STATUS_BAD_IMAGE): ?>
+                            <th>Filename</th>
+                            <th>State</th>
+                            <th>Agency</th>
+                        <?php endif; ?>
+                        <?php if ($this->isLNUser): ?>    
+                        <th>Company</th>
+                        <?php endif; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->paginator as $row): ?>
+                    <tr <?php if (!in_array($row[ 'status' ], $this->badImageStatuses)): ?> class="greyedOut"<?php endif; ?>>
+                        <td class="reportId"><?= $row[ 'reportId' ]; ?></td>
+                        <td><?= $this->escapeHtml(ucwords( $row[ 'status' ] )); ?></td>
+                        <td><?= $this->escapeHtml($row[ 'lastName' ]); ?></td>
+                        <td><?= $this->escapeHtml($row[ 'firstName' ]); ?></td>
+                        <td><?= $this->escapeHtml($row[ 'dateEntered' ]); ?></td>
+                        <td><?= $this->escapeHtml($row[ 'passGroup' ]); ?></td>
+                        <?php if ($reportStatus == $this->serviceReportStatus::STATUS_BAD_IMAGE): ?>
+                        <td><?= $this->escapeHtml($row[ 'filename' ]); ?></td>
+                        <td><?= $this->escapeHtml($row[ 'stateAbbr' ]); ?></td>
+                        <td><?= $this->escapeHtml($row[ 'agencyName' ]); ?></td>
+                        <?php endif; ?>
+                        <?php if ($this->isLNUser): ?>
+                        <td><?= $this->escapeHtml($row[ 'vendorName' ]); ?></td>
+                        <?php endif; ?>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <?= $this->paginationControl($paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $this->paginatorParams]); ?>
+        <?php endif; ?>
+    </div>
+</div>

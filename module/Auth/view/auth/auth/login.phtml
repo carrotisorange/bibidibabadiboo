@@ -1,0 +1,49 @@
+<form class="form-signin text-start" method="post">
+<table width="40%" border="0" cellspacing="0" cellpadding="0" align="center">
+ <tr>
+  <td class="box-top-left">&nbsp;</td>
+  <td class="box-top-bg">
+  <h3 class="text-start">Login</h3>
+  <td class="box-top-right">&nbsp;</td>
+</tr>
+<tr>
+<td class="box-leftbg">&nbsp;</td>
+<td class="contentgridarea" >
+    <table cellspacing="5" id="tbl-login" class="table borderless" cellpadding="0" border="0" width="100%">
+        <tr>
+            <td align="right" width="18%" ><label>User ID</label> </td>
+            <td align="left" width="20%"><?= $this->formElement($form->get('username')); ?></td>
+            <td align="left">
+                <a href="<?= $this->url('forgot-password', ['action' => 'forgot-password']); ?>">Forgot Password ?</a>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+           <td align="right">
+                <div class="divTempPwd">
+                    <input type="password" class="inpTempPwd" id="tempPwd1" autocomplete="off" />
+                </div>
+                <label>Password </label>
+            </td>
+            <td align="left"> <?= $this->formElement($form->get('password')); ?></td>
+            <td align="left"><a href="<?= $this->url('change-user-password', ['action' => 'change-user-password']); ?>">Change Password ?</a> </td>
+        </tr>
+        <tr>
+            <td align="right"></td>
+            <td align="left"><a href="#"><?= $this->formElement($form->get('login')); ?></a></td>
+        </tr>
+        <tr>
+            <td align="right"></td>
+            <td align="left"></td><td align="left"></td>
+        </tr>
+    </table>
+</td>
+<td class="box-rightbg">&nbsp;</td>
+</tr>
+<tr>
+<td class="box-bot-left">&nbsp;</td>
+<td class="box-bot-bg">&nbsp;</td>
+<td class="box-bot-right">&nbsp;</td>
+</tr>
+</table>
+</form>

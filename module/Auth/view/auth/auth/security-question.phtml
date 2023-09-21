@@ -1,0 +1,111 @@
+<?php if (!empty($this->resultMessage)): ?>
+	<table width="90%" border="0" cellspacing="0" cellpadding="0" align="center">
+		<tr align="left">
+			<td class="box-top-left">&nbsp;</td>
+			<td class="box-top-bg"></td>
+			<td class="box-top-right">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="box-leftbg">&nbsp;</td>
+			<td class="contentgridarea" style="border:1px solid #e2ddde; " align="center">
+				<?= $this->resultMessage ?><br>
+			</td>
+			<td class="box-rightbg">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="box-leftbg">&nbsp;</td>
+			<td class="contentgridarea" style="border:1px solid #e2ddde; " align="left">
+				<table align="left" border="0" width="100%" cellpadding="2" cellspacing="2">
+					<tr>
+						<td align="center" width="9%"><input type="button" value="  OK  " class="btnstyle" onclick="redirectToLogin()"></td>
+					</tr>
+				</table>
+			</td>
+			<td class="box-rightbg">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="box-bot-left">&nbsp;</td>
+			<td class="box-bot-bg">&nbsp;</td>
+			<td class="box-bot-right">&nbsp;</td>
+		</tr>
+	</table>
+<?php else: ?>
+<form name="securityquestionform" id="securityquestionform" method="post" action="" >
+<table width="90%" border="0" cellspacing="0" cellpadding="0" align="center">
+	<tr align="left">
+		<td class="box-top-left">&nbsp;</td>
+		<td class="box-top-bg">
+			<h3>Security Check</h3>
+			<h8>Please answer the security questions listed below</h8>
+		</td>
+		<td class="box-top-right">&nbsp;</td>
+	</tr>
+	<?php if (!empty($this->errorMessage)): ?>
+	<tr>
+		<td class="box-leftbg">&nbsp;</td>
+		<td class="contentgridarea" style="border:1px solid #e2ddde; ">
+			<table>
+				<tr>
+					<td class="errorMsg">
+						<?php foreach ($this->errorMessage as $error) echo $error . '<br />'; ?>
+					</td>
+			 	</tr>
+			</table>
+		</td>
+		<td class="box-rightbg">&nbsp;</td>
+	</tr>  <?php endif; ?>
+	<tr>
+		<td class="box-leftbg">&nbsp;</td>
+		<td class="contentgridarea" style="border:1px solid #e2ddde; " align="center">
+			<input type="hidden" name="username" value="<?= $this->username ?>"/>
+			<?php foreach($this->randomQuestions as $value): ?>
+  				<input type="hidden" name="randomQuestions[]" value="<?= $value ?>">
+  			<?php endforeach; ?>
+	 		<table cellspacing="5" class="table borderless" cellpadding="0" border="0" width="100%" align="left">
+				<?php if (!empty($this->authQuestions)): ?>
+                    <tr>
+						<td align="left" width="30%">
+							<label>
+                                <?= $this->authQuestions['0']['question'];  ?>
+                            </label>
+						</td>
+						<td align="left">
+                            <?= $this->formElement($form->get('answer_1'));?>
+						</td>
+					</tr>
+                     <tr>
+						<td align="left" width="30%">
+							<label>
+                                <?= $this->authQuestions['1']['question']; ?>
+                            </label>
+						</td>
+						<td align="left">
+                            <?= $this->formElement($form->get('answer_2'));?>
+						</td>
+					</tr>
+					
+				<?php endif; ?>
+	 		</table>
+		</td>
+		<td class="box-rightbg">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="box-leftbg">&nbsp;</td>
+		<td class="contentgridarea" style="border:1px solid #e2ddde; " align="left">
+			<table align="left" border="0" width="100%" cellpadding="2" cellspacing="3">
+				<tr>
+					<td align="left" width="10%"><?= $this->formElement($form->get('submit')); ?></td>
+					<td align="left" ><?= $this->formElement($form->get('cancel')); ?></td>
+				</tr>
+			</table>
+		</td>
+		<td class="box-rightbg">&nbsp;</td>
+	  </tr>
+	  <tr>
+		<td class="box-bot-left">&nbsp;</td>
+		<td class="box-bot-bg">&nbsp;</td>
+		<td class="box-bot-right">&nbsp;</td>
+	  </tr>
+	</table>
+</form>
+<?php endif; ?>

@@ -1,0 +1,17 @@
+<script type="text/javascript">
+<?php if (!empty($this->refreshMainReportWindow)):  ?>
+	window.parent.location.href = window.location.href.replace(window.location.pathname, window.parent.baseUrl + '/data/report-entry/edit');
+<?php else: ?>
+    var imageViewer = window.open('', 'imageViewer');
+    if (typeof(imageViewer) !== 'undefined' && !imageViewer.closed) {
+        imageViewer.close();
+    }
+<?php if (!empty($this->redirectParentToExit)): ?>
+	window.parent.opener.location.href = window.location.href.replace(window.location.pathname, window.parent.baseUrl + '/data/report-entry/exit');
+<?php endif; ?>
+<?php if (!empty($this->refreshParent)): ?>
+    window.parent.opener.location.reload();
+<?php endif; ?>
+    window.parent.close();
+<?php endif; ?>
+</script>

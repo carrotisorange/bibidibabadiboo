@@ -1,0 +1,173 @@
+<?= $this->doctype();?>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php
+            echo $this->headTitle();
+            echo $this->headLink(['rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico']);
+            
+            echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+            
+            echo $this->headLink()
+                ->prependStylesheet($this->basePath('/css/style.css'))
+                ->prependStylesheet($this->basePath('/css/global.css'))
+                ->prependStylesheet($this->basePath('/css/main.css'))
+                ->prependStylesheet($this->basePath('/css/chromestyle.css'))
+                ->prependStylesheet($this->basePath('/library/jquery-ui/css/smoothness/jquery-ui-1.8.7.custom.css'))
+                ->prependStylesheet($this->basePath('/library/bootstrap/css/bootstrap.css'));
+            echo $this->headStyle();
+            
+            echo $this->headScript()
+                ->prependFile($this->basePath('/scripts/js/chrome-drop-down-menu.js'))
+                ->prependFile($this->basePath('/scripts/js/setfocus.js'))
+                ->prependFile($this->basePath('/scripts/js/Security.js'))
+                ->prependFile($this->basePath('/scripts/js/ln_admin.js'))
+                ->prependFile($this->basePath('/js/common/utility.js'))
+                ->prependFile($this->basePath('/js/global.js'))
+                ->prependFile($this->basePath('/library/jquery/jquery.shortkeys.js'))
+                ->prependFile($this->basePath('library/jquery-ui/js/jquery-ui-1.12.4.js'))
+                ->prependFile($this->basePath('library/bootstrap/js/bootstrap.js'))
+                ->prependFile($this->basePath('library/jquery/jquery-3.6.0.min.js'))
+                //->prependFile($this->basePath('library/jquery/jquery-1.12.4.js'))
+                ->prependScript('window.rowsPerPage = ' . (!empty($rowsPerPage) ? $rowsPerPage : 0) . ';') // Number of rows displayed per page in grid
+                ->prependScript('window.baseUrl = "' . $this->basePath() . '";');
+        ?>
+        
+        <script type="text/javascript">
+            <?php $this->inlineScript()->captureStart(); ?>
+                <?php if ($this->identity()) { ?>
+                    setInterval(checkConcurrentUserLogin, 1 * 60 * 1000); // Mins * Seconds * Milliseconds
+                    setInterval(checkSessionTimeout, 5 * 60 * 1000); // Mins * Seconds * Milliseconds
+                <?php } ?>
+                
+                cssdropdown.dropdownindicator = '<img src="<?= $this->basePath('images/down.gif'); ?>" border="0" />';
+                cssdropdown.startchrome('chromemenu');
+            <?php $this->inlineScript()->captureEnd(); ?>
+        </script>
+    </head>
+    <body>
+        <?php $csrf = new \Zend\Validator\Csrf(['name' => 'csrf', 'timeout' => 24 * 60 * 60]); ?>
+        <span id="csrfToken" class="hide"><?= $csrf->getHash()?></span>
+<!--HEADER BEGIN-->
+        <div id="container">
+            <div class='headingcontainer-rpt'>
+                <div class="siteName leftFloat logo">
+                    <a href="http://risk.lexisnexis.com" target="_blank">
+                        <img src="<?= $this->basePath('images/top_logo.gif');?>" alt="LexisNexis logo" border="0" title="LexisNexis" />
+                    </a>
+                </div>
+                <div class="siteName leftFloat">
+                    <div id="site-title">
+                        <h1 class="primary-site-title">&nbsp; eCrash &nbsp;</h1>
+                    </div>
+                </div>
+
+                <div class="siteName leftFloat">
+                    <div id="site-title-center">
+                        <h1><a style="text-align: center;font-size: large;"> Police Report Keying - Universal </a></h1>
+                    </div>
+                </div>
+
+                <div class="siteName rightFloat">
+                    <h2>
+                        <?php
+                            if ($user = $this->identity()) :
+                                echo 'Welcome ' . $user->username;
+                            endif
+                        ?>
+                    </h2>
+                    <div id="site-title">
+                        <h1>
+                            <?php if ($this->identity()) : ?>
+                                <a href="<?= $this->basePath(); ?>/">Home</a> |
+                                <a id="logout" href="<?= $this->basePath('logout')?>">Logout</a>
+                            <?php endif ?>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+<!--HEADER END-->
+            <div id="body" >
+                <table style="width: 100%;" class="cellpadding-0">
+                    <tr>
+                        <td class="menubg" id="chromemenu">
+                            <?php if ($this->identity()) : ?>
+                                <?= $this->mainMenu()->getMenus(); ?>
+                            <?php endif ?>
+                        </td>
+                    </tr>
+                </table>
+                <div class="headingcontainer-swoosh">
+                    <div class="rightFloat">
+                        <img src="<?= $this->basePath('images/ln-header-right-clr.gif'); ?>" width="418" height="34" alt="header seperator" />
+                    </div>
+                </div>
+                <div class='clear'></div>
+            </div>
+            
+            <?php
+                $flashMessenger = $this->flashMessenger();
+                $messageNamespaces = ['error', 'info', 'success', 'warning'];
+                $messages = [];
+                foreach($messageNamespaces as $messageNamespace) {
+                    if ($flashMessenger->hasMessages($messageNamespace)) {
+                        $messages[$messageNamespace] = $flashMessenger->getMessages($messageNamespace);
+                    } else {
+                        $messages[$messageNamespace] = [];
+                    }
+                    
+                    if ($flashMessenger->hasCurrentMessages($messageNamespace)) {
+                        $messages[$messageNamespace] = array_merge(
+                            $messages[$messageNamespace],
+                            $flashMessenger->getCurrentMessages($messageNamespace)
+                        );
+                        $messages[$messageNamespace] = array_unique($messages[$messageNamespace]);
+                    }
+                    
+                    $flashMessenger->clearMessages($messageNamespace);
+                    $flashMessenger->clearCurrentMessages($messageNamespace);
+                }
+                
+                $messages = array_filter($messages);
+                if (!empty($messages)) {
+                    echo $this->partial('partial/Messages.phtml',
+                        ['messages' => $messages, 'messageNamespaces' => $messageNamespaces]
+                    );
+                }
+            ?>
+            
+<!--CONTENT BEGIN-->
+            <div class="content text-center" id="bottomDistance">
+                <?= $this->layout()->content; ?>
+            </div>
+<!--CONTENT END-->
+
+            <div id="footer">
+                <div class="footer-curve">
+                    <img src="<?= $this->basePath(); ?>/images/footer-curve.gif" alt="Footer" width="403" height="37" />
+                </div>
+                <table class="cright table borderless">
+                    <tr>
+                        <td class="text-start">
+                            <div id="cright">
+                                <a href="http://www.lexisnexis.com/terms/copyright.aspx">Copyright</a> &copy; <?= date('Y');?> &nbsp;&nbsp;LexisNexis Risk Solutions. All rights reserved.
+                                <!-- @TODO: Move version into config file -->
+                                <span data-date_updated="12/01/2020">v3.7</span>
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <div id="cright">
+                                <a href="http://www.lexisnexis.com/terms/">Legal</a>&nbsp;&nbsp;
+                                <img src="<?= $this->basePath('images/sep.jpg');?>" height="10" alt="|" />&nbsp;&nbsp;
+                                <a href="http://www.lexisnexis.com/en-us/terms/privacy-policy.page">Privacy Policy</a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <?= $this->inlineScript(), "\n"; ?>
+    </body>
+</html>

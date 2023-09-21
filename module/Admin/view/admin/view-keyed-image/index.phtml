@@ -1,0 +1,295 @@
+<?php $this->headLink()
+    ->prependStylesheet($this->basePath('css/admin.css'))
+    ->prependStylesheet($this->basePath('library/datatables/dataTables.bootstrap.css'));
+    
+    $this->headScript()
+    ->appendFile($this->basePath('library/datatables/jquery.dataTables.1.10.15.min.js'))
+    ->appendFile($this->basePath('library/datatables/dataTables.bootstrap.1.10.15.js'))
+    ->appendFile($this->basePath('js/admin/user-list.js'))
+    ->appendFile($this->basePath('/js/admin/view-keyed-image.js'));
+
+    $title = 'LexisNexis';
+    $this->headTitle($title);
+?>
+<style type="text/css">
+    .ui-widget-content {
+        padding: 0.5em !important;
+    }
+
+</style>
+
+<div class="ui-widget-content ui-corner-all" style="width: 90%; text-align: left; padding: 0.2em;">
+    <h3>Report Search</h3>
+    <div class="ui-helper-clearfix">
+        <?php
+            $form = $this->form;
+            $form->setAttribute('action', $this->url('view-keyed-image'));
+            $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+            $form->prepare();
+            $operatorColSpan = ($this->isLNUser) ? 6 : 5;
+        ?>
+
+        <?= $this->form()->openTag($form); ?>
+        <?= $this->formElement($form->get('csrf'));?>
+        <table width="100%" cellspacing="5" cellpadding="0" border="0">
+            <tbody>
+                <tr>
+
+                    <td  class="contentgridarea" colspan="4" style="border: 1px solid rgb(226, 221, 222);">
+                        <table width="75%" cellspacing="5" cellpadding="0">
+                            <tr style="padding-bottom: 10px;">
+                                <td width="9%" align="right">
+                                    <?= $this->formLabel($form->get('cruOrderId')); ?>
+                                </td>
+                                <td width="25%" height="25" align="left">
+                                    <?= $this->formElement($form->get('cruOrderId')); ?>
+                                </td>
+                                <td width="8%" align="right">
+                                    <?= $this->formLabel($form->get('reportId')); ?>
+                                </td>
+                                <td width="25%" height="25" align="left">
+                                    <?= $this->formElement($form->get('reportId')); ?>
+                                </td>
+                                <td width="33%" height="25" align="left">
+                                    <label for="returnAllPasses">
+                                        <?= $this->formElement($form->get('returnAllPasses')); ?>
+                                        Include All Passes
+                                    </label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" align="left"><label style="margin-top:10px;">OR</label></td>
+                </tr>
+                <tr>
+                    <td class="contentgridarea" colspan="4" style="border: 1px solid rgb(226, 221, 222);">
+                        <table width="100%">
+                            <tr style="padding-bottom: 10px;">
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('processingStartTime')); ?>
+                                </td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('processingStartTime')); ?>
+                                </td>
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('processingEndTime')); ?>
+                                </td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('processingEndTime')); ?>
+                                </td>
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('stateId')); ?>
+                                </td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('stateId')); ?>
+                                </td>
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('agencyId')); ?>
+                                </td>
+                                <td align="left" id="agencyIdDec">
+                                    <?= $this->formElement($form->get('agencyId')); ?>
+                                </td>
+                            </tr>
+
+                            <tr style="padding-bottom: 10px;">
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('vin')); ?>
+                                </td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('vin')); ?>
+                                </td>
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('licensePlate')); ?>
+                                </td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('licensePlate')); ?>
+                                </td>
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('caseIdentifier')); ?>
+                                </td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('caseIdentifier')); ?>
+                                </td>
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('reportType')); ?>
+                                </td>
+                                <td id="agencyIdDec" align="left">
+                                    <?= $this->formElement($form->get('reportType')); ?>
+                                </td>
+                            </tr>
+
+                            <tr style="padding-bottom: 10px;">
+                                <td align="right"><?= $this->formLabel($form->get('crashDate')); ?></td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('crashDate')); ?>
+                                </td>
+                                <td align="right">
+                                    <?= $this->formLabel($form->get('registrationState')); ?>
+                                </td>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('registrationState')); ?>
+                                </td>
+                                <td colspan="4"></td>
+                            </tr>
+
+                            <tr style="padding: 10px;">
+                                <table width="100%" style=" margin-top:10px;">
+                                    <tr>
+                                        <td colspan="4" style="border: 1px solid rgb(226, 221, 222); padding: 10px;">
+                                            <table>
+                                                <tr>
+                                                    <td colspan="4" align="left"><label>Party</label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">
+                                                        <?= $this->formLabel($form->get('partyLastName')); ?>
+                                                    </td>
+                                                    <td align="left">
+                                                        <?= $this->formElement($form->get('partyLastName')); ?>
+                                                    </td>
+                                                    <td align="right">
+                                                        <?= $this->formLabel($form->get('partyFirstName')); ?>
+                                                    </td>
+                                                    <td align="left">
+                                                        <?= $this->formElement($form->get('partyFirstName')); ?>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td colspan="<?= $operatorColSpan; ?>" style="border: 1px solid rgb(226, 221, 222); padding: 10px;">
+                                            <table>
+                                                <tr>
+                                                    <td colspan="<?= $operatorColSpan; ?>" align="left"><label>Operator</label></td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">
+                                                        <?= $this->formLabel($form->get('operatorLastName')); ?>
+                                                    </td>
+                                                    <td align="left">
+                                                        <?= $this->formElement($form->get('operatorLastName')); ?>
+                                                    </td>
+                                                    <td align="right">
+                                                        <?= $this->formLabel($form->get('operatorFirstName')); ?>
+                                                    </td>
+                                                    <td align="left">
+                                                        <?= $this->formElement($form->get('operatorFirstName')); ?>
+                                                    </td>
+                                                    <?php if ($this->isLNUser): ?>
+                                                    <td align="right">
+                                                        <?= $this->formLabel($form->get('keyingVendorId')); ?>
+                                                    </td>
+                                                    <?php endif; ?>
+                                                    <td align="left">
+                                                        <?= $this->formElement($form->get('keyingVendorId')); ?>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </tr>
+
+                            <tr>
+                                <td colspan="4" align="left">
+                                    &nbsp;
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="left">
+                                    <?= $this->formElement($form->get('submit')); ?>    
+                                </td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- End Form -->
+        <?php if (isset($this->paginator)): ?>
+            <table>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+
+            <?php if (count($this->paginator) > 0) : ?>
+
+                <table  width="80%" align="right" style="" border="0">
+                    <tr>
+                        <td align="right">
+                            <a href="<?php echo $this->url('view-keyed-image', ['action' => 'export'], [
+                            'query' => array_merge(['downloadType' => 'xls'], $this->paginatorParams)
+                            ]); ?>" class="link">Export To Excel</a>
+
+                            <a href="<?php echo $this->url('view-keyed-image', ['action' => 'export'], [
+                            'query' => array_merge(['downloadType' => 'pdf'], $this->paginatorParams)
+                            ]); ?>" class="link">Export To PDF</a>
+                        </td>
+                    </tr>
+                </table>
+                <h3 align="left">Results</h3>
+                <?php 
+                    $columns = [
+                        'stateName' => 'State',
+                        'agencyName' => 'Agency',
+                        'reportId' => 'Report ID',
+                        'cru_order_id' => 'CRU Order ID',
+                        'caseIdentifier' => 'Report Number',
+                        'operatorName' => 'Operator Name',
+                        'driverName' => 'Party Name',
+                        'vin' => 'VIN #',
+                        'crashDate' => 'Incident Date'
+                    ];
+                    
+                    if ($this->isLNUser) {
+                        $columns['vendorName'] = 'Company';
+                    }
+
+                    echo $this->reportMaker->output(
+                        'html',
+                        $this->paginator,
+                        $columns,
+                        $this->paginatorParams,
+                        null,
+                        ['adminUserTable'],
+                        ['fields' => ['reportId']],
+                        'viewKeyedImagesResults'
+                    );
+                ?>
+
+            <?php elseif (!is_null($this->paginator)): ?>
+                <strong>No Matches Found</strong>
+            <?php endif; ?>
+
+        <?php endif; ?>
+    </div>
+</div>
+
+<script type="text/javascript"><?php $this->inlineScript()->captureStart(); ?>
+    $(function() {
+        $( ".hasCalendar" ).datepicker({ dateFormat: 'yy-mm-dd' }); 
+        $('#selectWorkType').submit(function() {
+            $('#submit')
+            .css('background-color', 'silver')
+            .val('Processing...')
+            .attr('disabled', 'disabled');
+            $("#selectWorkType #workType").removeAttr('disabled');
+        });
+    })
+
+    $("#selectWorkType #addKeying").change(function() {
+        if ($(this).val() == 1) {
+            $("#selectWorkType #workType").val('1');
+            $("#selectWorkType #workType").attr('disabled', 'disabled');
+        } else {
+            $("#selectWorkType #workType").removeAttr('disabled');
+        }
+    });  
+<?php $this->inlineScript()->captureEnd(); ?></script>

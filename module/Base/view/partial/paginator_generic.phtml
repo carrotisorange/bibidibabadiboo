@@ -1,0 +1,81 @@
+<style type="text/css">
+    #pagination li a {
+        width: auto !important;
+        height: auto !important;
+    }
+    #pagination li a.active {
+        width: auto !important;
+        height: auto !important;
+    }
+</style>
+
+<ul id="pagination">
+    <?php
+    $class = 'first';
+    unset($extraParams['page']);
+    $href = $this->url($this->route, [], ['query'=> array_merge(['page'=>$this->first], $extraParams)]);
+    if (!isset($this->previous)):
+        $class .= ' disabled';
+        $href = 'javascript:void(0);';
+    endif;
+    ?>
+    <li>
+        <a class="<?= $class; ?>" href="<?= $href; ?>" title="Go to First Page">First</a>
+    </li>
+    <?php
+    $class = 'prev';
+    $href = $this->url($this->route, [], ['query'=> array_merge(['page'=>$this->previous], $extraParams)]);
+    if (!isset($this->previous)):
+        $class .= ' disabled';
+        $href = 'javascript:void(0);';
+    endif;
+    ?>
+    <li>
+        <a class="<?= $class; ?>" href="<?= $href; ?>" title="Go to Previous Page">
+            Prev
+        </a>
+    </li>
+    <?php
+    foreach ($this->pagesInRange as $page):
+        $class = 'page';
+        if ($page == $this->current):
+            $class .= ' active';
+            $href = 'javascript:void(0);';
+        else:
+            $href = $this->url($this->route, [], ['query'=> array_merge(['page'=>$page], $extraParams)]);
+        endif;
+        ?>
+        <li>
+            <a class="<?= $class; ?>" href="<?= $href; ?>" title="Go to Page <?= $page; ?>">
+                <?= $page; ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+
+    <?php
+    $class = 'next';
+    $href = $this->url($this->route, [], ['query'=> array_merge(['page'=>$this->next], $extraParams)]);
+    if (!isset($this->next)):
+        $class .= ' disabled';
+        $href = 'javascript:void(0);';
+    endif;
+    ?>
+    <li>
+        <a class="<?= $class; ?>" href="<?= $href; ?>" title="Go to Next Page">
+            Next
+        </a>
+    </li>
+    <?php
+    $class = 'last';
+    $href = $this->url($this->route, [], ['query'=> array_merge(['page'=>$this->last], $extraParams)]);
+    if (!isset($this->next)):
+        $class .= ' disabled';
+        $href = 'javascript:void(0);';
+    endif;
+    ?>
+    <li>
+        <a class="<?= $class; ?>" href="<?= $href; ?>" title="Go to Last Page">
+            Last
+        </a>
+    </li>
+</ul>

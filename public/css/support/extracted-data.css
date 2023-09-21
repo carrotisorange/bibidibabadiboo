@@ -1,0 +1,109 @@
+#enumeration_map {
+	background-color: #BBBBBB;
+    border: 1px solid #CCCCCC;
+	margin: 2px;
+}
+
+#enumeration_map table td {
+	width: 20%;
+}
+
+#moneyFieldsContent table td {
+	width: 30%;
+}
+
+.clear {
+	clear: both;
+}
+
+#moneyFieldsContent {
+	background-color: #BBBBBB;
+    border: 1px solid #CCCCCC;
+	width: 49%;
+	margin: 2px;
+	float: left;
+}
+.extractedData {
+	background-color: #BBBBBB;
+    border: 1px solid #CCCCCC;
+    float: left;
+    width: 32%;
+    margin: 2px;
+}
+
+h2 {
+	background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    margin: 10px 2px 2px 2px;
+    cursor: pointer;
+}
+
+table {
+	width: 100%;
+	border-spacing: 1px;
+}
+
+table td {
+	border: 1px solid #EEE;
+}
+
+table tr.error {
+	outline: 1px solid red;
+}
+
+table tr.hover {
+	background-color:#EFF;
+	border-bottom: 1px solid #ADD;
+	border-top: 1px solid #ADD;
+
+}
+
+table tr.error.hover {
+	background-color: #FCD084
+}
+
+table tr.error td.field {
+	color: red;
+}
+
+table td.field {
+	font-weight: bolder;
+	font-size: 11px;
+}
+
+div.extractedData table td {
+	width: 50%;
+}
+
+#errors {
+	border: 2px solid #CCCCCC;
+	font-size:10px;
+	margin-top:5px;
+}
+
+.error {
+	border: 1px solid #DDD;
+	margin: 1px;
+	padding: 2px;
+}
+
+.error.ERROR {
+	font-size: 11px;
+	border: 1px solid #F00;
+	background-color: #FC8888;
+	color: #500;
+	font-weight: bolder;
+}
+
+.error.CRITICAL {
+	font-size: 12px;
+	border: 1px solid #F00;
+	background-color: #000;
+	color: #F00;
+	font-weight: bolder;
+}
+
+.error .level, .error .message {
+	font-weight: bolder;
+	padding: 0px 1px;
+}

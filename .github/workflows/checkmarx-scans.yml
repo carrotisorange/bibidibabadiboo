@@ -1,0 +1,29 @@
+# This workflow is to automate Checkmarx SAST scans and MED scans.  It runs on a push to the main branch.
+#
+# For full documentation, including a list of all inputs, please refer to the README https://github.com/LexisNexis-RBA/bsuk-github-security/.github/workflows/app-check.yml@
+
+name: Checkmarx CxFlow Action
+on:
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: on-prem
+    steps:
+    
+    - uses: actions/checkout@v3
+    - name: Checkmarx CxFlow Action
+      uses: LexisNexis-RBA/risk-seceng-CheckmarxGitHubAction@v2.0.0
+      with:
+        project: keyingapp
+        team: /CxServer/SP/Risk/eCrash
+        checkmarx_url: https://alawpcxmgr201.risk.regn.net/
+        checkmarx_username: ${{ secrets.CHECKMARX_USER }}
+        checkmarx_password: ${{ secrets.CHECKMARX_PASS }}
+        checkmarx_client_secret: ${{ secrets.CHECKMARX_CLIENT_SECRET }}
+        incremental: true
+        scanners: sast
+        params: --namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.head_ref }} --merge-id=${{ github.event.number }} --commit-id=${{ github.sha }} --cx-flow.filterSeverity --cx-flow.filterCategory --cx-flow.zip-exclude="\.git\/.*,\.github\/.*"

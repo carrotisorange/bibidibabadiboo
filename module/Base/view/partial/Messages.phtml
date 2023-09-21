@@ -1,0 +1,62 @@
+<?php
+/**
+ * Basic partial for notifications
+ *
+ * Will accept messages in the following formats:
+ *
+ * - Form element errors typically from form->getMessages() (always show as 'error')
+ * array (
+ *      'elementName' => array(
+ *          "Error message here"
+ *      )
+ * )
+ * If you want any other type of class to be applied to the notice you will have to
+ * re-map it since this format doesn't support display class names.
+ * NOTE: Form errors already show up inline in most cases so you do not HAVE
+ * to use this partial for those.
+ *
+ * - Class messages
+ * array (
+ *      array('info' => 'some info message')
+ * )
+ * This format is compatible with flashmessenger
+ *      $this->_helper->flashMessenger->addMessage(array('info'=>'some info message'));
+ * It wont use the 'info' itself but it will come back in this format from
+ *      $this->_helper->flashMessenger->getCurrentMessages()
+ * and can be used here.
+ *
+ * - Just messages (will default to 'info')
+ * array (
+ *      array( 'some info message')
+ * )
+ */
+
+if (!empty($this->messages)) {
+    $this->messageNamespaces = (!empty($this->messageNamespaces)) ? $this->messageNamespaces : [];?>
+    
+    <ul class="messages">
+        <?php foreach ($this->messages as $key => $message) {
+            $class = 'info';
+            
+            if (!is_array($message)) {
+                $message = [$message];
+            }
+            
+            if ((is_string($key)) && (in_array($key, $this->messageNamespaces))) {
+                $class = $key;
+            } elseif (!is_numeric($key)) {
+                // $key here will be an element name for form errors
+                $class = 'error';
+            } elseif (!is_numeric(key($message))) {
+                $class = key($message);
+            }
+            
+            foreach($message as $value) {
+        ?>
+                <li class="<?= $class; ?>">
+                    <strong><?= strtoupper($class); ?>:</strong>&nbsp;&nbsp;<?= $value; ?>
+                </li>
+            <?php }?>
+        <?php }?>
+    </ul>
+<?php } ?>

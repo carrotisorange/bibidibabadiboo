@@ -1,0 +1,276 @@
+<?php
+use Base\Service\FormService;
+
+$this->headLink()
+    ->prependStylesheet($this->basePath() . '/css/form-logic.css')
+    ->prependStylesheet($this->basePath() . '/library/bootstrap/css/bootstrap.min.css')
+    ->prependStylesheet($this->basePath() . '/library/font-awesome-4.7.0/css/font-awesome.min.css');
+$this->headScript()
+    ->appendFile($this->basePath('/js/init-form-objects.js'))
+    ->appendFile($this->basePath('/js/common/form-templates.js'))
+    ->appendFile($this->basePath('/library/input-mask-js/input-mask.js')) // js mask
+    ->appendFile($this->basePath('/library/date-format-js/dateFormat.js')) // js date format
+    ->appendFile($this->basePath('/js/common/close-form.js'))
+    ->appendFile($this->basePath('/js/universal.js'))
+    ->appendFile($this->basePath('/js/common/utility.js'));
+
+$this->headScript()
+        ->appendFile($this->basePath('/js/universal/close-form.js'))
+        ->appendFile($this->basePath('/js/form-logic.js'))
+        ->appendFile($this->urlHelper()->urlSimple('value-list', 'report-entry', 'data'));
+
+    
+        $this->headLink()->appendStylesheet($this->basePath('/css/universal-sectional.css'));
+        $this->headScript()
+            ->appendFile($this->basePath('/library/jquery/jquery.resizecomplete.js'))
+            ->appendFile($this->basePath('/library/jquery/jquery.scrolltab.js'))
+            ->appendFile($this->basePath('/js/universal-sectional.js'));
+    
+    $this->headScript()
+        ->appendFile($this->basePath('/js/setFieldFocus.js'))
+        ->appendFile($this->basePath('/library/page_sort/sort_page.js')); 
+
+$this->headLink()
+	->prependStylesheet($this->basePath('/library/page_sort/sort_page.css'));
+?>
+
+<form id="formContainer" method="POST"
+        action="<?php echo $this->urlHelper()->urlSimple('save', 'report-entry', 'data', [], null, true); ?>" autocomplete="off">
+    <input type="hidden" name="reportId" id="reportId" value="<?php echo $this->reportId; ?>" />
+    <?= $this->formElement($this->csrf); ?>
+    <input type="hidden" id="entryFlow" value="<?= $this->entryFlow; ?>" />
+    <input type="hidden" id="entryStage" name="entryStage" value="<?= $this->entryStage; ?>" />
+    <input type="hidden" id="hasNotes" value="<?= (int)$this->hasNotes; ?>" />
+    <?php if($this->entryStage == 'all') { ?>
+        <input type="hidden" name="hasAutoExtracted" id="hasAutoExtracted" value="<?= (int)$this->hasAutoExtracted; ?>" />
+        <input type="hidden" name="hasAutoKeyed" id="hasAutoKeyed" value="<?= (int) $this->hasAutoKeyed; ?>">
+    <?php } ?>
+    <input type="hidden" name="showAutoExtractionAlert" id="showAutoExtractionAlert" value="<?= (int) $this->showAutoExtractionAlert; ?>">
+    <input type="hidden" id="readOnlyForm" value="<?= (!empty($this->readOnlyForm)) ? $this->readOnlyForm : ''; ?>" />
+    <input type="hidden" name="alternativeFormId" id="alternativeFormId" value="<?= $this->alternativeFormId; ?>" />
+    <div id="formPages">
+    <div class="formPages-header">
+        <div class="container">
+        <div class="row formsavetab">
+        <div class="col-5">
+        <?php foreach ($this->renderButtons as $button => $available):
+          switch ($button): 
+          case 'pageAdd': ?>
+              <span>
+                <a class="btn btn-default"  name="formPageAdd" id="formPageAdd" tabIndex="9999" title="Add" <?php if (!$available) echo 'disabled="disabled"'; ?>><i class="fa fa-user-plus" aria-hidden="true"></i></a>
+              </span><?php break; ?>
+          <?php case 'save': ?>
+              <span>
+                <a class="btn btn-default" name="formSubmit" id="formSubmit" tabIndex="10000" title="Save" <?php 
+                  /**@TODO: This should not be in an html onclick in display.phtml. It needs to be moved later. **/
+                  if ($this->refreshParentOnSaveAction): ?>
+                  onClick="$(window).unload(function () {
+                      window.reportEntry.setAllowUnload(true);
+                      window.location.reload();
+                  })"
+              <?php endif; ?>
+
+              <?php 
+                  /**@TODO: This should not be in an html onclick in display.phtml. It needs to be moved later. **/
+                  /* if ($this->refreshParentOnSaveAction): 
+                ?>
+                  onClick="$(window).unload(function () {
+                      window.parent.opener.reportEntry.setAllowUnload(true);
+                      window.parent.opener.location.reload();
+                  })"
+              <?php endif; */ ?>
+              <?php if (!$available) echo 'disabled="disabled"'; ?>>
+                  Save
+                </a>
+              <!-- <input type="button" name="formSubmit" id="formSubmit" tabIndex="10000" value="Save" /> -->
+              </span><?php break; ?>
+          <?php case 'bad': ?>
+              <span>
+                <a class="btn btn-default" name="formBadImage" id="formBadImage" tabIndex="10006" title="Bad" <?php if (!$available) echo 'disabled="disabled"'; ?> >
+                  Bad
+                </a>
+                <!-- <input type="button" name="formBadImage" id="formBadImage" tabIndex="10006" value="Bad" -->
+                <!-- <?php if (!$available) echo 'disabled="disabled"'; ?> /> -->
+              </span><?php break; ?>
+          <?php case 'rekey': ?>
+              <span>
+                <a class="btn btn-default" name="formRekeyImage" id="formRekeyImage" tabIndex="10012" title="Rekey" <?php if (!$available) echo 'disabled="disabled"'; ?>>
+                  <i class="fa fa-repeat" aria-hidden="true"></i>
+                </a>
+                <!-- <input type="button" name="formRekeyImage" id="formRekeyImage" -->
+              <!-- tabIndex="10012" value="Rekey" -->
+              <!-- <?php if (!$available) echo 'disabled="disabled"'; ?> /> -->
+              </span>
+              <?php break; ?>
+          <?php case 'discard': ?>
+              <span>
+                <a class="btn btn-default" name="formDiscardImage" id="formDiscardImage" tabIndex="10018" title="Discard" <?php if (!$available) echo 'disabled="disabled"'; ?> >
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </a>
+              </span><?php break; ?>
+          <?php case 'reorder': ?>
+              <span>
+                <a class="btn btn-default" name="formReorderImage" id="formReorderImage" tabIndex="10024" title="Save Reorder Image" <?php if (!$available) echo 'disabled="disabled"'; ?> >
+                  <i class="fa fa-files-o" aria-hidden="true"></i>
+                </a>
+                
+              </span><?php break; ?>
+          <?php case 'notes': ?>
+              <span>
+                <a class="btn btn-default" name="formNotes" id="formNotes" tabIndex="10036" title="Notes" <?php if (!$available) echo 'disabled="disabled"'; ?>>
+                  Notes
+                </a>
+              
+              </span><?php break; ?>
+          <?php case 'notesViewOnly': ?>
+              <span>
+                <a class="btn btn-default" name="formNotesViewOnly" id="formNotesViewOnly" tabIndex="10036" title="View Notes" <?php if (!$available) echo 'disabled="disabled"'; ?>>
+                  <i class="fa fa-eye" aria-hidden="true"></i>
+                </a>
+              </span><?php break; ?>
+          <?php case 'exit': ?>
+              <span>
+                <a class="btn btn-default" name="formExit" id="formExit" tabIndex="10030" title="Exit" <?php if (!$available) echo 'disabled="disabled"'; ?> >
+                  Exit
+                </a>
+              </span><?php break; ?>
+            <?php case 'clear': ?>
+          <span>
+            <a class="btn btn-default" name="formClear" id="formClear" tabIndex="10036" title="Clear" <?php if (!$available) echo 'disabled="disabled"'; ?>>
+                  Clear
+                </a>            
+          </span><?php break; ?>
+          <?php case 'pageForward': ?>
+              <span>
+                <a class="btn btn-default" name="formPageForward" id="formPageForward" tabIndex="9998" title="Page Forward" <?php if (!$available) echo 'disabled="disabled"'; ?> >
+                  <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </a>
+              </span><?php break; ?>
+          <?php case 'pageBack': ?>
+              <span>
+                <a class="btn btn-default" name="formPageBack" id="formPageBack" tabIndex="1" title="Back" <?php if (!$available) echo 'disabled="disabled"'; ?> >
+                  <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </a>
+              </span><?php break; ?>
+          <?php case 'formTemplates': ?>
+              <span>
+                <a class="btn btn-default" title="Form Template" name="formTemplates" id="formTemplates" tabIndex="9998" <?php if (!$available) echo 'disabled="disabled"'; ?>>
+                  <i class="fa fa-id-card-o" aria-hidden="true"  alt="Form Templates"></i>
+                </a>
+              </span><?php break; ?>
+          <?php endswitch; endforeach; ?>
+        </div>
+        <div class="col-7 text-end">
+            <label class="formCheckbox">
+                <input type="checkbox" name="element16_field" id="element16_field" value="updated" checked="checked" /> 
+                <span> 16 form Elements&nbsp;</span>
+            </label>
+            <label class="formCheckbox">
+                <input type="checkbox" name="checkUpdated" id="checkUpdated" value="updated"<?php if ($this->updated) echo ' checked="checked"'; ?> />
+                <span > Corrected/Updated Report&nbsp;</span>
+            </label>
+            <label class="formCheckbox">
+                <input type="checkbox" name="checkFormMismatch" id="checkFormMismatch" value="formMismatch"<?php if ($this->formMismatch) echo ' checked="checked"'; ?> /> 
+                <span>Keying Template Mismatch</span>
+            </label>
+            <?php if (isset($this->reportNumFormat)) : ?>
+              <div id="reportNumFormat">
+                  <div id="reportNumFormatLbl">Report Number Format:</div>
+                  <div id="reportNumFormatTxt"><?php echo $this->reportNumFormat; ?></div>
+              </div>
+            <?php endif; ?>
+            <?php if($this->entryStage == 'all' && $this->hasAutoExtracted == 1) { ?>
+                <div class="handwritten-image">
+                    Handwritten
+                    <label>
+                        <input type="radio" name="imageHandwritten" value="1"> Yes
+                    </label>
+                    <label>
+                        <input type="radio" name="imageHandwritten" value="" checked> No
+                    </label>
+                </div>
+            <?php }?>
+        </div>
+      </div>
+      <div class="row formsavetab">
+        <div id="crudata">
+            <?php if (!empty($this->cruOrderId)) { ?>
+                <div class="col-sm-6 p-1 pull-left">
+                    CRU Order ID <input type="text" id="cruOrderId" name="cruOrderId" value="<?php echo $this->cruOrderId; ?>" readonly="readonly" />
+                </div>
+                <div class="col-sm-6 p-1 pull-right">
+                    Sequence Nbr: <input type="text" id="cruSequenceNbr" name="cruSequenceNbr" value="<?php echo $this->cruSequenceNbr; ?>" readonly="readonly" />
+                </div>
+            <?php } ?>
+        </div>
+      </div>
+      <div class="row formsavetab" >
+        <?php if ((!empty($this->reportIsObsolete))) { ?>
+            <div class="col-sm-12" style="color: red !important;">Obsoleted by report
+                <?php echo $this->reportObsoletedBy; ?>.
+            </div>
+        <?php } ?>
+      </div>
+    </div>
+    </div>
+
+	
+<?php   
+	//@TODO: Double check is it the silverlight related stuff
+	if (isset($this->pageData['additionalHtml']) && strpos($this->pageData['additionalHtml'], 'silverlight') !== FALSE) :  
+            $pageHeightModificationLines = [];
+        endif;
+        foreach ($this->pageData['pageContents'] as $pageNumber => $pageContent): 
+	    //@TODO: Double check is it the silverlight related stuff
+	    // For Silverlight forms, create lines of jQuery code to handle resizing of each page to browser window.
+            if (isset($pageHeightModificationLines)) :
+                $pageHeightModificationLines[] = "$('#page-" . $pageNumber . "').height(($(window).height() - $('#formStatus').height() - $('#crudata').height() - 40) + \"px\");"; 
+            endif; ?>
+<?php $style = ($pageNumber > 0) ? ' style="display: none;"' : ''; ?>
+    <div id="page-<?= $pageNumber; ?>" class="form-page"<?= $style; ?>>
+        <input type="hidden" name="_pages[<?= $pageNumber; ?>]" value="<?= $this->pageData['baseNames'][$pageNumber]; ?>" />
+        <?= $pageContent; ?>
+
+    </div>
+<?php endforeach;?>
+</div>
+
+<?php 
+//@TODO: Double check is it the silverlight related stuff
+if (isset($pageHeightModificationLines)) : ?>
+<script type="text/Javascript">
+    $(document).ready(function(){
+        $(window).resize(function(){
+            <?= implode("\r\n\t\t\t", $pageHeightModificationLines) . "\r\n"; ?> // jQuery lines to resize pages are created dynamically above.
+        });
+        $(window).resize();
+    });
+</script>
+<?php endif; ?>
+<div id="formStatus" style="clear: both;">
+    <div style="float: right;">Report Id: <?= $this->reportId; ?></div>
+    <div style="float: left;">Form: <?= $this->formName; ?></div>
+    <?php if (isset($this->additionalFooterData)) : ?>
+        <div style="float: right;">
+            Report Keyed By: <?= $this->additionalFooterData['userFullName']; ?>
+            &lt;<?= $this->additionalFooterData['userLoginId']; ?>&gt;
+            (<?= $this->additionalFooterData['PassExternalName']; ?>)
+            Completed Date: <?= $this->additionalFooterData['completedDate']; ?> |
+            &nbsp;
+        </div>
+    <?php endif; ?>
+<?php if (!empty($this->agencyName)): ?>
+    <div>Agency: <?= $this->agencyName; ?></div>
+<?php endif; ?>
+</div>
+</form>
+
+<?php
+    if (isset($this->pageData['additionalScript'])) :
+        $this->inlineScript()->appendScript($this->pageData['additionalScript']);
+    endif;
+    
+    if (isset($this->pageData['additionalHtml'])) :
+        echo $this->pageData['additionalHtml']; 
+    endif;
+?>

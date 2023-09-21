@@ -1,0 +1,150 @@
+	#notices {
+		border: 2px solid #000;
+		height: 300px;
+		overflow: auto;
+		font-size:10px;
+		margin-top:5px;
+	}
+	#xsl {
+		border: 1px solid #000;
+		margin-top:5px;
+		background-color:#EEE;
+	}
+	#xsl pre {
+		height: 360px;
+		overflow: auto;
+		background-color:#FFF;
+		margin:0px;
+	}
+	#xsl .controls {
+		display:inline-block;
+	}
+	
+	.notice {
+		border: 1px solid #DDD;
+		margin: 1px;
+		padding: 2px;
+	}
+	.notice.ERROR {
+		font-size:11px;
+		border:1px solid #F00;
+		background-color:#FC8888;
+		color:#500;
+		font-weight: bolder;
+	}
+	.notice.CRITICAL {
+		font-size:12px;
+		border:1px solid #F00;
+		background-color:#000;
+		color:#F00;
+		font-weight: bolder;
+	}
+	
+	.notice.INFO, .notice.NOTICE {
+		border:1px solid #4A4;
+		background-color:#DFD;
+		color:#040;
+	}
+	
+	.notice.WARNING {
+		border:1px solid #FF9100;
+		background-color: #FFC982;
+		color: #4A2F0C;
+	}
+	
+	.notice.DEBUG {
+		border:1px solid #CCC;
+		background-color:#EEE;
+		color:#333;
+	}
+	
+	
+	.notice .section, .notice .level, .notice .source {
+		font-weight: bolder;
+		padding: 0px 1px;
+	}
+	
+	#controls {
+		border: 1px solid #CCC;
+		padding: 5px;
+	}
+	#controls label {
+	
+		height:100%;
+		background-color: #EEE;
+		border:1px solid #DDD;
+		padding: 5px;
+		margin: 2px;
+		
+		display: inline-block;
+	
+		font-weight:bold;
+	}
+	#controls label input {
+		border: 1px solid #555;
+	
+		font-weight:bold;
+	}
+	
+	#controls label input[type="file"] {
+		background-color:#FFF;
+		padding:2px;
+	}
+	
+	#controls input[type="submit"] {
+		background-image:none;
+		background-color:#DED;
+		border: 2px solid #686;
+		padding: 8px;
+	}
+	#controls input[type="submit"]:hover {
+		background-color:#CFC;
+		border-color:#3A3;
+	}
+	
+	#controls label.required {
+		border:1px solid #000;
+	}
+	
+	#controls label.disabled {
+		display:none;
+	}
+	
+	#controls select[name="formId"] optgroup{
+		background-color:#666;
+		color:#FFF;
+	}
+	
+	#controls select[name="formId"] option.iyetek {
+		background-color:#EEF;
+		color:#000;
+	}
+	
+	#controls select[name="formId"] option.universal {
+		background-color:#EFE;
+		color:#000;
+	}
+	
+	#notice-filter label {
+		border: 1px solid #CCC;
+		margin: 2px;
+		background-color:#EEE;
+		padding:3px;
+	}
+	
+	#xsl .controls #xsl-select-all {
+		border:1px solid #999;
+		margin:2px;
+		
+	}
+	#xsl .controls #xsl-select-all:hover {
+		border:1px solid #696;
+		background-color:#ADA;
+		cursor:pointer;
+	}
+	
+	#notice-filter label {
+		border:1px solid #DDD;
+		padding:2px;
+		background-color:#EEE;
+	}

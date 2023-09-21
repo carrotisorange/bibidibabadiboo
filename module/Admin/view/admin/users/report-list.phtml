@@ -1,0 +1,21 @@
+<?php foreach ($this->reports as $report): ?>
+    <tr style="height:3%" id="TR_<?= $report['reportId']; ?>">
+        <td style="width: 5%;color: <?= $this->isAssigned ? 'black' : 'blue'; ?>">            
+                <?= $report['reportId']; ?>            
+            <?php if( $this->isAssigned ) :?>
+                <input name="reportIdAssigned[]" value="<?= $report['reportId']; ?>" type="hidden" />
+            <?php endif?>
+        </td>
+        <td style="width: 5%"><?= $report['stateAbbr']; ?></td>
+        <td style="width: 10%"><?= $report['formName']; ?></td>
+        <td style="width: 10%"><?= $report['agencyName']; ?></td>
+        <td style="width: 10%"><?= $report['workTypeExternal']; ?></td>
+        
+        <td style="width: 5%">
+            <?= (isset($report['assignedDate']) && !empty($report['assignedDate'])) ? date('Y-m-d', strtotime($report['assignedDate'])) : date('Y-m-d'); ?>
+        </td>
+        <td style="width: 5%">
+            <input type="checkbox" name="reportIdToAssign[]" class="cbox_assigned_reports" value="<?= $report['reportId']; ?>" <?= $this->isAssigned ? 'checked' : ''; ?>>
+        </td>
+    </tr>
+<?php endforeach; ?>

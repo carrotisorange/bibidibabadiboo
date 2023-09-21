@@ -1,0 +1,118 @@
+<?php 
+    $this->headLink()->appendStylesheet($this->basePath('css/metrics.css'));
+?>
+
+<script type="text/javascript">
+    $(function(){
+        stripeTable($('table.default'));
+        $( ".hasCalendar" ).datepicker(); 
+    });
+</script>
+
+<h1>Operator by Agency Stats</h1>
+
+<?php
+    $form = $this->form;
+    $form->setAttribute('action', $this->url('metrics', ['action' => 'operator-by-agency-stats']));
+    $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+    $form->setAttribute('class', 'default');
+    $form->prepare();
+?>
+
+<?= $this->form()->openTag($form); ?>
+<?= $this->formElement($form->get('csrf'));?>
+<fieldset>
+    <legend>Date</legend>
+    <div class="field-label-group"><?= $this->formLabel($form->get('fromDate')); ?><?= $this->formElement($form->get('fromDate')); ?></div>
+    <div class="field-label-group"><?= $this->formLabel($form->get('toDate')); ?><?= $this->formElement($form->get('toDate')); ?></div>
+</fieldset>
+
+<fieldset>
+    <legend>Operator</legend>
+    <div class="field-label-group"><?= $this->formLabel($form->get('lastName')); ?><?= $this->formElement($form->get('lastName')); ?></div>
+    <div class="field-label-group"><?= $this->formLabel($form->get('firstName')); ?><?= $this->formElement($form->get('firstName')); ?></div>
+    <div class="field-label-group"><?php if ($this->isLNUser): ?><?= $this->formLabel($form->get('keyingVendorId')); ?><?php endif; ?>
+    <?= $this->formElement($form->get('keyingVendorId')); ?></div>
+</fieldset>
+
+<?= $this->formElement($form->get('submit')); ?>
+<br/>
+
+<div class="result">
+    <?php 
+    if (isset($this->paginator)): 
+        $headerString = getHeaderString(
+            $form->get('fromDate')->getValue(),
+            $form->get('toDate')->getValue(),
+            $form->get('firstName')->getValue(),
+            $form->get('lastName')->getValue()
+        );
+        ?>
+        <span class="headerString"><?= $headerString; ?></span>
+        <?php if ($this->paginator->getCurrentItemCount() == 0): ?>
+            No Results
+        <?php 
+        else:
+            $exportUrl = $this->url('metrics', ['action' => 'operator-by-agency-stats'], [
+                'query' => array_merge(['downloadType' => $format], $this->paginatorParams)
+            ]);
+            ?>
+            <table class="default">
+                <thead>
+                    <tr>
+                        <?php foreach ($this->columns as $label): ?>
+                        <th><?= $label; ?></th>
+                        <?php endforeach; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->paginator as $row): ?>
+                    <tr>
+                        <?php foreach ($this->columns as $key => $label): ?>
+                            <td><?= $row[$key]; ?></td>
+                        <?php endforeach; ?>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>
+                    <td colspan="<?= count($this->columns); ?>">
+                        <?= $this->paginationControl($this->paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $this->paginatorParams]); ?>
+                    </td>
+                </tfoot>
+            </table>
+            <div class="export">
+                <a href="<?= $exportUrl;?>"> Export To Excel </a>
+            </div>
+            <?php 
+        endif;
+    endif;
+    ?>
+</div>
+
+<?php
+function getHeaderString($dateStart, $dateEnd, $nameFirst, $nameLast)
+{
+    $nameOperator = getOperatorNameString($nameFirst, $nameLast);
+    $dateStringStart = empty($dateStart) ? 'all' : $dateStart;
+    $dateStringEnd = empty($dateEnd) ? 'now' : $dateEnd;
+    return 'Results for <b>' . $dateStringStart . '</b> until <b>' . $dateStringEnd . '</b> for ' . $nameOperator;
+}
+
+function getOperatorNameString($nameFirst, $nameLast)
+{
+    $nameOperator = 'any operator';
+
+    if (!empty($nameFirst) && empty($nameLast)) {
+        $nameOperator .= ' with the first name <b>' . $nameFirst . '</b>';
+    }
+    elseif (empty($nameFirst) && !empty($nameLast)) {
+        $nameOperator .= ' with the last name <b>' . $nameLast . '</b>';
+    }
+    elseif (!empty($nameFirst) && !empty($nameLast)) {
+        $nameOperator .= ' with the name <b>'.$nameFirst.' '.$nameLast.'</b>';
+    }
+
+    return $nameOperator;
+}
+
+?>

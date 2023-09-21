@@ -1,0 +1,127 @@
+<?php
+    use Base\Service\EntryStageService;
+    $this->headLink()->prependStylesheet($this->basePath('/css/metrics.css')); 
+?>
+
+<table id="reportDetail">            
+    <tbody>
+        <tr>
+            <td><b>Report ID:</b></td>
+            <td><?= $reportInfo['reportId']; ?></td>
+        </tr>
+        <tr>
+            <td><b>Report Type:</b></td>
+            <td><?= $reportInfo['formTypeDescription']; ?></td>
+        </tr>
+        <tr>
+            <td><b>Work Type:</b></td>
+            <td><?= $reportInfo['workTypeExternal']; ?></td>
+        </tr>
+        <tr>
+            <td><b>State:</b></td>
+            <td><?= $reportInfo['stateAbbr']; ?></td>
+        </tr>
+        <tr>
+            <td><b>eCrash Agency:</b></td>
+            <td><?= $reportInfo['agencyName']; ?></td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<table id="accuracyDetail">           
+    <tbody>
+        <tr>
+            <td style="width: 30%"><b>No. of Fields Extracted Correctly (%):</b></td>
+            <td style="width: 10%"><?= $extractAccuracyDetail['noOfFieldsExtracted']; ?></td>
+            <td style="width: 30%"><b>No. of Fields Not Extracted Correctly (%):</b></td>
+            <td style="width: 10%"><?= $extractAccuracyDetail['noOfFieldsNotExtracted']; ?></td>
+            <td style="width: 10%"><b>Total Fields:</b></td>
+            <td style="width: 10%"><?= $extractAccuracyDetail['totalFields']; ?></td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<?php
+    $exportUrl = $this->url('auto-extraction-metrics', ['action' => 'auto-extraction-accuracy-overview'], [
+        'query' => array_merge(['downloadType' => $this->format], ['reportId' => $this->reportId])
+    ]);
+    $discrepancyClassName = [
+        'dataModifiedPass1' => 'background-color: yellow', 
+        'dataModifiedPass2' => 'background-color: pink',
+        'dataIgnored' => 'background-color: silver',
+        'dataMissing' => 'background-color: red; color: white;'
+    ];
+
+    if (empty($this->export)) : ?>
+        <div align="right" id="reportHeader">
+            <a href='<?= "{$exportUrl}"; ?>' >Click here to export to Excel</a>
+        </div>
+    <?php else: ?>
+        <style type="text/css">
+            td{ border:  1px solid black; text-align: center;}
+        </style>
+    <?php endif; ?>
+<table id="passOverview">
+    <thead>
+        <tr>
+            <th>Passes</th>
+            <?php foreach ($this->entryInfo as $pass): ?>
+                <th><?= $this->escapeHtml($pass['title']); ?></th>
+            <?php endforeach; ?>
+            <th class="fieldCriticality">Critical</th>
+            <th class="fieldCriticality">Major</th>
+            <th class="fieldCriticality">Minor</th>
+        </tr>
+        <tr>
+            <th>Completed Date</th>
+            <?php foreach ($this->entryInfo as $pass): ?>
+                <td><?= $this->escapeHtml($pass['dateCompleted']); ?></td>
+            <?php endforeach; ?>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>Login Id (Name)</th>
+            <?php foreach ($this->entryInfo as $pass): ?>
+                <td><?= $this->escapeHtml($pass['username']); ?>
+                (<?= $this->escapeHtml($pass['nameFirst'] . ' ' . $pass['nameLast']); ?>)</td>
+            <?php endforeach; ?>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th>Data Element</th>
+            <?php foreach ($this->entryInfo as $pass): ?>
+                <th></th>
+            <?php endforeach; ?>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->entryData as $elementName => $data): ?>
+            <tr>
+                <td>
+                    <?= $this->escapeHtml($elementName); ?>
+                </td>
+                <!-- @TODO: Try to move the inline styles into css file. -->
+                <td class="reportEntry" style="<?php if (!empty($data[EntryStageService::AUTO_EXTRACT]['class'])) { echo $discrepancyClassName[$data[EntryStageService::AUTO_EXTRACT]['class']]; } ?>">
+                    <pre class="showStringSpace"><?= $data[EntryStageService::AUTO_EXTRACT]['value']; ?></pre>
+                </td>
+                <td class="reportEntry" style="<?php if (!empty($data[EntryStageService::STAGE_ALL]['class'])) { echo $discrepancyClassName[$data[EntryStageService::STAGE_ALL]['class']]; } ?>">
+                    <pre class="showStringSpace"><?= $data[EntryStageService::STAGE_ALL]['value']; ?></pre>
+                </td>
+                <td class="reportEntry" style="<?php if (!empty($data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['class'])) { echo $discrepancyClassName[$data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['class']]; } ?>">
+                    <pre class="showStringSpace"><?= $data[EntryStageService::STAGE_DYNAMIC_VERIFICATION]['value']; ?></pre>
+                </td>
+                <td><?= (!empty($data['is_critical'])) ? 'Yes' : 'No'; ?></td>
+                <td><?= (!empty($data['is_major'])) ? 'Yes' : 'No'; ?></td>
+                <td><?= (!empty($data['is_minor'])) ? 'Yes' : 'No'; ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+

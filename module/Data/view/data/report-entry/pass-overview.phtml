@@ -1,0 +1,93 @@
+<?php $this->headScript()->appendFile($this->basePath('/js/admin/pass-overview.js')); ?>
+<?php $this->headLink()->prependStylesheet($this->basePath('/css/pass-overview.css')); ?>
+
+<p id="reportHeader">
+    <b>Report Id:</b> <?= $this->escapeHtml($this->reportId); ?><br>
+    <b>Report Type:</b> <?= $this->escapeHtml($this->reportInfo['formTypeDescription']); ?><br>
+    <b>Work Type:</b> <?= $this->escapeHtml($this->reportInfo['workTypeExternal']); ?><br>
+    <b>State:</b> <?= $this->escapeHtml($this->reportInfo['stateAbbr']); ?><br>
+    <b>eCrash Agency:</b> <?= $this->escapeHtml($this->reportInfo['agencyName']); ?>
+</p>
+
+<?php
+
+$exportUrl = $this->url('report-entry', ['action' => 'pass-overview'], [
+        'query' => array_merge(['downloadType' => $this->format], ['reportId' => $this->reportId])
+    ]);
+
+if (empty($this->export)) : ?>
+    <div align="right" id="reportHeader">
+    <a href='<?= "{$exportUrl}"; ?>' >Click here to export to Excel</a>
+    </div>
+<?php else: ?>
+<style type="text/css">
+    td{ border:  1px solid black; text-align: center;}
+</style>
+<?php endif; ?>
+<table id="passOverview">
+    <thead>
+        <tr>
+            <th>Passes</th>
+<?php foreach ($this->entryInfo as $pass): ?>
+            <th><?= $this->escapeHtml($pass['title']); ?></th>
+<?php endforeach; ?>
+        </tr>
+        <tr>
+            <th>Completed Date</th>
+<?php foreach ($this->entryInfo as $pass): ?>
+            <td><?= $this->escapeHtml($pass['dateCompleted']); ?></td>
+<?php endforeach; ?>
+        </tr>
+        <tr>
+            <th>Login Id (Name)</th>
+<?php foreach ($this->entryInfo as $pass): ?>
+            <td><?= $this->escapeHtml($pass['username']); ?>
+            (<?= $this->escapeHtml($pass['nameFirst'] . ' ' . $pass['nameLast']); ?>)</td>
+<?php endforeach; ?>
+        </tr>
+        <tr>
+            <th>Data Element</th>
+<?php foreach ($this->entryInfo as $pass): ?>
+            <th></th>
+<?php endforeach; ?>
+        </tr>
+    </thead>
+    <tbody>
+<?php foreach ($this->entryData as $elementName => $data): ?>
+        <tr class="<?= $this->cycle(['odd', 'even'])->next(); ?>
+        <?php if (!empty($data['isDataModified'])) echo 'dataModified'; ?>">
+            <td class="entryElement">
+                <?= $this->escapeHtml($elementName); ?>
+            </td>
+<?php foreach ($this->entryInfo as $passId => $pass): ?>
+            <td class="reportEntry">
+                <span>
+                    <?php
+                        $href = '/admin/view-keyed-image/report-entry?reportId='
+                            . $this->escapeHtml($this->reportId)
+                            . '&reportEntryId='
+                            . $this->escapeHtml($passId);
+                        if (!empty($data['values'][$passId]['formSpecificFieldName'])) {
+                            $href .= '#focusField=' . $this->escapeHtml($data['values'][$passId]['formSpecificFieldName']);
+                        }
+                        if (!empty($data['values'][$passId]['iyetekId'])) {
+                            $href .= '&iyetekId=' . $data['values'][$passId]['iyetekId'];
+                        }
+                        echo '<a href="' . $href . '">'
+                            . (isset($data['values'][$passId]['value'])
+                                ? $this->escapeHtml($data['values'][$passId]['value'])
+                                : '')
+                            . '</a>';
+                    ?>
+                </span>
+            </td>
+<?php endforeach; ?>
+        </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>
+<?php if (empty($this->export)) : ?>
+<div align="right" id="reportHeader">
+    <a href="#" onclick="window.close()">EXIT</a>
+</div>
+<?php endif; ?>

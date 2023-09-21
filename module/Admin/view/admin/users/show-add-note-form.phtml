@@ -1,0 +1,50 @@
+<?php $this->headScript()->appendFile($this->basePath('/js/admin/add-user-note.js')); ?>
+
+<script type="text/javascript">
+    window.onload = setCursorFocus;
+</script>
+
+<?= $this->form()->openTag($form);?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+    <tr>
+        <td class="box-top-left">&nbsp;</td>
+        <td class="box-top-bg"><h3 align="left">Enter a New Note</h3></td>
+        <td class="box-top-right">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+            <?php
+            /**
+              * @TODO: Double check and will be enabled*/
+            //echo $this->form->csrf; ?>
+            <table>
+                <tr>
+                    <td>
+                        <?= $this->formElement($form->get('note'));?>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+            <table align="left">
+                <tr>
+                    <td width="5%"><?= $this->formElement($form->get('save'));?></td>
+                    <td width="5%"><?= $this->formElement($form->get('cancel'));?></td>
+                </tr>
+            </table>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-bot-left">&nbsp;</td>
+        <td class="box-bot-bg">&nbsp;</td>
+        <td class="box-bot-right">&nbsp;</td>
+    </tr>
+</table>
+
+<?= $this->form()->closeTag();?>

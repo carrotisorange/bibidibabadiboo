@@ -1,0 +1,179 @@
+<?php
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
+
+$this->headLink()->appendStylesheet($this->basePath('css/metrics.css'));
+$this->headScript()->appendFile($this->basePath('/js/user-accuracy.js'));
+$this->headScript()->appendFile($this->basePath('/js/admin/quality-control.js'));
+?>
+<script type="text/javascript">
+    $(function(){
+        stripeTable($('table.default'));
+        $( ".hasCalendar" ).datepicker(); 
+    });
+</script>
+
+<h1>QC-TOOL</h1>
+<p>Reports</p>
+<div>
+    <div class="ui-widget ui-widget-content ui-corner-all" style="
+                text-align: left; padding: 0.2em; display:block;
+                margin:0px auto; margin-bottom:10px">
+        <div class="ui-helper-clearfix">
+            <?php
+                $form = $this->form;
+                $form->setAttribute('enctype', 'application/x-www-form-urlencoded');
+                $form->setAttribute('class', 'default');
+                $form->setAttribute('method' , 'get');
+                $form->prepare();
+            ?>
+            <?= $this->form()->openTag($form); ?>
+            <?= $this->formElement($form->get('csrf'));?>
+                <div class="filter-options">
+                    <input type="hidden" name="filterType" id="filterType" value="<?= $this->filterType == 'weekly' ? 'weekly' : 'date-range'?>"> 
+                    
+                    <fieldset id="weeklyReportFilter" style="<?= $this->filterType != 'weekly' ? 'display:none': ''?>">
+                        <legend>Weekly Audit Report Filter</legend>
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <div class="field-label-group"><?= $this->formLabel($form->get('month')); ?>
+                                        <?= $this->formElement($form->get('month')); ?></div>
+                                </td>
+                                <td>
+                                    <div class="field-label-group"><?= $this->formLabel($form->get('year')); ?>
+                                        <?= $this->formElement($form->get('year')); ?></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label for="#">Week</label>
+                                    <?php foreach ($this->weeks as $key => $row) :?>
+                                        <div>
+                                            <label for="<?= $row?>">
+                                                <input type="checkbox" value="<?= $row?>" name="week[]"
+                                                    id="<?= $row?>" <?= in_array( $row , $_GET['week'] ?? [] )  ? 'checked' : ''?>> 
+                                                <?= $row?>
+                                            </label>
+                                        </div>
+                                    <?php endforeach?>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+
+                    <fieldset id="dateRangeReportFilter" style="<?= $this->filterType != 'date-range' ? 'display:none': ''?>">
+                        <legend>Date Range QC Report Filter</legend>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="field-label-group"><?= $this->formLabel($form->get('fromDate')); ?>
+                                        <?= $this->formElement($form->get('fromDate')); ?></div>
+                                    </td>
+                                    <td>
+                                        <div class="field-label-group"><?= $this->formLabel($form->get('toDate')); ?>
+                                        <?= $this->formElement($form->get('toDate')); ?></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Others</legend>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="field-label-group w-98"><?= $this->formLabel($form->get('workType')); ?>
+                                        <?= $this->formElement($form->get('workType')); ?></div>
+                                    </td>
+                                    <td>
+                                        <div class="field-label-group w-98"><?= $this->formLabel($form->get('state')); ?>
+                                        <?= $this->formElement($form->get('state')); ?></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="field-label-group">
+                                            <?= $this->formLabel( $form->get('reportID') )?>
+                                            <?= $this->formElement( $form->get('reportID') )?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+                <div style="margin-top: 5px;margin-bottom:15px;">
+                    <a href="#"> <span id="toggleFilter">Date Range Filter</span> </a> | 
+                    <a href="<?= $this->url('quality-control' , ['action' => 'report-summary'])?>">Audited Reports</a>
+                </div>
+
+                <input type="submit" class="btnstyle" name="btnSearch">
+            </form>
+
+            <?php if (!isset($this->paginator)): ?>
+
+            <?php elseif ($this->paginator->getCurrentItemCount() == 0): ?>
+                <div class="result">
+                    <b>No Matches Found</b>
+                </div>
+            <?php  else:?>
+            <div class="result">
+                <div class="table-responsive">
+                    <table  class="default">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date Created</th>
+                                <th>Report Id</th>
+                                <th>Description</th>
+                                <th>State</th>
+                                <th>Work Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+                            <?php foreach ($this->paginator as $key => $row) :?>
+                                <tr>
+                                    <td><?= ++$key?></td>
+                                    <td><?= date('Y-m-d' , strtotime($row['date_created']))?></td>
+                                    <td><?= $row['report_id']?></td>
+                                    <td><?= $row['description']?></td>
+                                    <td><?= $row['state']?></td>
+                                    <td><?= $row['name_external']?></td>
+                                    <td>
+                                        <a href="<?= $this->url('quality-control' , [
+                                            'action' => 'report-and-image'
+                                        ], [
+                                            'query' => [
+                                                'reportId' => $row['report_id'],
+                                                'fromDate' => $postParams['fromDate'],
+                                                'toDate' => $postParams['toDate'],
+                                                'workType' => $postParams['workType']
+                                            ]
+                                        ])?>" target="_blank">
+                                            Show
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach?>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="pagination" colspan="8">
+                                    <?= $this->paginationControl($paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $this->paginatorParams]); ?>
+                                </td>
+                            </tr>
+                        </tfoot>
+                        
+                    </table>
+                </div>
+            </div>
+            <?php endif?>
+        </div>
+    </div>
+<div>

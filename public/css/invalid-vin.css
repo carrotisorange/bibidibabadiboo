@@ -1,0 +1,83 @@
+/*
+	Document   : invalidVin
+	Created on : Mar 14, 2011, 1:40:05 PM
+	Description:
+		Stylesheet for invalid-vin edit popup
+*/
+
+#vin-validation {
+	text-align: left;
+	padding: 20px;
+}
+
+#vin-validation td.header {
+	text-align: left;
+}
+
+#vin-validation td.data {
+	text-align: left;
+}
+
+#queryTable {
+	width: 100%;
+	border: 0;
+	border-spacing: 0;
+}
+
+#queryTable td {
+	padding: 0;
+}
+
+#queryTable td.cont-rht {
+	border:1px solid #e2ddde;
+	padding: 20px;
+}
+
+#queryTable div#formParamDiv {
+	padding-bottom: 20px;
+}
+
+#queryTable div#potentialMatchesWrapperDiv {
+	padding-right: 20px;
+}
+
+div#userNotificationMessage {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#potentialMatchTable {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 0;
+}
+
+#potentialMatchTable > thead > tr {
+	background-color: grey;
+}
+
+#potentialMatchTable > thead > tr > th {
+	font-weight: bold;
+	text-align: left;
+	font-size: 14px;
+}
+
+/* IE8 doesn't support nth-child(odd) */
+#potentialMatchTable > tbody > tr.odd > td {
+	background: darkgray;
+}
+
+/* IE8 doesn't support nth-child(even) */
+#potentialMatchTable > tbody > tr.even > td {
+	background: lightgray;
+}
+
+#potentialMatchTable th:first-child, td:first-child {
+	text-align: center;
+}
+
+#proposedVin {
+	text-transform: uppercase;
+}	

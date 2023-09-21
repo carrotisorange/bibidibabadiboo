@@ -1,0 +1,642 @@
+<table>
+    <tr>
+        <td class="col-lg-12 col-sm-12 form-head-text" colspan="2">
+            <span>Owner Details</span>
+        </td>
+    </tr>
+    <tr class="hide">
+        <td class="col-sm-4 col-lg-4">
+            <div><span></span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","PartyId","Hidden"], ["defaultValue"=>"&{P2}","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="hide">
+        <td class="col-sm-4 col-lg-4">
+            <div><span></span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","PersonType","Hidden"], ["defaultValue"=>"VEHICLE OWNER","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="hide">
+        <td class="col-sm-4 col-lg-4">
+            <div><span></span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","VehicleUnitNumber","Hidden"], ["defaultValue"=>"&{V1}","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>First Name</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","FirstName",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Middle Name</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","MiddleName",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Last Name</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","LastName",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Suffix</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","NameSuffix",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-12 col-lg-12 fieldInputTd" colspan="2">
+            <div> <span><?php $form->addField(["Person","SameAsDriverAddressGui",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>Same As Driver Address (Please check if Driver Address details are keyed in)</span></div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Address 1</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","Address",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Address 2</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","Address2",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>State</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","State",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>City</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","City",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Zip Code</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","ZipCode",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Home Phone</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","HomePhone",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Date of Birth</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DateOfBirth",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Driver's License #</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DriversLicenseNumber",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Driver's License State</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DriversLicenseJurisdiction",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Injury Code</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","InjuryStatus",null], ["defaultValue"=>"","instanceGroup"=>"P2"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="col-lg-12 col-sm-12 form-head-text" colspan="2">
+            <span>Driver Details</span>
+        </td>
+    </tr>
+    <tr class="hide">
+        <td class="col-sm-4 col-lg-4">
+            <div><span></span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","PartyId","Hidden"], ["defaultValue"=>"&{P1}","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="hide">
+        <td class="col-sm-4 col-lg-4">
+            <div><span></span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","PersonType","Hidden"], ["defaultValue"=>"DRIVER","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="hide">
+        <td class="col-sm-4 col-lg-4">
+            <div><span></span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","VehicleUnitNumber","Hidden"], ["defaultValue"=>"&{V1}","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-12 col-lg-12 fieldInputTd" colspan="2">
+            <div> <span><?php $form->addField(["Person","SameAsDriverGui",null], ["defaultValue"=>"Y","instanceGroup"=>"P1"]); ?>Same As Owner</span></div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>First Name</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div><?php $form->addField(["Person","FirstName",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?></div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Middle Name</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div><?php $form->addField(["Person","MiddleName",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?></div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Last Name</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","LastName",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Suffix</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","NameSuffix",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Address 1</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","Address",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Address 2</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","Address2",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>State</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","State",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>City</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","City",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Zip Code</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","ZipCode",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Home Phone</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","HomePhone",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Date of Birth</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DateOfBirth",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Driver's License #</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DriversLicenseNumber",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Driver's License State</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DriversLicenseJurisdiction",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Injury Code</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","InjuryStatus",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Alcohol Suspected</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","AlcoholUseSuspected",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Drug Suspected</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DrugUseSuspected",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field">
+        <td colspan="2" class="item-container citations">
+            <div class="item-content">
+                <?php $form->addField(["Citations","PartyId",null], ["defaultValue"=>"&{P1}","instanceGroup"=>"P1"]); ?>
+                <div class="row m-0">
+                    <div class="col-sm-4 col-lg-4 field-label">Charge Description</div>
+                    <div class="col-sm-7 col-lg-7 field-input-div">
+                        <?php $form->addField(["Citations","CitationDetail",null], ["instanceGroup"=>"P1"]); ?>
+                    </div>
+                    <a class="add-item col-sm-1 col-lg-1" onclick="javascript:void(0);">(+)</a>
+                    <a class="delete-item col-sm-1 col-lg-1 hide" onclick="javascript:void(0);">(-)</a>
+                </div>
+                <div class="row m-0">
+                    <div class="col-sm-4 col-lg-4 field-label">Citation Issued</div>
+                    <div class="col-sm-7 col-lg-7 field-input-div">
+                        <?php $form->addField(['Citations', 'CitationIssuedCheckbox'], ['defaultValue' => 'TRUE', 'instanceGroup' => 'P1']); ?>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <div class="col-sm-4 col-lg-4 field-label">Charge (Statute or Ordinance cite)</div>
+                    <div class="col-sm-7 col-lg-7 field-input-div">
+                        <?php $form->addField(["Citations","ViolationCode",null], ["instanceGroup"=>"P1"]); ?>                                                
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+     <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Contributing Action(s)/Circumstance(s) At Time Of Crash</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","ContributingCircumstancesPerson",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Distracted By</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","DriverDistractedBy",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+
+    <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Restraint System/Safety Equipment(s)</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","SafetyEquipmentRestraint",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Ejection</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","Ejection",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Name Of Medical Facility</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Person","TransportedTo",null], ["defaultValue"=>"","instanceGroup"=>"P1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td class="col-lg-12 col-sm-12 form-head-text" colspan="2">
+            <span>Vehicle Details</span>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Vehicle #</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","UnitNumber",null], ["defaultValue"=>"&{V1}","instanceGroup"=>"V1", "isRequired"=>true]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="add-trailer">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Add Trailer</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","AddTrailerGui",null], ["defaultValue"=>"Add Trailer","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Tag #</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","LicensePlate",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Tag State</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","RegistrationState",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field vinNumber">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>VIN</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+              <?php $form->addField(["Vehicle","Vin",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+              <?php $form->addField(['Vehicle', 'VinStatus'], ['instanceGroup' => 'V1']); ?>
+              <?php $form->addField(['Vehicle', 'VinOriginal'], ['instanceGroup' => 'V1']); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Year</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","ModelYear",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+                <?php $form->addField(['Vehicle', 'ModelYearOriginal',null], ['instanceGroup' => 'V1']); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Make</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","Make",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+                <?php $form->addField(['Vehicle', 'MakeOriginal',null], ['instanceGroup' => 'V1']); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Model</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","Model",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+                <?php $form->addField(['Vehicle', 'ModelOriginal',null], ['instanceGroup' => 'V1']); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Insurance Carrier</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","InsuranceCompany",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Policy #</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","InsurancePolicyNumber",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="elem_nonprior">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Policy Exp. Date</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","InsuranceExpirationDate",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Vehicle Towed</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <label>
+                    <?php $form->addField(['Vehicle', 'VehicleTowed'], ['defaultValue' => '1', 'instanceGroup' => 'V1']); ?>Yes
+                </label>
+                <label>
+                    <?php $form->addField(['Vehicle', 'VehicleTowed'], ['defaultValue' => '0', 'instanceGroup' => 'V1']); ?>No
+                </label>
+                <label>
+                    <?php $form->addField(['Vehicle', 'VehicleTowed'], ['defaultValue' => '', 'instanceGroup' => 'V1', 'isDefaultSelection' => true]); ?>NA
+                </label>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Airbag Deployed</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <label>
+                    <?php $form->addField(['Vehicle', 'AirBagDeployed'], ['defaultValue' => '1', 'instanceGroup' => 'V1']); ?>Yes
+                </label>
+                <label>
+                    <?php $form->addField(['Vehicle', 'AirBagDeployed'], ['defaultValue' => '0', 'instanceGroup' => 'V1']); ?>No
+                </label>
+                <label>
+                    <?php $form->addField(['Vehicle', 'AirBagDeployed'], ['defaultValue' => '', 'instanceGroup' => 'V1', 'isDefaultSelection' => true]); ?>NA
+                </label>
+            </div>
+        </td>
+    </tr>
+    <tr class="critical_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Impact Location</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","DamagedAreas",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field multiselect">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Vehicle Contributing Circumstance(s)</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","ContributingCircumstancesVehicle",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+    <tr class="element16_field">
+        <td class="col-sm-4 col-lg-4">
+            <div><span>Posted Speed Limit</span></div>
+        </td>
+        <td class="col-sm-8 col-lg-8 fieldInputTd">
+            <div>
+                <?php $form->addField(["Vehicle","PostedStatutorySpeedLimit",null], ["defaultValue"=>"","instanceGroup"=>"V1"]); ?>
+            </div>
+        </td>
+    </tr>
+</table>

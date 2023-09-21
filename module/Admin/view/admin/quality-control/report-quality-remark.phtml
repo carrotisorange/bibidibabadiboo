@@ -1,0 +1,309 @@
+<?php $this->headLink()
+    ->prependStylesheet($this->basePath('library/datatables/dataTables.bootstrap.css'))
+    ->prependStylesheet($this->basePath('css/quality-control-remark-entry.css'));
+
+    $this->headScript()
+    ->appendFile($this->basePath('library/datatables/jquery.dataTables.1.10.15.min.js'))
+    ->appendFile($this->basePath('library/datatables/dataTables.bootstrap.1.10.15.js'))
+    ->appendFile($this->basePath('js/admin/quality-control.js'))
+?>
+<div id="margin">
+<div class="flex">
+    <div style="flex:1; margin-right:30px;">
+        <div class="ui-widget ui-widget-content ui-corner-all" style="
+            text-align: left; padding: 0.2em; display:block;
+            margin:0px auto; margin-bottom:10px">
+            <div class="ui-widget-header ui-corner-all" style="padding: 0.4em 1em;">
+                <div class="flex">
+                    <h3>Report Summary</h3>
+                    <?php if (!isset($inputParams['export'])) :?>
+                        <a href=" <?= $this->url('quality-control', ['action' => 'report-summary'])?>">Back</a>
+                    <?php endif?>
+                </div>
+                <?php
+                    $postParams = (array) $postParams;
+                    $postParams = array_merge($postParams , [
+                        'export' => true
+                    ]);
+                ?>
+            </div>
+            <div class="ui-helper-clearfix">
+                <div style="text-align: left;">
+                    <table style="vertical-align:top"> 
+                        <?php if (!isset($inputParams['export'])) :?>
+                            <tr>
+                                <td>Export Action</td>
+                                <td><a href="<?= $this->url('quality-control' , ['action' => 'report-summary'] , [
+                                    'query' => $postParams
+                                ])?>">Spreadsheet</a></td>
+                            </tr>
+                        <?php endif?>
+                        <tr>
+                            <th style="width: 50%;">Date Scope</th>
+                            <td><?= $inputParams['fromDate']?> TO <?= $inputParams['toDate']?></td>
+                        </tr>
+                        <?php if (!is_null($workTypeName)) :?>
+                            <tr>
+                                <th style="width: 50%;">Work Type</th>
+                                <td><?= $workTypeName?></td>
+                            </tr>
+                        <?php endif?>
+
+                        <?php if (!is_null($stateAbbr)):?>
+                            <tr>
+                                <th>State</th>
+                                <td><?= $stateAbbr?></td>
+                            </tr>
+                        <?php endif?>
+                        <tr>
+                            <th>Reports</th>
+                            <td><?= $reportCountTotal?>/(<?= $reportWithDiscrepanciesTotal?>) RWD</td>
+                        </tr>
+                    </table>
+
+                    <hr>
+                    <table>
+                        <tr>
+                            <?php foreach ($criticalitySummary as $key => $row) :?>
+                                <?php if($key == 'total') continue?>
+                                <tr>
+                                    <td><?= $key?></td>
+                                    <td>(<?= $row?>) <?= $criticalityPercentage[$key].'%'?></td>
+                                </tr>
+                            <?php endforeach?>
+                        </tr>
+                    </table>
+                    <hr>
+                    <table>
+                        <tr>
+                            <td colspan="2"> <strong>Other Fields</strong> </td>
+                        </tr>
+                        <?php $counter = 0?>
+                        <?php foreach ($fieldSummaries as $key => $row) :?>
+                            <tr>
+                                <td style="width:75%"><?= ++$counter?>) <?= $row['field_name']?></td>
+                                <td>(<?= $row['total_count']?>) (<?= $row['percentage']?>)%</td>
+                            </tr>
+                        <?php endforeach?>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="ui-widget ui-widget-content ui-corner-all" style="
+            text-align: left; padding: 0.2em; display:block;
+            margin:0px auto; margin-bottom:10px">
+            <div class="ui-widget-header ui-corner-all" style="padding: 0.4em 1em;">
+                <h3>Contributors</h3>
+            </div>
+            <div class="ui-helper-clearfix">
+                <table class="table">
+                    <?php foreach ($contributors as $key => $row) :?>
+                        <tr>
+                            <td><?= $key?></td>
+                            <td>(<?= $row?>) <?= ($row / $reportFieldCountTotal) * 100?>%</td>
+                        </tr>
+                    <?php endforeach?>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div style="flex:4; height:150vh;overflow:scroll">
+        <div class="ui-widget ui-widget-content ui-corner-all" style="
+        text-align: left; padding: 0.2em; display:block;
+        margin:0px auto;">
+        <div class="ui-widget-header ui-corner-all" style="padding: 0.4em 1em;">
+            <h3>Reports</h3> 
+        </div>
+
+        <div>
+            <?php if (!isset($inputParams['export'])) :?>
+            <a href="#" id="advanceFilter" data-target="modalFilter">Filter</a>
+            <?php endif?>
+            <?php if (isset($inputParams['filter'])) :?>
+                <?php
+                    unset($postParams['filter']);
+                    unset($postParams['export']);
+                    $uriString = http_build_query($postParams);
+                    $parse_url = parse_url($uriString);
+                ?>
+                <a href="?<?= $parse_url['path']?>">Clear Filter</a>
+            <?php endif?>
+        </div>
+            
+        <?php if (!isset($inputParams['export'])) :?>
+        <div id="modalFilter">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <?php if (!empty( $inputParams['filter'])) :?>
+                <div class="modal-header">
+                    <h4>Summary Filter</h4>
+                    <div style="border: 1px solid #000;padding:4px;margin-bottom:5px">
+                    <?php foreach ($inputParams['filter'] as $key => $row):?>
+                        <?php if(empty($row)) continue?>
+                        <?php if(is_array($row)) :?>
+                            <?php foreach ($row as $rowKey => $rowValue) :?>
+                                <div><?= "{$key} : {$rowValue}"?></div>
+                            <?php endforeach?>
+                        <?php else:?>
+                            <div><?= "{$key} : {$row}"?></div>
+                        <?php endif?>
+                    <?php endforeach?>
+                    </div>
+                </div>
+                <?php endif?>
+                <form action="" method="get">
+                    <?php foreach ($inputParams as $key => $row) :?>
+                        <?php if ($key == 'filter') continue?>
+                        <?php if (!is_array($row)) :?>
+                            <input type="hidden" value="<?= $row?>" name="<?= $key?>">
+                        <?php else:?>
+                            <?php foreach ($row as $rowKey => $rowValue) :?>
+                                <input type="hidden" value="<?= $rowValue?>" name="<?= "{$key}[]"?>">
+                            <?php endforeach?>
+                        <?php endif?>
+                    <?php endforeach?>
+
+                    <input type="hidden" name="filterType" value="date-range">
+                    <div class="modal-body">
+                        <section>
+                            <div><label for="#">Fields</label></div>
+                            <ul>
+                                <?php foreach ($filterOptions['fields'] as $key => $row) :?>
+                                    <li>
+                                        <div class="cboxed">
+                                            <input type="checkbox" name="filter[fields][]" value="<?= $row?>" checked>
+                                                <?= $row?>
+                                        </div>
+                                    </li>
+                                <?php endforeach?>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <div><label for="#">Keyers</label></div>
+                            <ul>
+                                <?php foreach ($filterOptions['keyers'] as $key => $row) :?>
+                                    <li>
+                                        <div class="cboxed">
+                                            <input type="checkbox" name="filter[keyers][]" value="<?= $row?>">
+                                                <?= $row?>
+                                        </div>
+                                    </li>  
+                                <?php endforeach?>
+                            </ul>
+                        </section>
+
+                        <section>
+                            <div class="row">
+                                <div>
+                                    <div><label for="#">Contributors</label></div>
+                                    <select name="filter[contributors]" id="" class="form-control">
+                                        <option value=""></option>
+                                        <?php foreach ($filterOptions['contributors'] as $key => $row) :?>
+                                            <option value="<?= $row?>"><?= $row?></option>
+                                        <?php endforeach?>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <div><label for="#">State</label></div>
+                                    <select name="filter[states]" id="" class="form-control">
+                                        <option value=""></option>
+                                        <?php foreach ($filterOptions['states'] as $key => $row) :?>
+                                            <option value="<?= $row?>"><?= $row?></option>
+                                        <?php endforeach?>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <div><label for="#">Work Types</label></div>
+                                    <select name="filter[workTypes]" id="" class="form-control">
+                                        <option value=""></option>
+                                        <?php foreach ($filterOptions['workTypes'] as $key => $row) :?>
+                                            <option value="<?= $row?>"><?= $row?></option>
+                                        <?php endforeach?>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <div><label for="#">Criticality</label></div>
+                                    <select name="filter[criticalities]" id="" class="form-control">
+                                        <option value=""></option>
+                                        <?php foreach ($filterOptions['criticalities'] as $key => $row) :?>
+                                            <option value="<?= $row?>"><?= $row?></option>
+                                        <?php endforeach?>
+                                    </select>
+                                </div>
+                            </div>
+                    </div>
+                    <input type="submit" name="filterRemark" value="Apply Filter" style="margin-top: 10px;">
+                </form>
+                </div>
+            </div>
+        </div>
+        <?php endif?>
+
+        <div class="ui-helper-clearfix" style="padding: 15px 10px; ">
+            <div class="result">
+                <table class="table" id="reportRemarksTable">
+                    <thead>
+                        <tr>
+                            <th width="20%">Field</th>
+                            <th width="10%">Keyer</th>
+                            <th>Report Id</th>
+                            <th width="10%">Keyed Data</th>
+                            <th width="15%">Correct Data</th>
+                            <th width="15%">Contributor</th>
+                            <th>State</th>
+                            <th>Work Type</th>
+                            <th width="3%">Criticality</th>
+                        </tr>
+                    </thead>
+
+                    <?php foreach ($reports as $key => $field) : ?>
+                        <?php $color = $field['criticality']; ?>
+                        <tr data-importance="<?= $field['criticality']?>">
+                            <td><?= $field['field_name']?></td>
+                            <td><?= $field['keyerUsername']?></td>
+                            <td>
+                                <?php if (!isset($_GET['export'])) :?>
+                                <a href="<?= $this->url('quality-control' , [
+                                    'action' => 'report-and-image'
+                                ], [
+                                    'query' => [
+                                        'reportId' => $field['report_id'],
+                                        'fromDate' => $fromDate,
+                                        'toDate' => $toDate,
+                                        'workType' => $field['workType'],
+                                        'isEdit' => true    
+                                    ]
+                                ])?>" title="Click To edit" target="_blank">
+                                    <strong><?= $field['report_id']?></strong>
+                                </a>
+                                <?php else:?>
+                                    <?= $field['report_id']?>
+                                <?php endif?>
+                            </td>
+                            <td><?= $field['pass_value']?></td>
+                            <td><?= $field['remark_value']?></td>
+                            <td><?= $field['username']?></td>
+                            <td><?= $field['stateAbbr']?></td>
+                            <td><?= $field['workTypeName']?></td>
+                            <td>
+                                <?php if (!isset($inputParams['export'])) :?>
+                                <div class="indicator indicator-sm indicator-circle et <?= $color?>" title="<?= $color?>"></div>
+                                <?php else :?>
+                                    <?= $field['criticality']?>
+                                <?php endif?>
+                            </td>
+                        </tr>
+                    <?php endforeach?>
+                </table>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -1,0 +1,28 @@
+<?= $this->doctype();?>
+<html>
+	<head>
+		<?php
+			echo $this->headMeta();
+			echo $this->headTitle();
+			echo $this->headLink()
+				->prependStylesheet($this->basePath('/css/global.css'))
+				->prependStylesheet($this->basePath('/library/datatables/css/demo_table_jui.css'))
+				->prependStylesheet($this->basePath('library/jquery-ui/css/smoothness/jquery-ui.min.css'));
+			echo $this->headStyle();
+				
+			echo $this->headScript()
+				->prependFile($this->basePath('/js/global.js'))
+				->prependFile($this->basePath('/library/jquery/jquery.shortkeys.js'))
+				->prependFile($this->basePath('/library/datatables/js/jquery.dataTables.min.js'))
+				->prependFile($this->basePath('library/jquery-ui/js/jquery-ui-1.12.4.js'))
+				->prependFile($this->basePath('library/jquery/jquery-3.6.0.min.js'))
+				
+				->prependScript('window.baseUrl = "' . $this->basePath() . '";');
+		?>
+	</head>
+	<body>
+		<?= $this->layout()->content; ?>
+
+		<?= $this->inlineScript(), "\n"; ?>
+	</body>
+</html>

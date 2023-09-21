@@ -1,0 +1,81 @@
+.flex{
+    display: flex;
+    flex-direction: row;
+}
+div#margin
+{
+    padding: 10px;
+}
+#myUL{
+    margin: 0px;
+    padding: 0px;
+}
+.w-label-value > *{
+    display: block;
+    text-align: center;
+}
+.flex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+#id_remark_month_scope{
+    list-style: none;
+    text-align: center;
+}
+#id_remark_month_scope li {
+    display: inline-block;
+    margin-right: 2px;
+}
+
+.w-alert{
+    box-sizing: border-box;      
+    padding: 2px 10px;  
+}
+
+.w-alert-warning
+{
+    background-color: #EA5C2B;
+    color: #fff;
+}
+
+.cboxed
+{
+    /* border: 1px solid #000; */
+    /* display: inline-block; */
+    padding: 1px;
+}
+section ul{
+    margin: 0px;
+    padding: 0px;
+    border: 1px solid #000;
+    border-radius: 5px;
+
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+section ul li{
+    display: inline-block;  
+    list-style: none;
+    min-width: 200px;
+    cursor: pointer;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+}
+
+.row > div{
+    margin-left: 25px;
+}
+
+.row > div:nth-child(1){
+    margin-left: 0px;
+}
+#modalFilter{
+    border: 1px solid #000;
+    background-color: #eee;
+    padding: 40px;
+    display: none;
+}

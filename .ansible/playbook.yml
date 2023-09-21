@@ -1,0 +1,144 @@
+### This play deploys a webapp war to an tomcat server
+- name: Deploy keying-spi Artifacts
+  hosts: "{{ lookup('env', 'PLAYBOOK_HOSTS') }}"
+  gather_facts: no
+  serial: 1  
+  vars:    
+    appName: keying
+    artifactName: keying-spi
+    appDir: "{{ lookup('env', 'CI_PROJECT_DIR')}}"
+    warName: "{{ artifactName }}.tar.bz2"
+    artifactRemotePath: /ap/ecrash/{{ appName }}/app
+    confRemotePath: /ap/ecrash/{{ appName }}/conf
+    secureFileName: secure
+    environmentPhpFileName: environment
+    htaccessFile: .htaccess
+    logDirPath: /ap/ecrash/log/{{ appName }}
+    reportsDir: "{{ artifactRemotePath }}/public/images/reports"
+    tempDir: "{{ artifactRemotePath }}/temp"
+    sessionDir: /ap/ecrash/session/{{ appName }}
+
+  tasks:      
+  
+    - name: Remove the old keying contents from {{ artifactRemotePath }}/
+      file:
+        path: "{{ artifactRemotePath }}"
+        state: absent
+
+    - name: Create {{ artifactRemotePath }} directory
+      file:
+        path: "{{ artifactRemotePath }}"
+        state: directory
+        mode: 0755 
+     
+    - name: Remove the old keying contents from {{ confRemotePath }}/
+      file:
+        path: "{{ confRemotePath }}"
+        state: absent
+
+    - name: Create {{ confRemotePath }} directory
+      file:
+        path: "{{ confRemotePath }}"
+        state: directory
+        mode: 0755
+        recurse: yes
+
+    - name: Create {{ confRemotePath }}/secure directory
+      file:
+        path: "{{ confRemotePath }}/secure"
+        state: directory
+        mode: 0755
+        recurse: yes
+             
+    - name: archive the war file from {{ appDir }}/{{ appName }}.tar.bz2 locally to {{ artifactRemotePath }} on the server
+      unarchive:
+        src: "{{ appDir }}/{{ warName }}"
+        dest: "{{ artifactRemotePath }}"
+
+    - name: copy secure.php from {{ appDir }}/{{ secureFileName }}.php locally to {{ confRemotePath }}/secure
+      copy:
+       src: "{{ appDir }}/{{ secureFileName }}.php"
+       dest: "{{ confRemotePath }}/secure"
+
+    - name: copy environment.php from {{ appDir }}/{{ environmentPhpFileName }}.php locally to {{ confRemotePath }}
+      copy:
+       src: "{{ appDir }}/{{ environmentPhpFileName }}.php"
+       dest: "{{ confRemotePath }}"
+
+    - name: copy htaccessFile from {{ appDir }}/{{ htaccessFile }} locally to {{ confRemotePath }}
+      copy:
+       src: "{{ appDir }}/{{ htaccessFile }}"
+       dest: "{{ confRemotePath }}"
+
+    - name: Remove environment.php from {{ artifactRemotePath }}/application/configs/{{ environmentPhpFileName }}.php
+      file:
+        path: "{{ artifactRemotePath }}/config/{{ environmentPhpFileName }}.php"
+        state: absent
+
+    - name: Remove secure.php from {{ artifactRemotePath }}/application/configs/{{ environmentPhpFileName }}.php
+      file:
+        path: "{{ artifactRemotePath }}/config/{{ secureFileName }}.php"
+        state: absent
+        
+    - name: Create symlink  {{ confRemotePath }}/secure/{{ secureFileName }}.php to {{ artifactRemotePath }}/config/{{ secureFileName }}.php
+      file:
+        src:  "{{ confRemotePath }}/secure/{{ secureFileName }}.php"
+        dest: "{{ artifactRemotePath }}/config/{{ secureFileName }}.php"
+        state: link
+
+    - name: Create symlink  {{ confRemotePath }}/secure/{{ secureFileName }}.php to {{ artifactRemotePath }}/config/{{ secureFileName }}.php
+      file:
+        src:  "{{ confRemotePath }}/{{ environmentPhpFileName }}.php"
+        dest: "{{ artifactRemotePath }}/config/{{ environmentPhpFileName }}.php"
+        state: link
+        
+    - name: Create symbolic link  {{ confRemotePath }}/{{ htaccessFile }} to { artifactRemotePath }}/{{ htaccessFile }}
+      file:
+        src:  "{{ confRemotePath }}/{{ htaccessFile }}"
+        dest: "{{ artifactRemotePath }}/{{ htaccessFile }}"
+        state: link
+
+    - name: Remove temp cache {{ artifactRemotePath }}/temp
+      file:
+        path: "{{ artifactRemotePath }}/temp/*"
+        state: absent
+        
+    - name: Remove reports from {{ artifactRemotePath }}/public/images/reports/*
+      file:
+        path: "{{ artifactRemotePath }}/public/images/reports/*"
+        state: absent
+        
+    - name: Change permissions on "{{ artifactRemotePath }}" directory
+      file:
+        path: "{{ artifactRemotePath }}"
+        state: directory
+        mode: 0755
+        recurse: yes
+
+    - name: Create {{ reportsDir }} directory
+      file:
+        path: "{{ reportsDir }}"
+        state: directory
+        mode: 0777
+        recurse: yes
+
+    - name: Create {{ tempDir }} directory
+      file:
+        path: "{{ tempDir }}"
+        state: directory     
+        mode: 0775
+        recurse: yes
+        
+    - name: Create {{ logDirPath }} directory
+      file:
+        path: "{{ logDirPath }}"
+        state: directory
+        mode: 0777
+
+    - name: Create {{ sessionDir }} directory
+      file:
+        path: "{{ sessionDir }}"
+        state: directory
+        mode: 0777
+
+

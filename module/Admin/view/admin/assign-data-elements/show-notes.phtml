@@ -1,0 +1,63 @@
+<?php
+    $this->headLink()->prependStylesheet($this->basePath('/css/main.css'));
+?>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+    <tr>
+        <td class="box-top-left">&nbsp;</td>
+        <td class="box-top-bg" align="left">
+            <h3>Historic Notes</h3>
+        </td>
+        <td class="box-top-right">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+            <!-- The historic notes content -->
+            <div class="divScroll adeHistoric" align="left">
+                <table cellpadding="2px" cellspacing="2px" width="100%" 
+                       style="background-color: white;">
+                    <thead>
+                        <tr>
+                            <th width="350px">Notes</th>
+                            <th width="118px">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach( $this->notes as $note ) { ?>
+                        <tr>
+                            <td><?= wordwrap($note['note'],'47',"\n",true); ?></td>
+                            <td><?= $note['date_created']; ?></td>
+                        </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-leftbg">&nbsp;</td>
+        <td class="contentgridarea" style="border:1px solid #e2ddde; ">
+            <div style="float: left; display: block; padding: 5px; font-weight: bold">
+                Enter a Note
+            </div>
+            <br/><br/>
+            <div style="float: left; display: block;">
+                <form id="frmAddNote" action="<?= $this->url('assign-data-elements', ['action' => 'add-note'],['query' => ['formId' => $formId]]); ?>"
+                    method="post">
+                    <?= $this->formElement($this->csrf); ?>
+                    <textarea name="note" rows="5" cols="80"></textarea>
+                    <br/>
+                    <input type="submit" value="Add Notes" class="btnstyle"/>
+                </form>
+            </div>
+        </td>
+        <td class="box-rightbg">&nbsp;</td>
+    </tr>
+    <tr>
+        <td class="box-bot-left">&nbsp;</td>
+        <td class="box-bot-bg">&nbsp;</td>
+        <td class="box-bot-right">&nbsp;</td>
+    </tr>
+</table>

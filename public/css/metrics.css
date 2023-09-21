@@ -1,0 +1,205 @@
+.field-label-group
+{
+	display: inline-block;
+	float: left;
+	margin: 0px 3px 5px 3px;
+}
+.field-label-group label
+{
+	display: block;
+	text-align:left;
+}
+.field-label-group ul.errors
+{
+	padding-left: 5px;
+	margin-left: 5px;
+}
+.field-label-group ul.errors li
+{
+	padding: 0px;
+}
+
+
+form.default, div.result {
+	display: table;
+
+	margin: 3px auto 10px auto;
+	padding: 20px;
+}
+form input[type='submit'], submit
+{
+	margin:0px 3px 5px 3px;
+	clear:left;
+	display:block;
+}
+form.default input[type="submit"]
+{
+	margin-top: 5px;
+}
+
+div.result
+{
+	text-align: center;
+	padding:0px;
+}
+div.result table
+{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+
+/* Tables */
+table.default {
+	text-align: center;
+	border-collapse: collapse;
+	
+	margin-left: auto;
+	margin-right: auto;
+
+	color: #000;
+}
+table.default th, table.default tr td {
+	padding: 3px 5px 3px 5px;
+	border: 1px solid #000;
+}
+table.default tbody.clickable tr {
+	cursor: pointer;
+}
+
+/* Border */
+form.default, div.result {
+	border:1px solid #DDD;
+	border-radius: 5px;
+}
+fieldset
+{
+	border:1px solid #AAA;
+	border-radius: 5px;
+}
+
+/* Color Schemes */
+.dark-on-light, div.result, form.default {
+	background-color: #EEE;
+	color: #000;
+}
+.light-on-dark,
+table.default th,
+table.default tr.totals-header {
+	background-color: #666;
+	color: #FFF;
+}
+
+table.default {
+	background-color: #FFF;
+	border:2px solid #000;
+}
+table.default th {
+	border-bottom-width: 2px !important;
+}
+table.default tr.odd td {
+	background-color: #EEE;
+}
+table.default tr.even td {
+	background-color: #FFF;
+}
+
+table.default tr.totals td.blank {
+	border-style:none !important;
+}
+table.default tr.totals {
+	border-bottom:2px solid #000;
+	font-weight:bolder;
+}
+
+table.default tr.totals-header {
+	border-top:2px solid #000;
+	font-weight:bolder;
+	text-align:left;
+}
+
+div.hr
+{
+	height: 1px;
+	clear:both;
+	margin-top:10px;
+	margin-bottom:10px;
+	background-color:#DDD;
+	width:100%;
+}
+
+div.export
+{
+	display: block;
+	text-align: left;
+	padding-left:10px;
+}
+
+/* Auto Extraction Accuracy Overview Styles */
+
+#accuracyDetail {
+    width: 60%;
+    table-layout: fixed;
+}
+
+#accuracyDetail td, #accuracyDetail th {
+  text-align: left;
+  padding: 8px;
+}
+
+#reportHeader {
+	font-size: 10pt;
+}
+
+#passOverview {
+    width: 100%;
+    margin: 3px 3px 3px 0;
+    table-layout: fixed;
+}
+
+#passOverview th { 
+    background-color: lightblue;
+	font-weight: bold;
+}
+
+#passOverview td, #reportDetail td { 
+    padding: 3px;
+}
+
+#passOverview td:first-child { 
+    width: 30%
+}
+
+#passOverview th.ignored { 
+    width: 5%
+}
+
+#passOverview .dataIgnored {
+	background-color: silver;
+}
+
+#passOverview .dataModifiedPass1 {
+	background-color: yellow;
+}
+
+#passOverview .dataModifiedPass2 {
+	background-color: pink;
+}
+
+#passOverview .reportEntry:hover {
+	background-color: skyblue;
+}
+
+#reportDetail {
+    width: 20%;
+}
+
+.showStringSpace {
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+}
+
+.fieldCriticality {
+    width: 5%;
+}

@@ -1,0 +1,54 @@
+<?php
+    $this->headLink()->prependStylesheet( $this->basePath( '/css/style.css' ) );
+    $this->headTitle($this->title);
+?>
+<div class="ui-widget ui-widget-content ui-corner-all ui-widget-reportlist">
+    <div class="ui-widget-header ui-corner-all ui-widget-reportlist-header">
+        <h3>State Configuration</h3>
+    </div>
+
+    <div class="list-outer-box">
+        <?php if (!isset($this->paginator)): ?>
+            <?php elseif ($this->paginator->getCurrentItemCount() == 0): ?>
+            <div>
+                <strong>No States Found</strong>
+            </div>
+        <?php else: ?>
+            <table class="dataTable display full-width" id="stateLists">
+                <thead>
+                    <tr>
+                        <th>Abbreviation</th>
+                        <th>State</th>
+                        <th>Auto Extraction</th>
+                        <th>Work Types</th>
+                        <th>View Configuration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->paginator as $row): ?>
+                    <tr>
+                        <td><?= $row['nameAbbr']; ?></td>
+                        <td><?= $row['nameFull']; ?></td>
+                        <td>
+                            <?php
+                            if($row['autoExtraction'] == NULL) :
+                                echo 'NA';
+                            else :
+                                echo ($row['autoExtraction'] == 0 ) ? 'Disabled' : 'Enabled';
+                            endif;
+                            ?>
+                            </td>
+                        <td><?= $row['WorkTypes']; ?></td>
+                        <td style="text-align:center">
+                                <?php $url = $this->basePath("/admin/state-configuration/update-configuration/".$row['stateId']); ?>
+                                <a href="<?= $url; ?>" title="State Configuration" target="_blank">View</a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <?= $this->paginationControl($paginator, 'Sliding', 'paginator', ['route' => $this->route,'extraParams' => $this->paginatorParams]); ?>
+        <?php endif; ?>
+    </div>
+</div>

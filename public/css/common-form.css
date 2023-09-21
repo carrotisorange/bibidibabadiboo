@@ -1,0 +1,16 @@
+/**
+ * @copyright (c) 2011 LexisNexis. All rights reserved.
+ */
+ 
+body, html {
+	height: 100%;
+}
+
+#formIframe {
+	height: 100%;
+	width: 100%;
+	display: block;
+	overflow: hidden;
+	padding: 0px;
+	margin: 0px;
+}

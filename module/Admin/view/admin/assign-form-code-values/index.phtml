@@ -1,0 +1,73 @@
+<?php
+	$this->headLink()->prependStylesheet($this->basePath('/css/assign-form-code-values.css'));
+	$this->headScript()->appendFile($this->basePath('/js/assign-form-code-values.js'));
+?>
+
+<div id="assignFormCodevaluesDiv">
+    <?= $this->formElement($csrf);?>
+	<div id="formSelectDiv">
+		Form:  
+		<select id="formSelect">
+			<option name="formId" value="">
+				Select a form
+			</option>
+			<?php foreach ($this->formIds as $formId => $formName): ?>
+			<option name="formId" value="<?php echo $formId; ?>">
+				<?php echo $formName; ?>
+			</option>
+			<?php endforeach; ?>
+		</select>
+	</div>
+
+	<div id="formListsDiv" class="ui-helper-hidden">
+
+		<div id="formsRelatedByGroupIdDiv" class="ui-corner-all">
+			<strong>Related forms by group: </strong>
+			<br/>
+			<span id="formsRelatedByGroupId">
+				<!-- span should be enclosed this way for IE8 -->
+			</span>
+		</div>
+		
+		<table id="formListTable">
+			<thead>
+			  <tr>
+				<th><!-- check box --></th>
+				<th>Form List Name</th>
+			  </tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+
+		<div id="listCodePairsDiv" class="ui-helper-hidden">
+			
+			<div id="formsRelatedByListIdDiv" class="ui-corner-all">
+				<strong>Other forms related by this list: </strong>
+				<br/>
+				<span id="formsRelatedByListId">
+					<!-- span should be enclosed this way for IE8 -->
+				</span>
+			</div>
+			
+			<table id="listCodePairsTable">
+				<thead>
+				  <tr>
+					<th><!-- check box --></th>
+					<th>Form Code</th>
+					<th>Form Code Value</th>
+				  </tr>
+				</thead>
+				<tbody>
+				</tbody>  
+			</table>			
+		</div>
+
+		<div id="saveFormActionsDiv">
+			<input type="button" id="saveForm" value="Save changes to this form only"/>
+			<input type="button" id="saveAllForms" value="Save changes to all related forms"/>
+		</div>
+		
+	</div>
+
+</div>

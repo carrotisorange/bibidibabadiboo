@@ -1,0 +1,41 @@
+/**
+ *
+ * @copyright (c) 2010 by LexisNexis Asset Company. All rights reserved.
+ *
+ * eCrash v3.0
+ */
+
+#stateSelect {
+	margin-right: 20px;
+}
+
+#workTypeAssignment {
+	font-size: small;
+	color: red;
+}
+
+#formAttrTable td:first-child {
+	padding-left: 10px;
+	text-align: left;
+}
+
+#formAttrTable {
+	width: 90%;
+}
+
+#formAttrTable tr.odd td {
+	background-color: #E4E4E4;
+}
+
+#formAttrTable tr.even td {
+	background-color: #D1D1D1;
+}
+
+#formAttrTable tr:hover td {
+	background-color: lightgoldenrodyellow !important;
+}
+
+#txtaNote {
+	background-color: lightgoldenrodyellow;
+	margin: 10px;
+}

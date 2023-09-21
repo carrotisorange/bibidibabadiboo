@@ -1,0 +1,32 @@
+RewriteEngine On
+# The following rule tells Apache that if the requested filename
+# exists, simply serve it.
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [L]
+# The following rewrites all other queries to index.php. The 
+# condition ensures that if you are using Apache aliases to do
+# mass virtual hosting or installed the project in a subdirectory,
+# the base path will be prepended to allow proper resolution of
+# the index.php file; it will work in non-aliased environments
+# as well, providing a safe, one-size fits all solution.
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
+RewriteRule ^(.*)$ %{ENV:BASE}/index.php [L]
+
+php_value session.gc_maxlifetime 1800000
+php_value session.cookie_httponly 1
+
+php_value error_reporting -1
+
+php_value date.timezone America/New_York
+php_value upload_max_filesize 8M
+php_value max_execution_time 120
+php_value post_max_size 32M
+php_value max_input_time 240
+php_value memory_limit 1200M
+#to accomodate a lot of input fields on the universal form
+php_value max_input_vars 10000
+
+php_value output_handler ob_gzhandler

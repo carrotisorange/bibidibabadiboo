@@ -1,0 +1,9 @@
+<script>
+    let curWindowLength = window.innerWidth;
+    let curInnerHeight = window.innerHeight;
+
+    curWindowLength /= 2;
+    window.open("<?= $this->basePath() .$url?>", 
+    "_blank", `toolbar=no,scrollbars=no,resizable=no,,width=${curWindowLength}, height=${curInnerHeight};left=${curWindowLength}, 
+    left=${curWindowLength}`);
+</script>

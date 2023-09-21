@@ -1,0 +1,196 @@
+name: "On-Prem DEV Servers"
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        required: true
+        type: choice
+        description: Select the Server(s)
+        options: 
+        - alaldpnc174 and alaldpnc165
+        - alaldpnc166, alaldpnc167 and alaldpnc168
+
+env:
+  COMPONENT_NAME: "ecrash-keying"
+  BUILD_NAME: ecrash-keying
+  PROFILE: PROFILE
+  PROFILE_DEV: ${{ secrets.PROFILE_DEV }}
+
+
+jobs:
+  
+  build:
+
+    runs-on: [self-hosted, X64, Linux, on-prem, boca, shared]
+    environment: ${{github.event.inputs.env}}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+   
+        
+    - name: create version.txt file
+      run: |
+          echo "Branch is ${GITHUB_REF#refs/heads/}" >> ./version.txt
+          echo "GITHUB_RUN_ID is ${GITHUB_RUN_ID}" >> ./version.txt
+          echo "Commit_Id is ${GITHUB_SHA::7}"  >> ./version.txt
+
+    - name: Profile DEV
+      run: |
+          echo "PROFILE=PROFILE_DEV"  >> $GITHUB_ENV
+          echo "ENV=dev" >> $GITHUB_ENV
+          
+    - name: exporting environment variables
+      run: |
+          sudo apt-get update -y
+          sudo apt-get install -y gettext
+          CONFIG_PROFILE_ENV_VAR="${!PROFILE}"
+          CONFIG_PROFILE_FILE=$(mktemp)
+          echo "$CONFIG_PROFILE_ENV_VAR" > "$CONFIG_PROFILE_FILE"
+          set -o allexport
+          . $CONFIG_PROFILE_FILE
+          set +o allexport
+          echo $CONFIG_PROFILE_FILE
+          rm -rf $CONFIG_PROFILE_FILE
+          cat ./conf/${ENV}/secure/secure.tmpl | envsubst > ./secure.php
+          cat ./conf/${ENV}/environment.php | envsubst > ./environment.php
+          cat ./conf/${ENV}/.htaccess | envsubst > ./.htaccess
+          
+    - name: Delete and re-create the app, temp and conf folders on alaldpnc174 and alaldpnc165
+      if: github.event.inputs.env == 'alaldpnc174 and alaldpnc165'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alaldpnc174.noam.lnrm.net,alaldpnc165.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alaldpnc174 and alaldpnc165
+      if: github.event.inputs.env == 'alaldpnc174 and alaldpnc165'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alaldpnc174.noam.lnrm.net,alaldpnc165.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alaldpnc174 and alaldpnc165
+      if: github.event.inputs.env == 'alaldpnc174 and alaldpnc165'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alaldpnc174.noam.lnrm.net,alaldpnc165.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file on alaldpnc174 and alaldpnc165
+      if: github.event.inputs.env == 'alaldpnc174 and alaldpnc165'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alaldpnc174.noam.lnrm.net,alaldpnc165.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links on alaldpnc174 and alaldpnc165
+      if: github.event.inputs.env == 'alaldpnc174 and alaldpnc165'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alaldpnc174.noam.lnrm.net,alaldpnc165.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alaldpnc174 and alaldpnc165
+      if: github.event.inputs.env == 'alaldpnc174 and alaldpnc165'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alaldpnc174.noam.lnrm.net,alaldpnc165.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports
+
+    - name: Delete and re-create the app, temp and conf folders on alaldpnc166, alaldpnc167 and alaldpnc168
+      if: github.event.inputs.env == 'alaldpnc166, alaldpnc167 and alaldpnc168'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alaldpnc166.noam.lnrm.net,alaldpnc167.noam.lnrm.net,alaldpnc168.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: rm -rf /ap/ecrash/keying/*; mkdir -m755 /ap/ecrash/keying/app; mkdir -m755 /ap/ecrash/keying/conf; mkdir -m755 /ap/ecrash/keying/conf/secure; mkdir /ap/ecrash/keying/app/temp
+          
+    - name: Upload secure property file to alaldpnc166, alaldpnc167 and alaldpnc168
+      if: github.event.inputs.env == 'alaldpnc166, alaldpnc167 and alaldpnc168'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alaldpnc166.noam.lnrm.net,alaldpnc167.noam.lnrm.net,alaldpnc168.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./secure.php"
+        target: "/ap/ecrash/keying/conf/secure"
+        
+    - name: Upload htaccess and environment.php file to alaldpnc166, alaldpnc167 and alaldpnc168
+      if: github.event.inputs.env == 'alaldpnc166, alaldpnc167 and alaldpnc168'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alaldpnc166.noam.lnrm.net,alaldpnc167.noam.lnrm.net,alaldpnc168.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./.htaccess,./environment.php"
+        target: "/ap/ecrash/keying/conf"
+          
+    - name: Upload app dir and version file to alaldpnc166, alaldpnc167 and alaldpnc168
+      if: github.event.inputs.env == 'alaldpnc166, alaldpnc167 and alaldpnc168'
+      uses: appleboy/scp-action@master
+      with:
+        host: "alaldpnc166.noam.lnrm.net,alaldpnc167.noam.lnrm.net,alaldpnc168.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./config,./data,./log,./module,./public,./scripts,./vendor,./temp"
+        target: "/ap/ecrash/keying/app"
+        
+    - name: Create Symbolic Links on alaldpnc166, alaldpnc167 and alaldpnc168
+      if: github.event.inputs.env == 'alaldpnc166, alaldpnc167 and alaldpnc168'
+      uses: appleboy/ssh-action@master
+      with:
+        script: |
+            ln -sf "/ap/ecrash/keying/conf/secure/secure.php" "/ap/ecrash/keying/app/config/secure.php"
+            ln -sf "/ap/ecrash/keying/conf/environment.php" "/ap/ecrash/keying/app/config/environment.php"
+            ln -sf "/ap/ecrash/keying/conf/.htaccess" "/ap/ecrash/keying/app/.htaccess"
+
+        host: "alaldpnc166.noam.lnrm.net,alaldpnc167.noam.lnrm.net,alaldpnc168.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+
+    - name: fix folder reports on alaldpnc166, alaldpnc167 and alaldpnc168
+      if: github.event.inputs.env == 'alaldpnc166, alaldpnc167 and alaldpnc168'
+      uses: appleboy/ssh-action@master
+      with:
+        host: "alaldpnc166.noam.lnrm.net,alaldpnc167.noam.lnrm.net,alaldpnc168.noam.lnrm.net"
+        username: "apdecrash"
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: chmod 777 /ap/ecrash/keying/app/public/images/reports

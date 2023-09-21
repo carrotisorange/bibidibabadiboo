@@ -1,0 +1,251 @@
+.reportEntrySection
+{
+	margin: 2px 5px 2px 2px;
+}
+
+#reportEntryDataContainer
+{
+	display:inline-block;
+	/** width will be reset with JS, but if its not already large enough
+		it will complicate things */
+	width:30000px;
+	overflow:visible;
+}
+
+.reportEntry
+{
+	float:left;
+	background-color:#BBB;
+	border:1px solid #CCC;
+	margin-left:3px;
+	width:360px;
+}
+#reportEntryDataContainer div.reportEntry div
+{
+	background-color:#CCC;
+}
+
+
+div.buttons
+{
+	height:100%;
+}
+#reportEntryDataContainer .reportEntry .buttons .ui-button
+{
+	display:inline-block;
+	font-size:10px;
+	width:45%;
+}
+
+#reportEntryDataContainer .reportEntry
+{
+	padding:0px;
+}
+
+.scrollSection
+{
+	overflow:auto;
+	min-height:300px;
+	margin:0px;
+	padding:0px;
+}
+
+body
+{
+	overflow:hidden;
+}
+
+
+.reportEntry h3
+{
+	width:100%;
+	border:1px solid #FFF;
+	background-color:#EEE;
+	margin:2px;
+}
+
+.reportEntry table
+{
+	width:100%;
+}
+
+.reportEntry .collapse-button
+{
+	float:right;
+	
+	margin-right:3px;
+	margin-top:2px;
+}
+
+.reportEntry .ui-icon-triangle-1-n
+{
+	height:10px;
+	background-position:0 -19px;
+}
+.reportEntry .ui-icon-triangle-1-s
+{
+	height:10px;
+	background-position:-64px -19px;
+}
+
+.ui-state-hover
+{
+	border:1px solid #BBB !important;
+}
+.ui-state-active
+{
+	border:1px solid #DDD !important;
+}
+
+.reportEntryData-raw
+{
+	background-color:#FFF !important;
+}
+
+.reportEntryData-formatted .lock-button
+{
+	float:right;
+	margin-top:2px;
+	margin-right:7px;
+}
+
+
+
+
+
+#support-content {
+	position: fixed;
+	overflow: hidden;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 150px;
+	padding:5px;
+}
+#reportEntryData
+{
+	background-color:#AAA;
+	overflow:auto;
+	padding:2px;
+	border:1px solid #888;
+	margin:0px;
+	margin-left:-3px;
+
+}
+
+
+
+
+
+
+
+
+
+/** Zebra striping & table styling **/
+
+table
+{
+	border-spacing:0px 1px !important;
+}
+table td
+{
+	border:1px solid #EEE;
+}
+table td.field
+{
+	font-weight:bolder;
+	font-size:11px;
+}
+
+table tr.value-blank td
+{
+	border:none !important;
+}
+table tr.value-blank td.field
+{
+	font-weight:normal;
+	font-size:10px;
+}
+
+
+tr.odd td.field
+{
+	background-color:#FFF;
+}
+tr.odd td.value, tr.even td.field
+{
+	background-color:#F5F5F5;
+}
+tr.even td.value
+{
+	background-color:#EEE;
+}
+
+
+table tr.value-blank.odd td.field
+{
+	background-color:#DDD;
+}
+table tr.value-blank.odd td.value,table tr.value-blank.even td.field
+{
+	background-color:#AAA;
+}
+table tr.value-blank.even td.field
+{
+	background-color:#CCC;
+}
+table tr.value-blank.even td.value
+{
+	background-color:#999;
+}
+
+
+.tablehover td
+{
+	background-color:#EFF !important;
+	border-bottom: 1px solid #ADD;
+	border-top: 1px solid #ADD;
+}
+.tablehover.value-blank td.field
+{
+	background-color:#DEE !important;
+}
+.tablehover.value-blank td.value
+{
+	background-color:#CDD !important;
+}
+
+
+tr.select-search td
+{
+	border-top: 1px solid #F9A107;
+	border-bottom: 1px solid #F9A107;
+}
+
+tr.select-search td.field
+{
+	border-left: 1px solid #F9A107;
+	border-right: none;
+	padding-right:1px;
+}
+tr.select-search td.value
+{
+	border-right: 1px solid #F9A107;
+	border-left: none;
+	padding-left:2px;
+}
+
+
+
+tr.even.select-search td.field
+{
+	background-color:#FDD99B !important;
+}
+tr.even.select-search td.value,tr.odd.select-search td.field
+{
+	background-color:#FCD084 !important;
+}
+tr.odd.select-search td.value
+{
+	background-color:#FBC76B !important;
+}

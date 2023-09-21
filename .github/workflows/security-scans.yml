@@ -1,0 +1,20 @@
+# This workflow is to automate Checkmarx SAST scans and MED scans.  It runs on a push to the main branch.
+#
+# For full documentation, including a list of all inputs, please refer to the README https://github.com/LexisNexis-RBA/bsuk-github-security/.github/workflows/app-check.yml@
+
+name: Security Scans
+on:
+  pull_request:
+    branches:
+      - master
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: mend scan
+        uses: LexisNexis-RBA/risk-seceng-MendGitHubAction@v2.0.1
+        with:
+          WS_APIKEY: ${{ secrets.WS_APIKEY }}
+          WS_USERKEY: ${{ secrets.WS_USERKEY }}
+          WS_PRODUCTTOKEN: ${{ secrets.WS_PRODUCTTOKEN }}
+          WS_PROJECTNAME: ${{ secrets.WS_PROJECTNAME }}

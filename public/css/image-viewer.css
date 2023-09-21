@@ -1,0 +1,58 @@
+
+/**
+ * Thanks to this site for the staticly positioned side bar:
+ * http://www.cssplay.co.uk/layouts/fixit.html
+ */
+
+body {
+	height: 100%;
+	max-height: 100%;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+
+#image-view {
+	position: fixed;
+	height: 100%;
+	top: 0px;
+	bottom: 0px;
+	left: 0;
+	right: 100px;
+	overflow: auto;
+}
+
+#image-view-image {
+	max-width: 100%;
+}
+
+#image-thumbnails {
+	border-left: 1px solid black;
+	position: absolute;
+	width: 100px;
+	height: 100%;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	background-color: lightgrey;
+	overflow: auto;
+}
+
+#image-thumbnail-container {
+	position: absolute;
+}
+
+#image-thumbnails .image-thumbnail-container {
+	width: 80px;
+	height: 100px;
+	text-align: center;
+}
+
+#image-thumbnails .image-thumbnail-image {
+	max-width: 74px;
+	max-height: 94px;
+}
+
+#image-thumbnails .image-thumbnail-highlight {
+	background-color: #FFFFCC;
+}

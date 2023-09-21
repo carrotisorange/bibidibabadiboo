@@ -1,0 +1,24 @@
+<?php foreach ($this->reports as $report): ?>
+    <tr style="height:3%" id="TR_<?= $report['reportId']; ?>" <?php if(!$this->isAssigned) :?> class="TR_FORM_<?= $report['formId']; ?> " <?php endif?>>
+        <td style="width: 5%;color: <?= $this->isAssigned ? 'black' : 'blue'; ?>">
+            <?= $report['reportId']; ?>            
+            <?php if( $this->isAssigned) :?>
+                <!-- Hidden Values: userReportAssigned -> holds the user ids that are currently assigned to the user -->
+            <input name="userReportAssigned[]" value="<?= $report['reportId']; ?>" type="hidden" />
+            <?php endif?>
+        </td>        
+        <td style="width: 5%"><?= $report['stateAbbr']; ?></td>
+        <td style="width: 10%"><?= $report['formName']; ?></td>
+        <td style="width: 10%"><?= $report['agencyName']; ?></td>
+        <td style="width: 10%"><?= $report['workTypeExternal']; ?></td>       
+        <td style="width: 5%">
+            <!--Hidden Value           
+                userAssignReportIds -> holds the reportId shown in checkbox will be used for unassigning
+            -->
+            <input type="checkbox" name="<?= $this->isAssigned ? 'assignedReportIds[]' : 'availableReportIds[]'; ?>" id="id_label_to_assign_id<?= $report['reportId']; ?>"
+                class="cbox_to_assign_report"
+                value="<?= $report['reportId']; ?>" 
+                <?= $this->isAssigned ? 'checked' : ''; ?>>
+        </td>
+    </tr>
+<?php endforeach; ?>

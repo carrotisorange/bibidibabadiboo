@@ -1,0 +1,58 @@
+#errors {
+	border: 2px solid #CCCCCC;
+	font-size:10px;
+	margin-top:5px;
+}
+
+.error {
+	border: 1px solid #DDD;
+	margin: 1px;
+	padding: 2px;
+}
+
+.error.ERROR {
+	font-size: 11px;
+	border: 1px solid #F00;
+	background-color: #FC8888;
+	color: #500;
+	font-weight: bolder;
+}
+
+.error.CRITICAL {
+	font-size: 12px;
+	border: 1px solid #F00;
+	background-color: #000;
+	color: #F00;
+	font-weight: bolder;
+}
+
+.error .level, .error .message {
+	font-weight: bolder;
+	padding: 0px 1px;
+}
+
+#controls label {
+	height: 100%;
+	background-color: #EEE;
+	border: 1px solid #DDD;
+	padding: 5px;
+	margin: 2px;
+	display: inline-block;
+	font-weight: bold;
+}
+
+#controls input[type=text] {
+	width: 250px;
+}
+
+#controls label input {
+	border: 1px solid #555;
+	font-weight: bold;
+}
+
+#controls input[type="submit"] {
+	background-image: none;
+	background-color: #DDD;
+	border: 2px solid #CCCCCC;
+	padding: 8px;
+}
