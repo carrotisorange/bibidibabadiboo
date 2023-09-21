@@ -1,0 +1,141 @@
+<style>
+  #pdfContainer{
+    height: 100vh;
+  }
+</style>
+<div class="row">
+    <div class="col-md-6" id="pdfContainer">
+        <iframe id="pdfIframe" src="<?= $this->basePath() . '/data/report-entry/image-viewer-pdf'?>" frameborder="0"
+        width="100%" height="100%"></iframe>
+    </div>
+    <div class="col-md-6" id="formContainer">
+        <iframe id="formIframe" src="<?= $this->basePath() . '/data/report-entry/display'?>" frameborder="0"
+        width="100%" height="100%"></iframe>
+    </div>
+</div>
+
+<?php
+  $reportCoordinates = $this->reportCoordinates;
+  $reportCoordinates = json_encode($reportCoordinates);
+?>
+<script>
+    var prevXPos,
+        prevYPos,
+        prevXwidth,
+        prevYwidth;
+
+    var ctx;
+    var formInstance;
+    var pdfIframeInstance;
+
+    $(function(){
+        var pdfContainerIframe = document.getElementById('pdfIframe');
+        var formContainerIframe = document.getElementById('formIframe');
+
+        pdfContainerIframe.addEventListener('load', function(){
+            pdfIframeInstance = iframeAccess('pdfIframe');
+
+            var canvas = pdfIframeInstance.getElementById('myCanvas1');
+            ctx = canvas.getContext("2d");
+
+            pdfIframeInstance.getElementById('btnTest').addEventListener('click', function(){
+                if(canvas.style.display == 'none') {
+                  canvas.style.display = 'block';
+                } else {
+                    canvas.style.display = 'none';
+                }
+            });
+        });
+
+        formContainerIframe.addEventListener('load', function(){
+            formInstance = iframeAccess('formIframe');
+
+            getCoordinates(formInstance, ctx);
+            // fieldClickLoader(formInstance, '123123');
+        });
+
+        
+    });
+
+    function fieldClickLoader(frame, coordinateWithKeys) {
+        let stmt = frame.querySelector("input[name='Incident[Case_Identifier]']");
+        stmt.addEventListener('click', function(){
+            alert('something');
+        });
+    }
+    function drawOnCanvas(x_pos, y_pos, x_width, y_width, pageno, ctx) {  
+        if(typeof prevXPos != 'undefined') {
+            clearPrevRect(prevXPos, prevYPos,prevXwidth, prevYwidth, ctx);
+        }
+        x_pos = (x_pos * .54);
+        y_pos = (y_pos * .54);
+        x_width = (x_width * .20);
+        y_width = (y_width * .20);
+
+        prevXPos = x_pos
+        prevYPos = y_pos;
+        prevXwidth = x_width;
+        prevYwidth = y_width;
+        
+        ctx.fillStyle = "rgba(229, 242, 56, .3)";
+        ctx.fillRect(x_pos, y_pos, x_width, y_width);
+        ctx.closePath();    
+    }
+
+    function drawOnCanvasTest(x_pos, y_pos, x_width, y_width,canvas) { 
+        x_pos = (x_pos * .54);
+        y_pos = (y_pos * .54);
+        x_width = (x_width * .20);
+        y_width = (y_width * .20);
+
+        prevXPos = x_pos
+        prevYPos = y_pos;
+        prevXwidth = x_width;
+        prevYwidth = y_width; 
+
+        console.log(['test', x_pos, y_pos, x_width, y_width, canvas]);
+    }
+
+    function clearPrevRect(x_pos, y_pos,x_width, y_width, ctx) {
+        ctx.clearRect(x_pos, y_pos,x_width, y_width);
+    }
+
+    function iframeAccess(iframeID) {
+        var iframe = document.getElementById(iframeID);
+        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+        return innerDoc;
+    }
+
+    function getCoordinates(iframe, canvas) {
+        $.ajax({
+            type: 'POST',
+            url : window.baseUrl + '/data/report-entry/get-autozoning-coordinates',
+            success : function(response){
+                if(response.coordinates) {
+                    let coordinates = response.coordinates;
+                    for(let reportKey in coordinates) {
+                        switch(reportKey){
+                            case 'Incident':
+                                let incident = coordinates[reportKey];
+                                let incidentKeys = Object.keys(coordinates[reportKey]);
+
+                                for(let incidentIndex in incidentKeys) {
+                                    if(incident[incidentKeys[incidentIndex]] != '') {
+                                        let incidentKey = incidentKeys[incidentIndex];
+                                        let fieldCoordinates = incident[incidentKeys[incidentIndex]].split(',');
+                                        fieldCoordinates.push(canvas);
+
+                                        iframe.querySelector(`input[name='Incident[${incidentKey}]']`).addEventListener('click', function(){
+                                            drawOnCanvas(...fieldCoordinates);
+                                            console.log(fieldCoordinates);
+                                        });
+                                    }
+                                }
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,56 @@
+<style>
+  #pdfContainer{
+    height: 100vh;
+  }
+</style>
+<div class="row">
+    <div class="col-md-6" id="pdfContainer">
+        <iframe id="pdfIframe" src="<?= $this->basePath() . '/data/report-entry/image-viewer-pdf'?>" frameborder="0"
+        width="100%" height="100%"></iframe>
+    </div>
+    <div class="col-md-6" id="formContainer">
+        <iframe id="formIframe" src="<?= $this->basePath() . '/data/report-entry/display'?>" frameborder="0"
+        width="100%" height="100%"></iframe>
+    </div>
+</div>
+
+<?php var_dump($this->reportCoordinates)?>
+<script>
+    var prevXPos,prevYPos,prevXwidth,prevYwidth;
+    var prevCoordinates;
+
+
+    $(function(){
+        var pdfContainerIframe = document.getElementById('pdfIframe');
+        var formContainerIframe = document.getElementById('formIframe');
+
+        formContainerIframe.addEventListener('load', function(){
+            var formInstance = iframeAccess('formIframe');
+            const inputs = formInstance.querySelectorAll('[data-clickaction="input-action"]');
+
+            if(inputs) {
+                for(let i in inputs) {
+                    inputs[i].addEventListener(function(){
+
+                    });
+                }
+            }
+        });
+
+        pdfContainerIframe.addEventListener('load', function(){
+            var pdfIframeInstance = iframeAccess('pdfIframe');
+            var myCanvas = pdfIframeInstance.getElementById('myCanvas1');
+            var ctx = myCanvas.getContext("2d");
+
+            pdfIframeInstance.getElementById('btnTest').addEventListener('click', function(){
+                alert('test')
+            });
+        });
+    });
+
+    function iframeAccess(iframeID) {
+        var iframe = document.getElementById(iframeID);
+        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+        return innerDoc;
+    }
+</script>

@@ -1,0 +1,77 @@
+<?php
+/**
+ * @copyright (c) 2020 LexisNexis. All rights reserved.
+ */
+
+return [
+    'db' => [
+        'master' => [
+            'driver'    => 'Pdo_Mysql',
+            'host'      => 'dbqec-ala.risk.regn.net',
+            'dbname'    => 'ecrash_v3',
+            'username'  => '${RESOURCES_MULTIDB_MASTER_USERNAME}',
+            'password'  => '${RESOURCES_MULTIDB_MASTER_PASSWORD}',
+            'port'      => '3306',
+            'charset'   => 'utf8'
+        ],
+        
+        'mbs' => [
+            'driver'    => 'Pdo_Mysql',
+            'host'      => 'dbqaccsql-bct.risk.regn.net',
+            'dbname'    => 'mbs_ecrash',
+            'username'  => '${RESOURCES_MULTIDB_MBS_USERNAME}',
+            'password'  => '${RESOURCES_MULTIDB_MBS_PASSWORD}',
+            'port'      => '3308',
+            'charset'   => 'utf8'
+        ],
+    ],
+    
+    'app' => [
+        'db' => [
+            'alias' => [
+                'master'    => 'master',
+                'slave'     => 'master',
+            ],
+        ],
+        'webService' => [
+           'messageQueue' => [
+                'isitLogin'    => '${ISIT_LOGIN}',
+                'isitPassword' => '${ISIT_PASSWORD}',
+            ],
+        ],
+        'crashlogic' => [
+            'login'    => '${APP_ECRASHLOGIC_LOGIN}',
+            'password' => '${APP_ECRASHLOGIC_PASSWORD}',
+        ],
+    ],
+    
+    'vinLogin'      => '${VIN_LOGIN}',
+    'vinPassword'   => '${VIN_PASSWORD}',
+    
+    'vinPlateLogin'     => '${VIN_PLATE_LOGIN}',
+    'vinPlatePassword'  => '${VIN_PLATE_PASSWORD}',
+    
+    'mbs' => [
+        'registration' => [
+            'user'      => '${MBS_REGISTRATION_USER}',
+            'password'  => '${MBS_REGISTRATION_PASSWORD}',
+        ],
+    ],
+
+    'lnaa' => [
+        'registration' => [
+            'user'      => '${MBS_REGISTRATION_USER}',
+            'password'  => '${MBS_REGISTRATION_PASSWORD}',
+        ],
+    ],
+    
+    'imageWSDL' => [
+        'user'      => '${IMAGEWSDL_USER}',
+        'password'  => '${IMAGEWSDL_PASSWORD}',
+    ],
+    
+    'smtp' => [
+        'host' => 'appmail-test.risk.regn.net',
+        'port' => 25
+    ]
+];

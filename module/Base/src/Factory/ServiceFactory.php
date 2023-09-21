@@ -1169,7 +1169,7 @@ class ServiceFactory extends BaseFactory
     {
         $this->getBaseAdapter($config);
         return new AutozoningDataCoordinateAdapter(
-            $this->adapterBase->getMasterDbAdapter()
+            $this->adapterBase->getAutozoningDbAdapter()
         );
     }
 }

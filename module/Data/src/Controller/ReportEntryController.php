@@ -333,7 +333,7 @@ class ReportEntryController extends BaseController
                     $this->session->selectedWorkTypeId = $selectedWorkTypeId;
                     $this->session->reportId = $reportId;
 
-                    return $this->redirect()->toRoute('index');
+                return $this->redirect()->toUrl('report-entry/edit-one-window');
                 } else {
                     $this->cleanup();
                     $this->flashMessenger()->addInfoMessage('Please use Old App for this report, '.$reportId);
@@ -347,11 +347,15 @@ class ReportEntryController extends BaseController
         return $this->view;
     }
 
+    public function editOneWindowAction() {
+        return $this->view;
+    }
+
     public function editAction()
     {
         $this->layout()->setTemplate('layout/minimal');
-        $this->imageViewData();
-        $this->_displayData();
+        // $this->imageViewData();
+        // $this->_displayData();
         return $this->view;
     }
 
@@ -671,7 +675,7 @@ class ReportEntryController extends BaseController
 
             $entryStage = EntryStageService::STAGE_REKEY;
         }
-        
+
         $formContainer = $this->getFormContainer(
             $formId, $reportId, $reportEntryId, $entryStage, $rowReportInfo['isObsolete']
         );
@@ -1750,6 +1754,12 @@ class ReportEntryController extends BaseController
         return $this->json->setVariables($result);
     }
     
+    function getAutozoningCoordinatesAction() {
+        $reportId = $this->getReportIdWithValidation();
+        return $this->json->setVariables([
+            'coordinates' => $this->serviceAutoExtraction->getCoordinateData($reportId)
+        ]);
+    }
     /**
      * Called via AJAX
      */

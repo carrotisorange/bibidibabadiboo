@@ -5,12 +5,7 @@ $this->headScript()
     ->appendFile($this->basePath('/js/init-form-objects.js'))
     ->appendFile($this->basePath('/js/common/notes.js'));
 ?>
+
 <script>
-    var imageWindow = createImageWindow();
-    imageWindow.openWindow('/data/report-entry/image-viewer-pdf');
+    window.open('/data/report-entry/edit-one-window');
 </script>
-<iframe 
-    id="formIframe" 
-    frameBorder="0" 
-    src="<?= $this->basePath() . '/data/report-entry/display'?>">
-</iframe>

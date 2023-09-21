@@ -7,8 +7,18 @@ return [
     'db' => [
         'master' => [
             'driver'    => 'Pdo_Mysql',
-            'host'      => '',
-            'dbname'    => 'ecrash',
+            'host'      => 'localhost',
+            'dbname'    => 'ecrash_v3.1_uat',
+            'username'  => 'root',
+            'password'  => '',
+            'port'      => '',
+            'charset'   => 'utf8'
+        ],
+
+        'keying_autoextract' => [
+            'driver'    => 'Pdo_Mysql',
+            'host'      => 'localhost',
+            'dbname'    => 'keying_autoextract',
             'username'  => 'root',
             'password'  => '',
             'port'      => '',

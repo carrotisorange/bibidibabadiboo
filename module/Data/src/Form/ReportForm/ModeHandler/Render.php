@@ -79,7 +79,7 @@ class Render implements ModeHandlerInterface
 		}
 		$attributes['name'] = $name;
 		$attributes['id'] = $id;
-
+		$attributes['data-clickaction'] = 'input-action';
 
 		$tabIndex = true;
 		$fieldValue = $fieldDefaultValue = null;

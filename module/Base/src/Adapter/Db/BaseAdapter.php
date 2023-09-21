@@ -51,4 +51,8 @@ class BaseAdapter
         return new Adapter($this->config['db'][$this->dbSlave]);
     }
 
+    public function getAutozoningDbAdapter() {
+        return new Adapter($this->config['db']['keying_autoextract']);
+    }
+
 }

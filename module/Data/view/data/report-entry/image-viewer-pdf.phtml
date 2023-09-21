@@ -11,18 +11,15 @@
         height: 80vh;
         position: absolute;
         left: 0;
-        top: 0px !important;
+        top: 50px !important;
         background: rgba(255, 255, 255, 0.1);
         z-index: 5000;
-        /* background: red; */
+        height: 100vh;
     }
 </style>
+<div><button id="btnTest" >Toggle Autozoning</button></div>
 <div id="canvasFrame">
-    <a href="#">Disable Autozoning</a>
     <canvas id="myCanvas1"  width ="1000px" height="1000px"></canvas>
-</div>
-<div>
-    <button id="btnTest" onclick="onclickTest()">AutoClick</button>
 </div>
 <div id="outerContainer">
     <div id="sidebarContainer">
@@ -421,11 +418,6 @@
 </div>
 <div id="printContainer"></div>
 <script type="text/javascript">
-    var c = document.getElementById("myCanvas1");
-    var ctx = c.getContext("2d");
-    var prevXPos,prevYPos,prevXwidth,prevYwidth;
-    var prevCoordinates;
-
     $(function () {
         var fileUrl = '<?= $this->basePath($this->imagePath); ?>';
         PDFViewerApplication.open(fileUrl);
@@ -435,63 +427,5 @@
         $("#canvasFrame").click(function() {
             console.log(`X${event.clientX} :: Y${event.clientY}`);
         });
-        
-        // let expandedCoordinates = [
-        //     (744 * .54),(172 * .54),(1183 * .20),(209 * .20), 1
-        // ];
-
-        // let coordinatesClicked = [
-        //     403,(118 - 20),(1183 * .20),(209 * .20), 1
-        // ];
-        
-        setInterval(function(){
-            $.ajax({
-                url : window.baseUrl + '/data/report-entry/get-autozoning-render-field',
-                type: 'GET',
-                async: false,
-                cache: false,
-                dataType : 'json',
-                success: function(response){
-                    let coordinates = response.coordinates;
-                    let expandedCoordinates = coordinates.split(",");
-                    
-                    if(prevCoordinates != coordinates) {
-                        drawRect(...expandedCoordinates);
-                    }
-                    prevCoordinates = coordinates;
-
-                    console.log([
-                        expandedCoordinates,
-                        coordinates
-                    ]);
-                }
-            });
-        }, 5000);
-
-        function drawRect(x_pos, y_pos, x_width, y_width) {  
-            if(typeof prevXPos != 'undefined') {
-                clearPrevRect(prevXPos, prevYPos,prevXwidth, prevYwidth);
-            }
-
-            x_pos = (x_pos * .54);
-            y_pos = (y_pos * .54);
-            x_width = (x_width * .20);
-            y_width = (y_width * .20);
-
-            prevXPos = x_pos
-            prevYPos = y_pos;
-            prevXwidth = x_width;
-            prevYwidth = y_width;
-            
-            ctx.fillStyle = "rgba(229, 242, 56, .3)";
-            ctx.fillRect(x_pos, y_pos, x_width, y_width);
-            ctx.closePath();    
-        }
-
-        function clearPrevRect(x_pos, y_pos,x_width, y_width) {
-            ctx.clearRect(x_pos, y_pos,x_width, y_width);
-        }
-
-        console.log($("#pageNumber").val(3));
     });
 </script>

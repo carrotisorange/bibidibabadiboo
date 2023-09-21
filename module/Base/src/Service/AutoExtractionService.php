@@ -344,7 +344,7 @@ class AutoExtractionService extends BaseService
             ]
         }
         EOF;
-        $jsonData = json_decode(trim($jsonString));
+        $jsonData = json_decode(trim($jsonString), true);
 
         return $jsonData;
     }
